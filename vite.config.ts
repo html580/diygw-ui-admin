@@ -4,7 +4,7 @@ import type { UserConfig, ConfigEnv } from 'vite'
 import { defineConfig } from 'vite'
 import { loadEnv } from './src/utils/viteBuild'
 
-const { VITE_PORT, VITE_OPEN, VITE_PUBLIC_PATH } = loadEnv()
+const { VITE_PORT, VITE_OPEN, VITE_PUBLIC_PATH,VITE_API_PROXY } = loadEnv()
 
 
 export default defineConfig(({ command }: ConfigEnv): UserConfig => {
@@ -27,7 +27,7 @@ export default defineConfig(({ command }: ConfigEnv): UserConfig => {
       open: VITE_OPEN,
       proxy: {
         '/api': {
-          target: 'http://php.diygw.com',
+          target: VITE_API_PROXY,
           ws: true,
           changeOrigin: true,
           rewrite: path => path.replace(/^\/api/, ''),
