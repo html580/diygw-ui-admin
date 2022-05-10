@@ -57,11 +57,16 @@ cd diygw-ui-admin
 # 安装依赖
 yarn
 
+# 修改配置
+修改.env下VITE_API_PROXY地址改成你的后台地址。对应diygw-ui-php安装的域名地址。
+
 # 运行项目
 yarn dev
 
 # 打包发布
 yarn build
+打包成功后直接把dist目录下所有文件拷贝到diygw-ui-php\public目录下
+
 ```
 
 
