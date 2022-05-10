@@ -32,9 +32,6 @@
 
 - <a target="_blank" href="https://gitee.com/diygw/diygw-ui-php">基于thinkphp6实现的DIYGW-UI-PHP</a>
 
-#### 🚧 安装 yarn
-
-- 复制代码(桌面 cmd 运行) `npm install -g yarn`
 
 #### 🏭 环境支持
 
@@ -51,8 +48,12 @@
 # 克隆项目
 git clone https://gitee.com/diygw/diygw-ui-admin.git
 
-# 进入项目
+# 进入项目 桌面 cmd 运行
 cd diygw-ui-admin
+
+# 推荐使用yarn 也可参照后面直接使用npm
+# 安装 yarn
+npm install -g yarn
 
 # 安装依赖
 yarn
@@ -66,6 +67,17 @@ yarn dev
 # 打包发布
 yarn build
 打包成功后直接把dist目录下所有文件拷贝到diygw-ui-php\public目录下
+
+
+# 或者直接使用NPM
+# 安装依赖
+npm install
+
+# 运行项目
+npm run dev
+
+# 打包发布
+npm run build
 
 ```
 
