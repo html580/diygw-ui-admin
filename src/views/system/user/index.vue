@@ -46,18 +46,13 @@
 							</el-button>
 						</el-form-item>
 					</el-form>
-					<!-- 操作按钮 -->
-					<el-col :span="1.5">
+					<div class="mb8">
 						<el-button type="primary" plain @click="handleAdd"><SvgIcon name="ele-Plus" />新增</el-button>
-					</el-col>
-					<el-col :span="1.5">
 						<el-button type="danger" plain :disabled="state.multiple" @click="handleDelete"><SvgIcon name="ele-Delete" />删除</el-button>
-					</el-col>
-					<el-col :span="1.5">
 						<el-button type="warning" plain @click="handleExport"><SvgIcon name="ele-Download" />导出</el-button>
-					</el-col>
+					</div>
 
-					<el-table v-loading="state.loading" :data="state.tableData" stripe @selection-change="handleSelectionChange" style="width: 100%">
+					<el-table v-loading="state.loading" border :data="state.tableData" stripe @selection-change="handleSelectionChange" style="width: 100%">
 						<el-table-column type="selection" width="45" align="center" />
 						<el-table-column label="用户编号" align="center" key="userId" prop="userId" />
 						<el-table-column label="用户名" prop="username" show-overflow-tooltip></el-table-column>
@@ -75,7 +70,7 @@
 							</template>
 						</el-table-column>
 						<el-table-column prop="createTime" label="创建时间" show-overflow-tooltip></el-table-column>
-						<el-table-column prop="path" label="操作" width="150">
+						<el-table-column prop="path" label="操作" fixed="right"  width="180">
 							<template #default="scope">
 								<el-button type="text" @click="handleUpdate(scope.row)"><SvgIcon name="ele-Edit" />修改</el-button>
 								<el-button type="text" @click="handleDelete(scope.row)"><SvgIcon name="ele-Delete" />删除</el-button>
@@ -112,7 +107,7 @@ import { ElMessageBox, ElMessage } from 'element-plus';
 import EditModule from './component/editModule.vue';
 import { letterAvatar } from '@/utils/index';
 import { listData, changeStatus, delData } from '@/api';
-import { handleTree } from '@/utils/other';
+import { handleTree } from '@/utils';
 const { proxy } = getCurrentInstance() as any;
 const userFormRef = ref();
 const state: any = reactive({
@@ -196,7 +191,7 @@ const resetQuery = async () => {
 	handleQuery();
 };
 /** 新增按钮操作 */
-const handleAdd = (row: any) => {
+const handleAdd = () => {
 	state.title = '添加用戶';
 	userFormRef.value.openDialog(null);
 };
@@ -209,7 +204,7 @@ const handleUpdate = (row: any) => {
 /** 查询部门下拉树结构 */
 const getTreeselect = async () => {
 	listData('/sys/dept',{}).then((response) => {
-		state.deptOptions = handleTree(response.data.rows,"deptId","parentId","children");;
+		state.deptOptions = handleTree(response.data.rows,"deptId","parentId","children");
 	});
 };
 // 用户状态修改
@@ -276,7 +271,7 @@ const handleNodeClick = (data: any) => {
 
 /** 导出按钮操作 */
 const handleExport = () => {
-	const queryParams = state.queryParams;
+	// const queryParams = state.queryParams;
 	// ElMessageBox({
 	// 	message: '是否确认导出所有用户数据项?',
 	// 	title: '警告',
@@ -292,7 +287,7 @@ const handleExport = () => {
 	// 	});
 };
 // 字典状态字典翻译
-const sexFormat = (row: any, column: any) => {
+const sexFormat = (row: any) => {
 	return proxy.selectDictLabel(state.sexOptions, row.sex);
 };
 // 页面加载时
@@ -308,7 +303,7 @@ onMounted(() => {
 		state.sexOptions = response.data.rows;
 	});
 
-	proxy.mittBus.on('onEditUserModule', (res: any) => {
+	proxy.mittBus.on('onEditUserModule', () => {
 		handleQuery();
 	});
 });

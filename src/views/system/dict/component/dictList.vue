@@ -41,7 +41,7 @@
 		</div>
 		<div>
 			<!--数据表格-->
-			<el-table v-loading="state.loading" :data="state.tableData">
+			<el-table v-loading="state.loading" border :data="state.tableData">
 				<el-table-column label="键值" align="center" prop="dictValue" :show-overflow-tooltip="true" />
 				<el-table-column label="标签" align="center" prop="dictLabel" :show-overflow-tooltip="true" />
 				<el-table-column label="类型" align="center" prop="dictType" :show-overflow-tooltip="true" />

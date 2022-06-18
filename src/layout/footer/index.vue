@@ -1,8 +1,8 @@
 <template>
 	<div class="layout-footer mt15" v-show="isDelayFooter">
 		<div class="layout-footer-warp">
-			<div>DIY可视化速搭</div>
-			<!-- <div class="mt5">技术支持：中山市志丰科技有限公司</div> -->
+			<div>DIYGW-UI-ADMIN</div>
+			<div class="mt5">https://www.diygw.com</div>
 		</div>
 	</div>
 </template>
@@ -10,6 +10,7 @@
 <script lang="ts">
 import { toRefs, reactive, defineComponent } from 'vue';
 import { onBeforeRouteUpdate } from 'vue-router';
+
 export default defineComponent({
 	name: 'layoutFooter',
 	setup() {
@@ -36,7 +37,6 @@ export default defineComponent({
 .layout-footer {
 	width: 100%;
 	display: flex;
-	font-size: 12px;
 	&-warp {
 		margin: auto;
 		color: var(--el-text-color-secondary);

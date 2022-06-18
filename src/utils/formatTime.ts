@@ -135,12 +135,3 @@ export function formatAxis(param: Date): string {
 	else if (hour < 22) return '晚上好';
 	else return '夜里好';
 }
-
-
-export function dateStrFormat(dateStr: string) {
-	if (dateStr==""){
-		return formatDate(new Date(),'yyyy-MM-dd HH:mm:ss', );
-	}else {
-		return formatDate(new Date(dateStr),'yyyy-MM-dd HH:mm:ss');
-	}
-}

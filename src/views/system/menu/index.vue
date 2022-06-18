@@ -43,23 +43,26 @@
 						</el-tag>
 					</template>
 				</el-table-column>
-				<el-table-column prop="permission" label="权限标识" :show-overflow-tooltip="true"></el-table-column>
+				<el-table-column prop="permission" label="权限标识"  width="100" :show-overflow-tooltip="true"></el-table-column>
 				<el-table-column prop="component" label="组件路径" :show-overflow-tooltip="true"></el-table-column>
 				<el-table-column prop="status" label="状态" width="80">
 					<template #default="scope">
 						<el-tag :type="scope.row.status === '1' ? 'danger' : 'success'" disable-transitions>{{ statusFormat(scope.row) || '-- --' }} </el-tag>
 					</template>
 				</el-table-column>
-				<el-table-column prop="status" label="显示隐藏" width="80">
+				<el-table-column prop="status" label="显示隐藏" width="100">
 					<template #default="scope">
 						<el-tag :type="scope.row.status === '1' ? 'danger' : 'success'" disable-transitions>{{ isHideFormat(scope.row) || '-- --' }} </el-tag>
 					</template>
 				</el-table-column>
-				<el-table-column label="操作" align="center" class-name="small-padding fixed-width">
+				<el-table-column label="操作" align="center" fixed="right"  width="280">
 					<template #default="scope">
-						<el-button type="text" icon="el-icon-edit" @click="onOpenEditMenu(scope.row)"><SvgIcon name="ele-Edit" />修改</el-button>
+						<div class="flex">
+							<el-button type="text" icon="el-icon-edit" @click="onOpenEditMenu(scope.row)"><SvgIcon name="ele-Edit" />修改</el-button>
 						<el-button type="text" icon="el-icon-plus" @click="onOpenAddMenu(scope.row)"><SvgIcon name="ele-Plus" />新增</el-button>
 						<el-button type="text" icon="el-icon-delete" @click="handleDelete(scope.row)"><SvgIcon name="ele-Delete" />删除</el-button>
+						</div>
+						
 					</template>
 				</el-table-column>
 			</el-table>
@@ -75,7 +78,7 @@ import { toRefs, getCurrentInstance, onMounted, onUnmounted, reactive, ref } fro
 import EditMenu from './component/editMenu.vue';
 import { ElMessage, ElMessageBox } from 'element-plus';
 import { delData, listData } from '@/api';
-import { handleTree } from '@/utils/other';
+import { handleTree } from '@/utils';
 const { proxy } = getCurrentInstance() as any;
 const editMenuRef = ref();
 const state: any = reactive({
@@ -101,7 +104,7 @@ const state: any = reactive({
 		status: undefined,
 	},
 });
-const { loading, menuList, menuOptions, title, open, isHideOptions, statusOptions, menuTypeOptions, queryParams } = toRefs(state);
+const { loading, menuList,  title,   statusOptions,  queryParams } = toRefs(state);
 /** 查询菜单列表 */
 const getList = () => {
 	state.loading = true;
@@ -183,7 +186,7 @@ onMounted(() => {
 	proxy.getDicts('sys_normal_disable').then((response: any) => {
 		state.statusOptions = response.data.rows;
 	});
-	proxy.mittBus.on('onEditMenuModule', (res: any) => {
+	proxy.mittBus.on('onEditMenuModule', () => {
 		handleQuery();
 	});
 });
@@ -193,4 +196,4 @@ onUnmounted(() => {
 });
 </script>
 
-<style scoped></style>
+

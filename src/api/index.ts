@@ -9,8 +9,6 @@ export function postData(url: string, params: object) {
 }
 
 
-
-
 export function getData(url: string, params: object) {
 	return request({
 		url: url,

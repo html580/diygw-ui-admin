@@ -92,6 +92,7 @@
     <el-table
       v-loading="loading"
       :data="tableData"
+      border
       @selection-change="handleSelectionChange"
     >
       <el-table-column type="selection" width="55" align="center" />
@@ -114,7 +115,7 @@
       <el-table-column
         label="操作"
         align="center"
-        class-name="small-padding fixed-width"
+       fixed="right"  width="180"
       >
         <template #default="scope">
           <el-button
@@ -273,7 +274,7 @@ export default {
       proxy.getDicts("sys_normal_disable").then((response: any) => {
         state.statusOptions = response.data.rows;
       });
-      proxy.mittBus.on("onEditPostModule", (res: any) => {
+      proxy.mittBus.on("onEditPostModule", () => {
         handleQuery();
       });
     });

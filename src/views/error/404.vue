@@ -12,7 +12,7 @@
 				</div>
 			</div>
 			<div class="right">
-				<img src="https://gitee.com/diygw/diygw-ui-image/raw/master/error/404.png" />
+				<img src="/static/images/error/404.png" />
 			</div>
 		</div>
 	</div>

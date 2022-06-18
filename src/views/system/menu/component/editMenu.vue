@@ -167,13 +167,13 @@
 </template>
 
 <script lang="ts" setup>
-import { reactive, toRefs, ref, unref, getCurrentInstance } from 'vue';
+import { reactive,ref, unref, getCurrentInstance } from 'vue';
 import IconSelector from '@/components/iconSelector/index.vue';
 import { listData, addData, updateData } from '@/api';
 import { ElMessage } from 'element-plus';
 import { Session } from '@/utils/storage';
-import { useStore } from '@/store';
-import { handleTree } from '@/utils/other';
+
+import { handleTree } from '@/utils';
 const props = defineProps({
 	title: {
 		type: String,
@@ -181,7 +181,7 @@ const props = defineProps({
 	},
 });
 
-const store = useStore();
+
 const { proxy } = getCurrentInstance() as any;
 const ruleFormRef = ref<HTMLElement | null>(null);
 const state = reactive({
@@ -234,7 +234,6 @@ const state = reactive({
 });
 // 打开弹窗
 const openDialog = (row: any) => {
-	console.log(row);
 	if (row.menuId && row.menuId != undefined && row.menuId != 0) {
 		state.ruleForm = row;
 	} else {
@@ -325,7 +324,6 @@ const resetSession = (res: any) => {
 	let userInfos: any = Session.get('userInfo');
 	userInfos.authBtnList = permissions;
 	userInfos.authPageList = permissions;
-	store.dispatch('userInfos/setUserInfos', userInfos);
 	Session.set('userInfo', userInfos);
 	//window.location.reload()   //页面刷新有
 	//initBackEndControlRoutes();

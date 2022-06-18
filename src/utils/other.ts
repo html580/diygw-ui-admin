@@ -2,7 +2,9 @@ import { nextTick } from 'vue';
 import type { App } from 'vue';
 import * as svg from '@element-plus/icons-vue';
 import router from '@/router/index';
-import { store } from '@/store/index';
+import pinia from '@/stores/index';
+import { storeToRefs } from 'pinia';
+import { useThemeConfig } from '@/stores/themeConfig';
 import { i18n } from '@/i18n/index';
 import { Local } from '@/utils/storage';
 import SvgIcon from '@/components/svgIcon/index.vue';
@@ -25,14 +27,43 @@ export function elSvg(app: App) {
  * @method const title = useTitle(); ==> title()
  */
 export function useTitle() {
+	const stores = useThemeConfig(pinia);
+	const { themeConfig } = storeToRefs(stores);
 	nextTick(() => {
 		let webTitle = '';
-		let globalTitle: string = store.state.themeConfig.themeConfig.globalTitle;
-		router.currentRoute.value.path === '/login'
-			? (webTitle = router.currentRoute.value.meta.title as any)
-			: (webTitle = i18n.global.t(router.currentRoute.value.meta.title as any));
+		let globalTitle: string = themeConfig.value.globalTitle;
+		const { path, meta } = router.currentRoute.value;
+		if (path === '/login') {
+			webTitle = <any>meta.title;
+		} else {
+			webTitle = setTagsViewNameI18n(router.currentRoute.value);
+		}
 		document.title = `${webTitle} - ${globalTitle}` || globalTitle;
 	});
+}
+
+/**
+ * 设置 自定义 tagsView 名称、 自定义 tagsView 名称国际化
+ * @param params 路由 query、params 中的 tagsViewName
+ * @returns 返回当前 tagsViewName 名称
+ */
+export function setTagsViewNameI18n(item: any) {
+	let tagsViewName: any = '';
+	const { query, params, meta } = item;
+	if (query?.tagsViewName || params?.tagsViewName) {
+		if (/\/zh-cn|en|zh-tw\//.test(query?.tagsViewName) || /\/(zh-cn|en|zh-tw)\//.test(params?.tagsViewName)) {
+			// 国际化
+			const urlTagsParams = (query?.tagsViewName && JSON.parse(query?.tagsViewName)) || (params?.tagsViewName && JSON.parse(params?.tagsViewName));
+			tagsViewName = urlTagsParams[i18n.global.locale];
+		} else {
+			// 非国际化
+			tagsViewName = query?.tagsViewName || params?.tagsViewName;
+		}
+	} else {
+		// 非自定义 tagsView 名称
+		tagsViewName = i18n.global.t(<any>meta.title);
+	}
+	return tagsViewName;
 }
 
 /**
@@ -63,7 +94,11 @@ export const lazyImg = (el: any, arr: any) => {
  * 全局组件大小
  * @returns 返回 `window.localStorage` 中读取的缓存值 `globalComponentSize`
  */
-export const globalComponentSize: string = Local.get('themeConfig')?.globalComponentSize || store.state.themeConfig.themeConfig?.globalComponentSize;
+export const globalComponentSize = (): string => {
+	const stores = useThemeConfig(pinia);
+	const { themeConfig } = storeToRefs(stores);
+	return Local.get('themeConfig')?.globalComponentSize || themeConfig.value?.globalComponentSize;
+};
 
 /**
  * 对象深克隆
@@ -78,7 +113,7 @@ export function deepClone(obj: any) {
 		newObj = {};
 	}
 	for (let attr in obj) {
-		if (typeof obj[attr] === 'object') {
+		if (obj[attr] && typeof obj[attr] === 'object') {
 			newObj[attr] = deepClone(obj[attr]);
 		} else {
 			newObj[attr] = obj[attr];
@@ -102,66 +137,37 @@ export function isMobile() {
 	}
 }
 
-
 /**
- * 构造树型结构数据
- * @param {*} data 数据源
- * @param {*} id id字段 默认 'id'
- * @param {*} parentId 父节点字段 默认 'parentId'
- * @param {*} children 孩子节点字段 默认 'children'
+ * 判断数组对象中所有属性是否为空，为空则删除当前行对象
+ * @description @感谢大黄
+ * @param list 数组对象
+ * @returns 删除空值后的数组对象
  */
- export function handleTree(data: any, id:string, parentId:string, children:string) {
-	let config = {
-		id: id || 'id',
-		parentId: parentId || 'parentId',
-		childrenList: children || 'children'
-	};
-
-	var childrenListMap:any = {};
-	var nodeIds:any = {};
-	var tree = [];
-
-	for (let d of data) {
-		let parentId = d[config.parentId];
-		if (childrenListMap[parentId] == null) {
-			childrenListMap[parentId] = [];
+export function handleEmpty(list: any) {
+	const arr = [];
+	for (const i in list) {
+		const d = [];
+		for (const j in list[i]) {
+			d.push(list[i][j]);
 		}
-		nodeIds[d[config.id]] = d;
-		childrenListMap[parentId].push(d);
-	}
-
-	for (let d of data) {
-		let parentId = d[config.parentId];
-		if (nodeIds[parentId] == null) {
-			tree.push(d);
+		const leng = d.filter((item) => item === '').length;
+		if (leng !== d.length) {
+			arr.push(list[i]);
 		}
 	}
-
-	for (let t of tree) {
-		adaptToChildrenList(t);
-	}
-
-	function adaptToChildrenList(o:any) {
-		if (childrenListMap[o[config.id]] !== null) {
-			o[config.childrenList] = childrenListMap[o[config.id]];
-		}
-		if (o[config.childrenList]) {
-			for (let c of o[config.childrenList]) {
-				adaptToChildrenList(c);
-			}
-		}
-	}
-	return tree;
+	return arr;
 }
 
 /**
  * 统一批量导出
  * @method elSvg 导出全局注册 element plus svg 图标
  * @method useTitle 设置浏览器标题国际化
+ * @method setTagsViewNameI18n 设置 自定义 tagsView 名称、 自定义 tagsView 名称国际化
  * @method lazyImg 图片懒加载
- * @method globalComponentSize element plus 全局组件大小
+ * @method globalComponentSize() element plus 全局组件大小
  * @method deepClone 对象深克隆
  * @method isMobile 判断是否是移动端
+ * @method handleEmpty 判断数组对象中所有属性是否为空，为空则删除当前行对象
  */
 const other = {
 	elSvg: (app: App) => {
@@ -170,15 +176,23 @@ const other = {
 	useTitle: () => {
 		useTitle();
 	},
+	setTagsViewNameI18n(route: any) {
+		return setTagsViewNameI18n(route);
+	},
 	lazyImg: (el: any, arr: any) => {
 		lazyImg(el, arr);
 	},
-	globalComponentSize,
+	globalComponentSize: () => {
+		return globalComponentSize();
+	},
 	deepClone: (obj: any) => {
-		deepClone(obj);
+		return deepClone(obj);
 	},
 	isMobile: () => {
 		return isMobile();
+	},
+	handleEmpty: (list: any) => {
+		return handleEmpty(list);
 	},
 };
 

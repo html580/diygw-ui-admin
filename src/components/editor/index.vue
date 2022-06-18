@@ -1,165 +1,114 @@
 <template>
-    <div class="tinymce-editor">
-      <editor
-        tinymceScriptSrc="/static/tinymce/tinymce.min.js"
-        v-model="data"
-        :init="init"
-        :disabled="disabled"
-      ></editor>
-    </div>
-    <diy-storage
-      ref="storage"
-      style="display: none"
-      :limit="uploadConfig.limit"
-      @confirm="getAttachmentFileList"
-    ></diy-storage>
+	<div class="editor-container">
+		<div ref="editorToolbar"></div>
+		<div ref="editorContent" :style="{ height }"></div>
+	</div>
 </template>
 
 <script lang="ts">
-import Editor from '@tinymce/tinymce-vue'
-import {
-  defineComponent,
-  ref,
-  reactive,
-toRefs
-} from "vue";
-import { useVModel } from '@vueuse/core'
-import DiyStorage from '@/components/upload/storage.vue'
+import { toRefs, reactive, onMounted, watch, defineComponent } from 'vue';
+import { createEditor, createToolbar, IEditorConfig, IToolbarConfig, IDomEditor } from '@wangeditor/editor';
+import '@wangeditor/editor/dist/css/style.css';
+import { toolbarKeys } from './toolbar';
+
+// 定义接口来定义对象的类型
+interface WangeditorState {
+	editorToolbar: HTMLDivElement | null;
+	editorContent: HTMLDivElement | null;
+	editor: any;
+}
 
 export default defineComponent({
-  name: 'DiygwEditor',
-  components: {
-    DiyStorage,
-    Editor,
-  },
-  props: {
-    modelValue: {
-      type: String,
-      required: false,
-    },
-    triggerChange: {
-      type: Boolean,
-      default: false,
-      required: false,
-    },
-    disabled: {
-      type: Boolean,
-      default: false,
-    },
-    plugins: {
-      type: [String, Array],
-      default:
-        // 'lists image link media table textcolor wordcount contextmenu fullscreen',
-        'lists image link media table wordcount fullscreen',
-    },
-    toolbar: {
-      type: [String, Array],
-      default:
-        'code undo redo |  formatselect fontsizeselect bold italic underline strikethrough forecolor backcolor | alignleft aligncenter alignright alignjustify | bullist numlist outdent indent | lists link unlink storage table | removeformat | fullscreen',
-      branding: false,
-    },
-    width: {
-      type: [Number , String],
-      default: 'auto',
-    },
-    height: {
-      type: Number,
-      default: 300,
-    },
-   },
-   setup(props, { emit }) {
-      const data = useVModel(props, 'modelValue', emit)
- 
-      const editorref = ref(null)
-
-      const obj = reactive({
-
-        uploadConfig: {
-          limit: 1,
-        },
-      });
-
-    const storage = ref(null);
-
-    // 获取商品相册资源
-    const getAttachmentFileList = (files) => {
-      if (!files.length) {
-        return;
-      }
-      const file = files[0];
-      editorref.value.insertContent(`<img src='${file.url}'/>`);
-    };
-      const init = ref( {
-        language_url: '/static/tinymce/langs/zh_CN.js',
-        language: 'zh_CN',
-        skin: "CUSTOM",
-        content_css: "CUSTOM",
-        width: props.width,
-        height: props.height,
-        object_resizing: false,
-        selector: 'tinymce-editor',
-        cleanup : false,
-        content_style: `
-          *                   { padding:0; }
-          html, body          { font-family:inherit; font-size:14px; line-height:inherit; }
-          img                 { max-width:100%; display:block; height:auto; }
-          a                   { text-decoration:none; }
-          iframe              { width:100%; }
-          p                   { line-height:1.6; }
-          table               { word-wrap:break-word; word-break:break-all; max-width:100%;}
-          .mce-object-iframe  { width:100%; box-sizing:border-box; padding:0; }
-          ul,ol               { list-style-position:inside; }
-        `,
-        plugins: props.plugins,
-        toolbar: props.toolbar,
-        branding: false,
-        menubar: false,
-        toolbar_drawer: false,
-        statusbar: false, // 隐藏底部状态栏
-        // //预防xss攻击，同时不希望用户直接粘贴进来一些富文本,在你的 init 里面，添加以下属性
-        // images_upload_handler: (blobInfo, success) => {
-        //   let formData = new FormData()
-        //   formData.append('file', blobInfo.blob(), blobInfo.filename())
-        //   formData.append('biz', 'tmp')
-        //   formData.append('teditor', '1')
-        //   formData.append('type', 'image')
-        // //   this.$axios.post('/storage/upload', formData).then((res) => {
-        // //     if (res.code==200) {
-        // //       if (res.message == 'local') {
-        // //         const img = 'data:image/jpeg;base64,' + blobInfo.base64()
-        // //         success(img)
-        // //       } else {
-        // //         let img = res.data.url
-        // //         success(img)
-        // //       }
-        // //     }
-        // //   })
-        // },
-        setup: editor => {
-          // 资源管理选取
-          editor.ui.registry.addButton('storage', {
-            tooltip: '从资源管理选取',
-            icon: 'browse',
-            onAction: function () {
-                editorref.value=editor
-                obj['uploadConfig']['limit'] = 1;
-                storage.value.handleStorageDlg('image', 'data', '选择图片');
-            }
-         });
-        }
-      })
-      return {
-          storage,
-          ...toRefs(obj),
-          getAttachmentFileList,
-          init,
-          data
-      }
-  }
-})
+	name: 'wngEditor',
+	props: {
+		// 节点 id
+		id: {
+			type: String,
+			default: () => 'wangeditor',
+		},
+		// 是否禁用
+		isDisable: {
+			type: Boolean,
+			default: () => false,
+		},
+		// 内容框默认 placeholder
+		placeholder: {
+			type: String,
+			default: () => '请输入内容',
+		},
+		// 双向绑定：双向绑定值，字段名为固定，改了之后将不生效
+		// 参考：https://v3.cn.vuejs.org/guide/migration/v-model.html#%E8%BF%81%E7%A7%BB%E7%AD%96%E7%95%A5
+		modelValue: String,
+		// https://www.wangeditor.com/v5/getting-started.html#mode-%E6%A8%A1%E5%BC%8F
+		// 模式，可选 <default|simple>，默认 default
+		mode: {
+			type: String,
+			default: () => 'default',
+		},
+		// 高度
+		height: {
+			type: String,
+			default: () => '310px',
+		},
+	},
+	setup(props, { emit }) {
+		const state = reactive<WangeditorState>({
+			editorToolbar: null,
+			editor: null,
+			editorContent: null,
+		});
+		// 富文本配置
+		const wangeditorConfig = () => {
+			const editorConfig: Partial<IEditorConfig> = { MENU_CONF: {} };
+			props.isDisable ? (editorConfig.readOnly = true) : (editorConfig.readOnly = false);
+			editorConfig.placeholder = props.placeholder;
+			editorConfig.onChange = (editor: IDomEditor) => {
+				// console.log('content', editor.children);
+				// console.log('html', editor.getHtml());
+				emit('update:modelValue', editor.getHtml());
+			};
+			(<any>editorConfig).MENU_CONF['uploadImage'] = {
+				base64LimitSize: 10 * 1024 * 1024,
+			};
+			return editorConfig;
+		};
+		//
+		const toolbarConfig = () => {
+			const toolbarConfig: Partial<IToolbarConfig> = {};
+			toolbarConfig.toolbarKeys = toolbarKeys;
+			return toolbarConfig;
+		};
+		// 初始化富文本
+		// https://www.wangeditor.com/
+		const initWangeditor = () => {
+			state.editor = createEditor({
+				html: props.modelValue,
+				selector: state.editorContent!,
+				config: wangeditorConfig(),
+				mode: props.mode,
+			});
+			createToolbar({
+				editor: state.editor,
+				selector: state.editorToolbar!,
+				mode: props.mode,
+				config: toolbarConfig(),
+			});
+		};
+		// 页面加载时
+		onMounted(() => {
+			initWangeditor();
+		});
+		// 监听双向绑定值的改变
+		watch(
+			() => props.modelValue,
+			(value) => {
+				state.editor.clear();
+				state.editor.dangerouslyInsertHtml(value);
+			}
+		);
+		return {
+			...toRefs(state),
+		};
+	},
+});
 </script>
-<style lang="scss" >
-.tox-tinymce-aux{
-    z-index: 999999 !important;
-}
-</style>

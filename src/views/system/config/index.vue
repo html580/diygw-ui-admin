@@ -42,7 +42,7 @@
 			</el-row>
 
 			<!--数据表格-->
-			<el-table v-loading="state.loading" :data="state.tableData" @selection-change="handleSelectionChange">
+			<el-table v-loading="state.loading" border :data="state.tableData" @selection-change="handleSelectionChange">
 				<el-table-column type="selection" width="55" align="center" />
 				<el-table-column label="参数主键" align="center" prop="configId" />
 				<el-table-column label="参数名称" align="center" prop="configName" :show-overflow-tooltip="true" />
@@ -56,7 +56,7 @@
 				<el-table-column label="备注" align="center" prop="remark" :show-overflow-tooltip="true" />
 				<el-table-column label="创建时间" align="center" prop="createTime" width="180">
 				</el-table-column>
-				<el-table-column label="操作" align="center" width="200" class-name="medium-padding fixed-width">
+				<el-table-column label="操作" align="center" fixed="right"  width="180">
 					<template #default="scope">
 						<el-button type="text" v-auth="'system:config:edit'" @click="onOpenEditModule(scope.row)"><SvgIcon name="ele-Edit" />修改</el-button>
 						<el-button v-if="scope.row.parentId != 0" type="text" v-auth="'system:config:delete'" @click="onTabelRowDel(scope.row)"
@@ -87,7 +87,6 @@
 <script setup lang="ts">
 import { ref, toRefs, reactive, onMounted, getCurrentInstance, onUnmounted } from 'vue';
 import { ElMessageBox, ElMessage } from 'element-plus';
-import { dateStrFormat } from '@/utils/formatTime';
 
 import EditModule from './component/editModule.vue';
 import { delData, exportData, listData } from '@/api';

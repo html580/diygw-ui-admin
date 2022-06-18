@@ -1,164 +1,215 @@
 <template>
-	<div class="admin-category-container">
-		<el-card shadow="hover">
-			<div class="admin-user-search mb15">
-				<el-input size="default" placeholder="请输入分类名称" clearable  v-model="tableData.param.title" style="max-width: 180px"> </el-input>
-				<el-button @click="initTableData" size="default" type="primary" class="ml10">
-					<el-icon>
-						<ele-Search />
-					</el-icon>
-					查询
-				</el-button>
-				<el-button size="default" type="success" class="ml10" @click="onOpenAddCategory">
-					<el-icon>
-						<ele-FolderAdd />
-					</el-icon>
-					新增分类
-				</el-button>
-				<el-button
-					size="default"
-					class="ml10"
-					type="danger"
-					:disabled="multiple"
-					@click="onRowDel">
-					<el-icon>
-						<ele-Delete />
-					</el-icon>
-					删除
-				</el-button>
-			</div>
-			<el-table :data="tableData.data"  row-key="id" :tree-props="{children: 'children', hasChildren: 'hasChildren'}" v-loading="tableData.loading" @selection-change="handleSelectionChange" style="width: 100%">
+  <div class="app-container">
+    <el-card shadow="always">
+    <!-- 查询 -->
+      <el-form :model="state.queryParams" ref="queryForm" :inline="true" label-width="68px">
+      <el-form-item label="分类名称" prop="categoryName">
+        <el-input
+          placeholder="请输入分类名称模糊查询"
+          clearable
+          @keyup.enter.native="handleQuery"
+          v-model="state.queryParams.categoryName"
+        />
+      </el-form-item>
+      <el-form-item label="状态" prop="status" >
+        <el-select
+          v-model="state.queryParams.status"
+          placeholder="分类状态"
+          clearable
+        >
+          <el-option
+            v-for="dict in state.statusOptions"
+            :key="dict.dictValue"
+            :label="dict.dictLabel"
+            :value="dict.dictValue"
+          />
+        </el-select>
+      </el-form-item>
+      <el-form-item>
+          <el-button
+                  type="primary"
+                  @click="handleQuery"
+          >
+            <SvgIcon name="ele-Search" />
+            搜索</el-button>
+          <el-button @click="resetQuery">
+            <SvgIcon name="ele-Refresh" />
+            重置
+          </el-button>
+          <el-button type="primary"
+                     plain
 
-				<el-table-column prop="title" label="分类名称" show-overflow-tooltip></el-table-column>
-				<el-table-column prop="createTime" label="创建时间" show-overflow-tooltip></el-table-column>
-				<el-table-column label="操作" width="200">
-					<template #default="scope">
-						<el-button  size="small" type="text" @click="onOpenEditCategory(scope.row)">修改</el-button>
-						<el-button  size="small" type="text" @click="onRowDel(scope.row)">删除</el-button>
-					</template>
-				</el-table-column>
-			</el-table>
-			
-		</el-card>
-		<AddCategory ref="addCategoryRef" :category-data="tableData.data" @refresh="initTableData"/>
-	</div>
+                     v-auth="'system:category:add'"
+                     @click="onOpenAddModule">
+            <SvgIcon name="ele-Plus" />
+            新增
+          </el-button>
+        </el-form-item>
+
+    </el-form>
+
+      <!--数据表格-->
+      <el-table
+      v-loading="state.loading"
+      :data="state.tableData"
+      row-key="categoryId"
+      border
+      default-expand-all
+      :tree-props="{ children: 'children', hasChildren: 'hasChildren' }"
+    >
+      <el-table-column
+        prop="categoryName"
+        label="分类名称"
+        width="260"
+      ></el-table-column>
+      <el-table-column
+                prop="createTime"
+                label="创建时间"
+                width="300"
+        >
+      </el-table-column>
+      <el-table-column
+        prop="sort"
+        label="排序"
+        width="200"
+      ></el-table-column>
+      <el-table-column
+        prop="status"
+        label="状态"
+        width="100"
+      >
+        <template #default="scope">
+          <el-tag
+                  :type="scope.row.status === '1' ? 'danger' : 'success'"
+                  disable-transitions
+          >{{ statusFormat(scope.row)}}</el-tag>
+        </template>
+      </el-table-column>
+      <el-table-column label="负责人" align="center" prop="leader" width="200">
+      </el-table-column>
+      <el-table-column
+        label="操作"
+        align="center"
+        class-name="small-padding fixed-width"
+      >
+        <template #default="scope">
+          <el-button
+
+            type="text"
+            v-auth="'system:category:edit'"
+            @click="onOpenEditModule(scope.row)"
+            ><SvgIcon name="ele-Edit" />修改</el-button>
+          <el-button
+
+            type="text"
+            v-auth="'system:category:add'"
+            @click="onOpenAddModule(scope.row)"
+            ><SvgIcon name="ele-Plus" />新增</el-button
+          >
+          <el-button
+            v-if="scope.row.parentId != 0"
+
+            type="text"
+            v-auth="'system:category:delete'"
+            @click="onTabelRowDel(scope.row)"
+            ><SvgIcon name="ele-Delete" />删除</el-button
+          >
+        </template>
+      </el-table-column>
+    </el-table>
+    </el-card>
+    <!-- 添加或修改分类对话框 -->
+    <EditModule ref="editModuleRef" :title="state.title" />
+  </div>
 </template>
 
-<script lang="ts">
-import { toRefs, reactive, onMounted, ref, defineComponent } from 'vue';
-import { ElMessageBox, ElMessage } from 'element-plus';
-import AddCategory from '@/views/cms/category/component/addCategory.vue';
-import {listAllData,delData,copyData} from '@/api/index'
-import { handleTree } from '@/utils/other';
-// 定义接口来定义对象的类型
+<script setup lang="ts">
+import {ref, reactive, onMounted, getCurrentInstance, onUnmounted,} from "vue";
+import { ElMessageBox, ElMessage } from "element-plus";
+import EditModule from "./component/editModule.vue";
+import { delData, listData } from "@/api";
+import { handleTree } from "@/utils";
+const { proxy } = getCurrentInstance() as any;
+const editModuleRef = ref();
+const state = reactive({
+  // 遮罩层
+  loading: true,
+  // 弹出层标题
+  title: "",
+  // 分类表格树数据
+  tableData: [] as any,
+  // 状态数据字典
+  statusOptions: [],
+  // 查询参数
+  queryParams: {
+    categoryName: undefined,
+    status: undefined,
+  },
+});
 
+/** 查询分类列表 */
+const handleQuery = () => {
+  state.loading = true;
+  listData('/cms/category',state.queryParams).then((response: any) => {
+    state.tableData = handleTree(response.data.rows,"categoryId","parentId","children");
+    state.loading = false;
+  });
+};
+/** 重置按钮操作 */
+const resetQuery = () => {
+  state.queryParams.categoryName = undefined;
+  state.queryParams.status = undefined;
+  handleQuery();
+};
 
-export default defineComponent({
-	name: 'cmscategory',
-	components: { AddCategory},
-	setup() {
-		const addCategoryRef = ref();
-		const state = reactive({
-			ids: [],
-			// 非单个禁用
-			single: true,
-			// 非多个禁用
-			multiple: true,
-			tableData: {
-				data: [],
-				total: 0,
-				loading: false,
-				param: {
-					title:'',
-					pageNum: 1,
-					pageSize: 10,
-				},
-			},
-		});
-		// 初始化表格数据
-		const initTableData = () => {
-			state.tableData.loading = true
-			listAllData('/admin/category',state.tableData.param).then(res=>{
-				state.tableData.data =  handleTree(res.data,'id','parentId','children');
-				state.tableData.total = res.total;
-				state.tableData.loading = false
-			})
-			
-		};
-		// 打开新增分类弹窗
-		const onOpenAddCategory = () => {
-			addCategoryRef.value.openDialog();
-		};
-		// 打开修改分类弹窗
-		const onOpenEditCategory = (row: Object) => {
-			addCategoryRef.value.openDialog(row);
-		};
+// 分类状态字典翻译
+const statusFormat = (row: any) => {
+  return proxy.selectDictLabel(state.statusOptions, row.status);
+};
 
-		const onCopyCategory = (row: any) => {
-			let id = row.id
-			copyData('/admin/category',id).then(res=>{
-				if(res.code==200){
-					ElMessage.success('删除成功');
-					initTableData();
-				}else{
-					ElMessage.error(res.msg);
-				}
-			})
-		};
-		// 删除分类
-		const onRowDel = (row: any) => {
-			ElMessageBox.confirm(`此操作将永久删除选择的分类，是否继续?`, '提示', {
-				confirmButtonText: '确认',
-				cancelButtonText: '取消',
-				type: 'warning',
-			}).then(() => {
-				
-				const id =  row.id || state.ids
-
-				delData('/admin/category',id).then(res=>{
-					if(res.code==200){
-						ElMessage.success('复制成功');
-						initTableData();
-					}else{
-						ElMessage.error(res.msg);
-					}
-				})
-			})
-			.catch(() => {});
-		};
-		// 分页改变
-		const onHandleSizeChange = (val: number) => {
-			state.tableData.param.pageSize = val;
-			initTableData()
-		};
-		// 分页改变
-		const onHandleCurrentChange = (val: number) => {
-			state.tableData.param.pageNum = val;
-			initTableData()
-		};
-
-		const handleSelectionChange = (selection) =>{
-			state.ids = selection.map(item => item.id);
-			state.single = selection.length !== 1;
-			state.multiple = !selection.length;
-		}
-
-		// 页面加载时
-		onMounted(() => {
-			initTableData();
-		});
-		return {
-			handleSelectionChange,
-			initTableData,
-			addCategoryRef,
-			onOpenAddCategory,
-			onOpenEditCategory,
-			onCopyCategory,
-			onRowDel,
-			onHandleSizeChange,
-			onHandleCurrentChange,
-			...toRefs(state),
-		};
-	},
+// 打开新增分类弹窗
+const onOpenAddModule = (row: any) => {
+  let parentId = row.categoryId;
+  row = [];
+  row.parentId = parentId;
+  state.title = "添加分类";
+  editModuleRef.value.openDialog(row);
+};
+// 打开编辑分类弹窗
+const onOpenEditModule = (row: object) => {
+  state.title = "修改分类";
+  editModuleRef.value.openDialog(row);
+};
+/** 删除按钮操作 */
+const onTabelRowDel = (row: any) => {
+  ElMessageBox({
+    message: '是否确认删除名称为"' + row.categoryName + '"的数据项?',
+    title: "警告",
+    showCancelButton: true,
+    confirmButtonText: "确定",
+    cancelButtonText: "取消",
+    type: "warning",
+  }).then(function () {
+    return delData('/cms/category',row.categoryId).then(() => {
+      handleQuery();
+      ElMessage.success("删除成功");
+    });
+  });
+};
+// 页面加载时
+onMounted(() => {
+  // 查询分类信息
+  handleQuery();
+  // 查询分类状态数据字典
+  proxy.getDicts("sys_normal_disable").then((response: any) => {
+    state.statusOptions = response.data.rows;
+  });
+  proxy.mittBus.on("onEditCategoryModule", (res: any) => {
+    handleQuery();
+  });
+});
+// 页面卸载时
+onUnmounted(() => {
+  proxy.mittBus.off("onEditCategoryModule");
 });
 </script>

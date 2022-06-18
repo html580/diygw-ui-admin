@@ -14,7 +14,7 @@ service.interceptors.request.use(
 	(config) => {
 		// 在发送请求之前做些什么 token
 		if (Session.get('token')) {
-			config.headers['Authorization'] = `${Session.get('token')}`;
+			(<any>config.headers).common['Authorization'] = `${Session.get('token')}`;
 		}
 		return config;
 	},
@@ -37,8 +37,6 @@ service.interceptors.response.use(
 				ElMessageBox.alert('你已被登出，请重新登录', '提示', {})
 					.then(() => {})
 					.catch(() => {});
-			}else{
-				ElMessage.error(res.msg);
 			}
 			return Promise.reject(service.interceptors.response);
 		} else {

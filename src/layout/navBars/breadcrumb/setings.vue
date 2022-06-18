@@ -108,16 +108,26 @@
 
 				<!-- 界面设置 -->
 				<el-divider content-position="left">{{ $t('message.layout.threeTitle') }}</el-divider>
-				<div class="layout-breadcrumb-seting-bar-flex">
+				<div class="layout-breadcrumb-seting-bar-flex" :style="{ opacity: getThemeConfig.layout === 'transverse' ? 0.5 : 1 }">
 					<div class="layout-breadcrumb-seting-bar-flex-label">{{ $t('message.layout.threeIsCollapse') }}</div>
 					<div class="layout-breadcrumb-seting-bar-flex-value">
-						<el-switch v-model="getThemeConfig.isCollapse" size="small" @change="onThemeConfigChange"></el-switch>
+						<el-switch
+							v-model="getThemeConfig.isCollapse"
+							:disabled="getThemeConfig.layout === 'transverse'"
+							size="small"
+							@change="onThemeConfigChange"
+						></el-switch>
 					</div>
 				</div>
-				<div class="layout-breadcrumb-seting-bar-flex mt15">
+				<div class="layout-breadcrumb-seting-bar-flex mt15" :style="{ opacity: getThemeConfig.layout === 'transverse' ? 0.5 : 1 }">
 					<div class="layout-breadcrumb-seting-bar-flex-label">{{ $t('message.layout.threeIsUniqueOpened') }}</div>
 					<div class="layout-breadcrumb-seting-bar-flex-value">
-						<el-switch v-model="getThemeConfig.isUniqueOpened" size="small" @change="setLocalThemeConfig"></el-switch>
+						<el-switch
+							v-model="getThemeConfig.isUniqueOpened"
+							:disabled="getThemeConfig.layout === 'transverse'"
+							size="small"
+							@change="setLocalThemeConfig"
+						></el-switch>
 					</div>
 				</div>
 				<div class="layout-breadcrumb-seting-bar-flex mt15">
@@ -223,12 +233,12 @@
 						<el-switch v-model="getThemeConfig.isShareTagsView" size="small" @change="onShareTagsViewChange"></el-switch>
 					</div>
 				</div>
-				<!-- <div class="layout-breadcrumb-seting-bar-flex mt15">
+				<div class="layout-breadcrumb-seting-bar-flex mt15">
 					<div class="layout-breadcrumb-seting-bar-flex-label">{{ $t('message.layout.fourIsFooter') }}</div>
 					<div class="layout-breadcrumb-seting-bar-flex-value">
 						<el-switch v-model="getThemeConfig.isFooter" size="small" @change="setLocalThemeConfig"></el-switch>
 					</div>
-				</div> -->
+				</div>
 				<div class="layout-breadcrumb-seting-bar-flex mt15">
 					<div class="layout-breadcrumb-seting-bar-flex-label">{{ $t('message.layout.fourIsGrayscale') }}</div>
 					<div class="layout-breadcrumb-seting-bar-flex-value">
@@ -261,8 +271,8 @@
 					<div class="layout-breadcrumb-seting-bar-flex-value">
 						<el-select v-model="getThemeConfig.tagsStyle" placeholder="请选择" size="default" style="width: 90px" @change="setLocalThemeConfig">
 							<el-option label="风格1" value="tags-style-one"></el-option>
-							<el-option label="风格2" value="tags-style-four"></el-option>
-							<el-option label="风格3" value="tags-style-five"></el-option>
+							<el-option label="风格4" value="tags-style-four"></el-option>
+							<el-option label="风格5" value="tags-style-five"></el-option>
 						</el-select>
 					</div>
 				</div>
@@ -378,13 +388,13 @@
 					</div>
 				</div>
 				<div class="copy-config">
-					<!-- <el-alert :title="$t('message.layout.tipText')" type="warning" :closable="false"> </el-alert>
+					<el-alert :title="$t('message.layout.tipText')" type="warning" :closable="false"> </el-alert>
 					<el-button size="default" class="copy-config-btn" type="primary" ref="copyConfigBtnRef" @click="onCopyConfigClick">
 						<el-icon class="mr5">
 							<ele-CopyDocument />
 						</el-icon>
 						{{ $t('message.layout.copyText') }}
-					</el-button> -->
+					</el-button>
 					<el-button size="default" class="copy-config-btn-reset" type="info" @click="onResetConfigClick">
 						<el-icon class="mr5">
 							<ele-RefreshRight />
@@ -399,29 +409,37 @@
 
 <script lang="ts">
 import { nextTick, onUnmounted, onMounted, getCurrentInstance, defineComponent, computed, reactive, toRefs } from 'vue';
-import { useStore } from '@/store/index';
-import { getLightColor } from '@/utils/theme';
+import { ElMessage } from 'element-plus';
+import { storeToRefs } from 'pinia';
+import { useThemeConfig } from '@/stores/themeConfig';
+import { getLightColor, getDarkColor } from '@/utils/theme';
 import { verifyAndSpace } from '@/utils/toolsValidate';
 import { Local } from '@/utils/storage';
 import Watermark from '@/utils/wartermark';
 import commonFunction from '@/utils/commonFunction';
 import other from '@/utils/other';
+
 export default defineComponent({
 	name: 'layoutBreadcrumbSeting',
 	setup() {
 		const { proxy } = <any>getCurrentInstance();
-		const store = useStore();
+		const storesThemeConfig = useThemeConfig();
+		const { themeConfig } = storeToRefs(storesThemeConfig);
 		const { copyText } = commonFunction();
 		const state = reactive({
 			isMobile: false,
 		});
 		// 获取布局配置信息
 		const getThemeConfig = computed(() => {
-			return store.state.themeConfig.themeConfig;
+			return themeConfig.value;
 		});
 		// 1、全局主题
 		const onColorPickerChange = () => {
+			if (!getThemeConfig.value.primary) return ElMessage.warning('全局主题 primary 颜色值不能为空');
+			// 颜色加深
+			document.documentElement.style.setProperty('--el-color-primary-dark-2', `${getDarkColor(getThemeConfig.value.primary, 0.1)}`);
 			document.documentElement.style.setProperty('--el-color-primary', getThemeConfig.value.primary);
+			// 颜色变浅
 			for (let i = 1; i <= 9; i++) {
 				document.documentElement.style.setProperty(`--el-color-primary-light-${i}`, `${getLightColor(getThemeConfig.value.primary, i / 10)}`);
 			}
@@ -430,6 +448,9 @@ export default defineComponent({
 		// 2、菜单 / 顶栏
 		const onBgColorPickerChange = (bg: string) => {
 			document.documentElement.style.setProperty(`--next-bg-${bg}`, (<any>getThemeConfig.value)[bg]);
+			if (bg === 'menuBar') {
+				document.documentElement.style.setProperty(`--next-bg-menuBar-light-1`, <any>getLightColor(getThemeConfig.value.menuBar, 0.05));
+			}
 			onTopBarGradualChange();
 			onMenuBarGradualChange();
 			onColumnsMenuBarGradualChange();
@@ -520,7 +541,7 @@ export default defineComponent({
 			setLocalThemeConfig();
 		};
 		// 4、界面显示 --> 水印文案
-		const onWartermarkTextInput = (val: string) => {
+		const onWartermarkTextInput = (val: any) => {
 			getThemeConfig.value.wartermarkText = verifyAndSpace(val);
 			if (getThemeConfig.value.wartermarkText === '') return false;
 			if (getThemeConfig.value.isWartermark) Watermark.set(getThemeConfig.value.wartermarkText);
@@ -530,6 +551,7 @@ export default defineComponent({
 		const onSetLayout = (layout: string) => {
 			Local.set('oldLayout', layout);
 			if (getThemeConfig.value.layout === layout) return false;
+			if (layout === 'transverse') getThemeConfig.value.isCollapse = false;
 			getThemeConfig.value.layout = layout;
 			getThemeConfig.value.isDrawer = false;
 			initLayoutChangeFun();
@@ -603,6 +625,8 @@ export default defineComponent({
 					state.isMobile = other.isMobile();
 				});
 				setTimeout(() => {
+					// 默认样式
+					onColorPickerChange();
 					// 灰色模式
 					if (getThemeConfig.value.isGrayscale) onAddFilterChange('grayscale');
 					// 色弱模式
@@ -619,7 +643,7 @@ export default defineComponent({
 			});
 		});
 		onUnmounted(() => {
-			proxy.mittBus.off('layoutMobileResize');
+			proxy.mittBus.off('layoutMobileResize', () => {});
 		});
 		return {
 			openDrawer,
@@ -713,7 +737,7 @@ export default defineComponent({
 				top: 50%;
 				transform: translate(-50%, -50%);
 				border: 1px solid;
-				border-color: var(--el-color-primary-light-4);
+				border-color: var(--el-color-primary-light-5);
 				border-radius: 100%;
 				padding: 4px;
 				.layout-tips-box {
@@ -722,7 +746,7 @@ export default defineComponent({
 					height: 30px;
 					z-index: 9;
 					border: 1px solid;
-					border-color: var(--el-color-primary-light-4);
+					border-color: var(--el-color-primary-light-5);
 					border-radius: 100%;
 					.layout-tips-txt {
 						transition: inherit;
@@ -732,7 +756,7 @@ export default defineComponent({
 						line-height: 1;
 						letter-spacing: 2px;
 						white-space: nowrap;
-						color: var(--el-color-primary-light-4);
+						color: var(--el-color-primary-light-5);
 						text-align: center;
 						transform: rotate(30deg);
 						left: -1px;

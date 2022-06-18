@@ -10,33 +10,22 @@ module.exports = {
 		ecmaVersion: 12,
 		parser: '@typescript-eslint/parser',
 		sourceType: 'module',
-		ecmaFeatures: {
-			jsx: true,
-		},
 	},
-	extends: [
-		// 此项是vue3的基本配置
-		'plugin:vue/vue3-essential',
-		// eslint的基础配置
-		'eslint:recommended',
-		// 这是ts相关的配置
-		'@vue/typescript',
-		'@vue/typescript/recommended',
-	],
+	extends: ['plugin:vue/vue3-essential', 'plugin:vue/essential', 'eslint:recommended'],
 	plugins: ['vue', '@typescript-eslint'],
 	rules: {
 		// http://eslint.cn/docs/rules/
 		// https://eslint.vuejs.org/rules/
-		'@type-eslint/ban-ts-ignore': 'off',
-		'@type-eslint/explicit-function-return-type': 'off',
-		'@type-eslint/no-explicit-any': 'off',
-		'@type-eslint/no-var-requires': 'off',
-		'@type-eslint/no-empty-function': 'off',
-		'@type-eslint/no-use-before-define': 'off',
-		'@type-eslint/ban-ts-comment': 'off',
-		'@type-eslint/ban-types': 'off',
-		'@type-eslint/no-non-null-assertion': 'off',
-		'@type-eslint/explicit-module-boundary-types': 'off',
+		'@typescript-eslint/ban-ts-ignore': 'off',
+		'@typescript-eslint/explicit-function-return-type': 'off',
+		'@typescript-eslint/no-explicit-any': 'off',
+		'@typescript-eslint/no-var-requires': 'off',
+		'@typescript-eslint/no-empty-function': 'off',
+		'@typescript-eslint/no-use-before-define': 'off',
+		'@typescript-eslint/ban-ts-comment': 'off',
+		'@typescript-eslint/ban-types': 'off',
+		'@typescript-eslint/no-non-null-assertion': 'off',
+		'@typescript-eslint/explicit-module-boundary-types': 'off',
 		'vue/custom-event-name-casing': 'off',
 		'vue/attributes-order': 'off',
 		'vue/one-component-per-file': 'off',
@@ -66,15 +55,9 @@ module.exports = {
 		'generator-star-spacing': 'off',
 		'no-unreachable': 'off',
 		'no-multiple-template-root': 'off',
-		'no-unused-vars': 'off',
+		'no-unused-vars': 'error',
 		'no-v-model-argument': 'off',
 		'no-case-declarations': 'off',
 		'no-console': 'error',
-	},
-	globals: {
-		defineProps: 'readonly',
-		defineEmits: 'readonly',
-		defineExpose: 'readonly',
-		withDefaults: 'readonly',
 	},
 };

@@ -128,7 +128,7 @@ import {ref, reactive, onMounted, getCurrentInstance, onUnmounted,} from "vue";
 import { ElMessageBox, ElMessage } from "element-plus";
 import EditModule from "./component/editModule.vue";
 import { delData, listData } from "@/api";
-import { handleTree } from "@/utils/other";
+import { handleTree } from "@/utils";
 const { proxy } = getCurrentInstance() as any;
 const editModuleRef = ref();
 const state = reactive({
@@ -139,7 +139,7 @@ const state = reactive({
   // 部门表格树数据
   tableData: [] as any,
   // 状态数据字典
-  statusOptions: [],
+  statusOptions: <any>[],
   // 查询参数
   queryParams: {
     deptName: undefined,

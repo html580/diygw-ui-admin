@@ -22,6 +22,7 @@
 
 <script lang="ts">
 import { reactive, toRefs, defineComponent } from 'vue';
+
 export default defineComponent({
 	name: 'layoutBreadcrumbUserNews',
 	setup() {
@@ -29,13 +30,13 @@ export default defineComponent({
 			newsList: [
 				{
 					label: '关于版本发布的通知',
-					value: 'diygw-ui-admin，基于 vue3 + CompositionAPI + typescript + vite + element plus，正式发布时间：2022年04月28日！',
-					time: '2022年04月28日',
+					value: '重构为Pinia版本！',
+					time: '2022-06-18',
 				},
 				{
 					label: '关于学习交流的通知',
 					value: 'QQ群号码 482112340，欢迎小伙伴入群学习交流探讨！',
-					time: '2022年04月28日',
+					time: '2022-04-28',
 				},
 			],
 		});

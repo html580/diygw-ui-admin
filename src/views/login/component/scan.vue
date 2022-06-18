@@ -1,13 +1,14 @@
 <template>
 	<div class="login-scan-container">
 		<div ref="qrcodeRef"></div>
-		<div class="font12 mt20 login-msg">{{ $t('message.scan.text') }}<span style="color:#ff0000;font-size:14px;">暂未实现</span></div>
+		<div class="font12 mt20 login-msg">{{ $t('message.scan.text') }}</div>
 	</div>
 </template>
 
 <script lang="ts">
 import { ref, defineComponent, onMounted } from 'vue';
 import QRCode from 'qrcodejs2-fixes';
+
 export default defineComponent({
 	name: 'loginScan',
 	setup() {
@@ -16,7 +17,7 @@ export default defineComponent({
 		const initQrcode = () => {
 			(qrcodeRef.value as HTMLElement).innerHTML = '';
 			new QRCode(qrcodeRef.value, {
-				text: `https://www.diygw.com`,
+				text: `https://qm.qq.com/cgi-bin/qm/qr?k=RdUY97Vx0T0vZ_1OOu-X1yFNkWgDwbjC&jump_from=webapi`,
 				width: 260,
 				height: 260,
 				colorDark: '#000000',

@@ -25,7 +25,7 @@
 				<span>{{ $t('message.mobile.btnText') }}</span>
 			</el-button>
 		</el-form-item>
-		<div class="font12 mt30 login-animation4 login-msg">{{ $t('message.mobile.msgText') }}<span style="color:#ff0000;font-size:14px;">暂未实现</span> </div>
+		<div class="font12 mt30 login-animation4 login-msg">{{ $t('message.mobile.msgText') }}</div>
 	</el-form>
 </template>
 

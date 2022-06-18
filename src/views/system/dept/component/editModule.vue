@@ -74,7 +74,7 @@
 import { reactive, ref, unref, getCurrentInstance } from 'vue';
 import { listData, addData, updateData } from '@/api';
 import { ElMessage } from 'element-plus';
-import { handleTree } from '@/utils/other';
+import { handleTree } from '@/utils';
 defineProps({
 	title: {
 		type: String,

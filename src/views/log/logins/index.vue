@@ -40,7 +40,7 @@
 			</el-row>
 
 			<!--数据表格-->
-			<el-table v-loading="state.loading" :data="state.tableData" @selection-change="handleSelectionChange">
+			<el-table v-loading="state.loading" border :data="state.tableData" @selection-change="handleSelectionChange">
 				<el-table-column type="selection" width="55" align="center" />
 				<el-table-column label="访问编号" align="center" prop="infoId" />
 				<el-table-column label="用户名称" align="center" prop="username" />
@@ -53,7 +53,7 @@
 						<el-tag :type="scope.row.status === '1' ? 'success' : 'danger'" disable-transitions>{{ statusFormat(scope.row) }}</el-tag>
 					</template>
 				</el-table-column>
-				<el-table-column label="登录时间" align="center" prop="createTime">
+				<el-table-column label="登录时间" align="center" prop="createTime"  :show-overflow-tooltip="true" >
 				</el-table-column>
 			</el-table>
 
@@ -174,7 +174,7 @@ const handleCurrentChange = (val: any) => {
 };
 
 // 操作日志状态字典翻译
-const statusFormat = (row: any, column: any) => {
+const statusFormat = (row: any) => {
 	return proxy.selectDictLabel(state.statusOptions, row.status);
 };
 // 多选框选中数据
