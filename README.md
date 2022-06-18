@@ -21,7 +21,7 @@
 
 #### 🌈 介绍
 
-基于 vue3.x + CompositionAPI + typescript + vite + element plus + vue-router-next + next.vuex，适配手机、平板、pc 的后台开源免费模板，希望减少工作量，帮助大家实现快速开发。
+基于 vue3.x + CompositionAPI + typescript + vite + element plus + vue-router-next + pinia，适配手机、平板、pc 的后台开源免费模板，希望减少工作量，帮助大家实现快速开发。
 
 
 #### 💒 代码仓库
@@ -91,7 +91,7 @@ npm run build
 - <a href="https://github.com/ElemeFE/element" target="_blank">element-ui</a>
 - <a href="https://github.com/element-plus/element-plus" target="_blank">element-plus</a>
 - <a href="https://github.com/vuejs/vue-router-next" target="_blank">vue-router-next</a>
-- <a href="https://github.com/vuejs/vuex" target="_blank">vuex</a>
+- <a href="https://pinia.vuejs.org/" target="_blank">pinia</a>
 - <a href="https://github.com/apache/echarts" target="_blank">echarts</a>
 - <a href="https://github.com/axios/axios" target="_blank">axios</a>
 - <a href="https://github.com/zenorocha/clipboard.js" target="_blank">clipboard</a>
