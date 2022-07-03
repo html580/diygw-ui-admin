@@ -110,6 +110,7 @@ import EditModule from './component/editModule.vue';
 import { letterAvatar } from '@/utils/index';
 import { listData, changeStatus, delData } from '@/api';
 import { handleTree } from "@/utils";
+
 const { proxy } = getCurrentInstance() as any;
 const articleFormRef = ref();
 const state: any = reactive({
@@ -193,7 +194,7 @@ const resetQuery = async () => {
 	handleQuery();
 };
 /** 新增按钮操作 */
-const handleAdd = (row: any) => {
+const handleAdd = () => {
 	state.title = '添加文章';
 	articleFormRef.value.openDialog(null);
 };
@@ -206,7 +207,7 @@ const handleUpdate = (row: any) => {
 /** 查询分类下拉树结构 */
 const getTreeselect = async () => {
 	listData('/cms/category',{}).then((response) => {
-		state.categoryOptions = handleTree(response.data.rows,"categoryId","parentId","children");;
+		state.categoryOptions = handleTree(response.data.rows,"categoryId","parentId","children");
 	});
 };
 // 文章状态修改
@@ -273,7 +274,7 @@ const handleNodeClick = (data: any) => {
 
 /** 导出按钮操作 */
 const handleExport = () => {
-	const queryParams = state.queryParams;
+	
 	// ElMessageBox({
 	// 	message: '是否确认导出所有文章数据项?',
 	// 	title: '警告',
@@ -289,9 +290,10 @@ const handleExport = () => {
 	// 	});
 };
 // 字典状态字典翻译
-const sexFormat = (row: any, column: any) => {
+const sexFormat = (row: any) => {
 	return proxy.selectDictLabel(state.sexOptions, row.sex);
 };
+
 // 页面加载时
 onMounted(() => {
 	getList();
@@ -305,7 +307,7 @@ onMounted(() => {
 		state.sexOptions = response.data.rows;
 	});
 
-	proxy.mittBus.on('onEditArticleModule', (res: any) => {
+	proxy.mittBus.on('onEditArticleModule', () => {
 		handleQuery();
 	});
 });

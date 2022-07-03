@@ -1,25 +1,30 @@
 <template>
-	<div class="editor-container">
-		<div ref="editorToolbar"></div>
-		<div ref="editorContent" :style="{ height }"></div>
+	<div style="border: 1px solid #ccc">
+		<Toolbar style="border-bottom: 1px solid #ccc" :editor="editorRef" :defaultConfig="toolbarConfig" :mode="mode" />
+		<Editor
+			style="overflow-y: hidden"
+			:style="{ height: height }"
+			v-model="data"
+			:defaultConfig="editorConfig"
+			:mode="mode"
+			@onCreated="handleCreated"
+		/>
+		<diy-storage ref="storage" style="display: none" :limit="uploadConfig.limit" @confirm="getAttachmentFileList"></diy-storage>
 	</div>
 </template>
 
 <script lang="ts">
-import { toRefs, reactive, onMounted, watch, defineComponent } from 'vue';
-import { createEditor, createToolbar, IEditorConfig, IToolbarConfig, IDomEditor } from '@wangeditor/editor';
-import '@wangeditor/editor/dist/css/style.css';
+import { defineComponent, ref, reactive, getCurrentInstance, onMounted, onBeforeUnmount, shallowRef, toRefs } from 'vue';
+import '@wangeditor/editor/dist/css/style.css'; // 引入 css
+import { Editor, Toolbar } from '@wangeditor/editor-for-vue';
+import { useVModel } from '@vueuse/core';
 import { toolbarKeys } from './toolbar';
-
-// 定义接口来定义对象的类型
-interface WangeditorState {
-	editorToolbar: HTMLDivElement | null;
-	editorContent: HTMLDivElement | null;
-	editor: any;
-}
+import { IDomEditor } from '@wangeditor/editor';
+import DiyStorage from '@/components/upload/storage.vue';
 
 export default defineComponent({
-	name: 'wngEditor',
+	name: 'DiygwEditor',
+	components: { Editor, Toolbar, DiyStorage },
 	props: {
 		// 节点 id
 		id: {
@@ -48,66 +53,72 @@ export default defineComponent({
 		// 高度
 		height: {
 			type: String,
-			default: () => '310px',
+			default: () => '300px',
 		},
 	},
 	setup(props, { emit }) {
-		const state = reactive<WangeditorState>({
-			editorToolbar: null,
-			editor: null,
-			editorContent: null,
+		const obj = reactive({
+			storageCallback: '',
+			uploadConfig: {
+				limit: 1,
+			},
 		});
-		// 富文本配置
-		const wangeditorConfig = () => {
-			const editorConfig: Partial<IEditorConfig> = { MENU_CONF: {} };
-			props.isDisable ? (editorConfig.readOnly = true) : (editorConfig.readOnly = false);
-			editorConfig.placeholder = props.placeholder;
-			editorConfig.onChange = (editor: IDomEditor) => {
-				// console.log('content', editor.children);
-				// console.log('html', editor.getHtml());
-				emit('update:modelValue', editor.getHtml());
-			};
-			(<any>editorConfig).MENU_CONF['uploadImage'] = {
-				base64LimitSize: 10 * 1024 * 1024,
-			};
-			return editorConfig;
-		};
-		//
-		const toolbarConfig = () => {
-			const toolbarConfig: Partial<IToolbarConfig> = {};
-			toolbarConfig.toolbarKeys = toolbarKeys;
-			return toolbarConfig;
-		};
-		// 初始化富文本
-		// https://www.wangeditor.com/
-		const initWangeditor = () => {
-			state.editor = createEditor({
-				html: props.modelValue,
-				selector: state.editorContent!,
-				config: wangeditorConfig(),
-				mode: props.mode,
-			});
-			createToolbar({
-				editor: state.editor,
-				selector: state.editorToolbar!,
-				mode: props.mode,
-				config: toolbarConfig(),
-			});
-		};
-		// 页面加载时
-		onMounted(() => {
-			initWangeditor();
-		});
-		// 监听双向绑定值的改变
-		watch(
-			() => props.modelValue,
-			(value) => {
-				state.editor.clear();
-				state.editor.dangerouslyInsertHtml(value);
+		const storage = ref(null);
+		const getAttachmentFileList = (files: any) => {
+			if (!files.length) {
+				return;
 			}
-		);
+			const file = files[0];
+			editorRef.value.restoreSelection()
+			editorRef.value.dangerouslyInsertHtml( "<img src='" + file.url + "'/>");
+		};
+
+		const data = useVModel(props, 'modelValue', emit);
+		// 编辑器实例，必须用 shallowRef
+		const editorRef = shallowRef();
+
+		// // 模拟 ajax 异步获取内容
+		// onMounted(() => {
+		//   setTimeout(() => {
+		//     valueHtml.value = "<p>模拟 Ajax 异步设置内容</p>";
+		//   }, 1500);
+		// });
+		// 自定义转换链接 url
+		const toolbarConfig = {
+			toolbarKeys,
+		};
+		const editorConfig = { placeholder: props.placeholder };
+
+		// 组件销毁时，也及时销毁编辑器
+		onBeforeUnmount(() => {
+			proxy.mittBus.off('onImageStoregeShow')
+			const editor = editorRef.value;
+			if (editor == null) return;
+			editor.destroy();
+		});
+		const { proxy } = <any>getCurrentInstance();
+		onMounted(() => {
+			// 设置 i18n，App.vue 中的 el-config-provider
+			
+			proxy.mittBus.on('onImageStoregeShow', () => {
+				storage.value!.handleStorageDlg('image', '', '上传图片');
+			});
+		});
+
+		const handleCreated = (editor: IDomEditor) => {
+			editorRef.value = editor; // 记录 editor 实例，重要！
+		};
+
 		return {
-			...toRefs(state),
+			...toRefs(obj),
+			storage,
+			editorRef,
+			data,
+			toolbarConfig,
+			editorConfig,
+			getAttachmentFileList,
+
+			handleCreated,
 		};
 	},
 });

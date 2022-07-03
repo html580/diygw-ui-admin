@@ -102,6 +102,11 @@ export default defineComponent({
 		const stores = useUserInfo();
 		const storesThemeConfig = useThemeConfig();
 		const { userInfos } = storeToRefs(stores);
+		if(!userInfos.value.userName){
+			Session.clear(); // 清除缓存/token等
+			// 使用 reload 时，不需要调用 resetRoute() 重置路由
+			window.location.reload();
+		}
 		const { themeConfig } = storeToRefs(storesThemeConfig);
 		const searchRef = ref();
 		const state = reactive({

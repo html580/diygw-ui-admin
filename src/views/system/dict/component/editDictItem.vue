@@ -41,7 +41,7 @@
 import { reactive, ref, unref, getCurrentInstance } from 'vue';
 import { addData, updateData } from '@/api';
 import { ElMessage } from 'element-plus';
-const props = defineProps({
+defineProps({
 	title: String,
 });
 const { proxy } = getCurrentInstance() as any;
@@ -120,7 +120,7 @@ const onSubmit = () => {
 			state.loading = true;
 			if (state.ruleForm.dictCode != undefined && state.ruleForm.dictCode != 0) {
 				updateData('/sys/dictData', state.ruleForm)
-					.then((response) => {
+					.then(() => {
 						ElMessage.success('修改成功');
 						state.loading = false;
 						closeDialog(state.ruleForm);
@@ -130,7 +130,7 @@ const onSubmit = () => {
 					});
 			} else {
 				addData('/sys/dictData', state.ruleForm)
-					.then((response) => {
+					.then(() => {
 						ElMessage.success('新增成功');
 						state.loading = false;
 						closeDialog(state.ruleForm); // 关闭弹窗

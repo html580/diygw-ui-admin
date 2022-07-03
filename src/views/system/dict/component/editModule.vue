@@ -39,7 +39,7 @@ import { addData, updateData } from '@/api';
 const { proxy } = getCurrentInstance() as any;
 const ruleFormRef = ref<HTMLElement | null>(null);
 
-const props = defineProps({
+defineProps({
 	title: {
 		type: String,
 		default: () => '',
@@ -111,7 +111,7 @@ const onSubmit = () => {
 			state.loading = true;
 			if (state.ruleForm.dictId != undefined && state.ruleForm.dictId != 0) {
 				updateData('/sys/dict', state.ruleForm)
-					.then((response) => {
+					.then(() => {
 						ElMessage.success('修改成功');
 						state.loading = false;
 						closeDialog(state.ruleForm); // 关闭弹窗
@@ -121,7 +121,7 @@ const onSubmit = () => {
 					});
 			} else {
 				addData('/sys/dict', state.ruleForm)
-					.then((response) => {
+					.then(() => {
 						ElMessage.success('新增成功');
 						state.loading = false;
 						closeDialog(state.ruleForm); // 关闭弹窗

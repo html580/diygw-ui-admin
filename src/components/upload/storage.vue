@@ -160,20 +160,21 @@ export default defineComponent({
 			storageType: '',
 			source: '',
 			loadingCollection: false,
-			checkList: [],
-			categorys: [],
-			syscategorys: [],
-			currentTableData: [],
-			currentSysTableData: [],
-			searchSysTableData: [],
+			checkList: <any>[],
+			categorys: <any>[],
+			syscategorys: <any>[],
+			currentTableData: <any>[],
+			currentSysTableData: <any>[],
+			searchSysTableData: <any>[],
 			dialogLoading: false,
 			nameForm: {
-				type: undefined,
+				type: '',
 				name: undefined,
 				parentId: undefined,
+				
 			},
 			nameFormVisible: false,
-			nameStatus: '',
+			nameStatus: 'edit',
 			nameMap: {
 				edit: '重命名',
 				add: '新增目录',
@@ -194,8 +195,8 @@ export default defineComponent({
 				],
 			},
 			form: {
-				name: '',
-				parentId: '',
+				name: undefined,
+				parentId: undefined,
 				order_type: 'desc',
 				order_field: 'storageId',
 			},
@@ -213,7 +214,7 @@ export default defineComponent({
 
 		const upload = ref(null);
 
-		const getImageThumb = (item) => {
+		const getImageThumb = (item:any) => {
 			if (item.type == 'mp3') {
 				return '/static/images/mp3.png';
 			} else if (item.type == 'mp4') {
@@ -225,7 +226,7 @@ export default defineComponent({
 			}
 		};
 
-		const handleStorageDlg = (type, source = '', title = '') => {
+		const handleStorageDlg = (type:any, source = '', title = '') => {
 			data.title = title ? title : '文件管理';
 			if (type == 'mp3') {
 				data.uploadConfig.accept = '.mp3';
@@ -252,7 +253,7 @@ export default defineComponent({
 				});
 			}
 		};
-		const handlePaginationChange = (val) => {
+		const handlePaginationChange = (val:any) => {
 			data.page = val;
 			nextTick(() => {
 				handleSubmit();
@@ -265,14 +266,14 @@ export default defineComponent({
 
 		const handleSubmit = () => {
 			data.loading = true;
-			listData('/admin/storage', {
+			listData('/sys/storage', {
 				...data.form,
 				type: data.storageType,
 				pageNum: data.page.current,
 				pageSize: data.page.size,
 			})
 				.then((res) => {
-					data.currentTableData = res.rows || [];
+					data.currentTableData = res.data.rows || [];
 					data.page.total = res.total;
 					data.isLoad = true;
 				})
@@ -283,12 +284,12 @@ export default defineComponent({
 
 		const handleSysSubmit = () => {
 			data.loading = true;
-			listData('/admin/storage', {
+			listData('/sys/storage', {
 				...data.sysform,
 			})
 				.then((res) => {
-					data.currentSysTableData = res.rows || [];
-					data.searchSysTableData = res.rows || [];
+					data.currentSysTableData = res.data.rows || [];
+					data.searchSysTableData = res.data.rows || [];
 				})
 				.finally(() => {
 					data.loading = false;
@@ -297,13 +298,13 @@ export default defineComponent({
 
 		const handleSyscatesSubmit = () => {
 			data.loading = true;
-			listData('/admin/storage', {
+			listData('/sys/storage', {
 				...data.sysform,
 			})
 				.then((res) => {
-					data.syscategorys = res.rows || [];
+					data.syscategorys = res.data.rows || [];
 					data.sysform.type = 'system';
-					data.sysform.parentId = res.rows[0].storageId;
+					data.sysform.parentId = res.data.rows[0].storageId;
 					handleSysSubmit();
 				})
 				.finally(() => {
@@ -312,7 +313,7 @@ export default defineComponent({
 		};
 
 		const handleSysSearch = () => {
-			let findData = data.currentSysTableData.filter((item) => {
+			let findData = data.currentSysTableData.filter((item:any) => {
 				return item.name.indexOf(data.sysform.name) >= 0 || item.cname.indexOf(data.sysform.name) >= 0;
 			});
 			data.searchSysTableData = findData;
@@ -347,11 +348,11 @@ export default defineComponent({
 			emit('confirm', checkList || [], data.source);
 		};
 		// 上传文件
-		const handleUpload = () => {
-			upload.value.handleUploadDlg();
-		};
+		// const handleUpload = () => {
+		// 	upload.value.handleUploadDlg();
+		// };
 
-		const selectCategory = (id) => {
+		const selectCategory = (id:any) => {
 			if (data.loading) {
 				ElMessage.error('点击过快，正在加载数据');
 				return;
@@ -360,7 +361,7 @@ export default defineComponent({
 			handleSubmit();
 		};
 
-		const selectSystemCategory = (item) => {
+		const selectSystemCategory = (item:any) => {
 			if (data.loading) {
 				ElMessage.error('点击过快，正在加载数据');
 				return;
@@ -371,15 +372,15 @@ export default defineComponent({
 			handleSysSubmit();
 		};
 
-		const selectFile = (item) => {
+		const selectFile = (item:any) => {
 			if (props.limit === 1) {
-				data.currentSysTableData.forEach((item) => {
+				data.currentSysTableData.forEach((item:any) => {
 					item.selectclz = '';
 				});
-				data.currentTableData.forEach((item) => {
+				data.currentTableData.forEach((item:any) => {
 					item.selectclz = '';
 				});
-				let index = data.checkList.findIndex((checkitem) => {
+				let index = data.checkList.findIndex((checkitem:any) => {
 					return checkitem == item.storageId;
 				});
 				if (index >= 0) {
@@ -393,7 +394,7 @@ export default defineComponent({
 					item.selectclz = 'active';
 				}
 			} else {
-				let index = data.checkList.findIndex((checkitem) => {
+				let index = data.checkList.findIndex((checkitem:any) => {
 					return checkitem.storageId == item.storageId;
 				});
 				if (index >= 0) {
@@ -407,7 +408,7 @@ export default defineComponent({
 		};
 
 		// 批量删除
-		const handleDelete = (val) => {
+		const handleDelete = (val:any) => {
 			const storageId = val ? [val] : data.checkList;
 			if (storageId.length === 0) {
 				ElMessage.error('请选择要操作的数据');
@@ -420,7 +421,7 @@ export default defineComponent({
 				closeOnClickModal: false,
 			})
 				.then(() => {
-					delData('/admin/storage', storageId).then((res) => {
+					delData('/sys/storage', storageId).then(() => {
 						for (let i = data.currentTableData.length - 1; i >= 0; i--) {
 							if (storageId.indexOf(data.currentTableData[i].storageId) !== -1) {
 								data.currentTableData.splice(i, 1);
@@ -432,10 +433,10 @@ export default defineComponent({
 				.catch(() => {});
 		};
 		// 文件上传成功后处理
-		const _getUploadFileList = (files) => {
+		const _getUploadFileList = (files:any) => {
 			for (const value of files) {
 				let stroage = value.response.data;
-				let index = data.currentTableData.findIndex((item) => {
+				let index = data.currentTableData.findIndex((item:any) => {
 					return item.url == stroage.url;
 				});
 				if (index == 0) {
@@ -454,18 +455,18 @@ export default defineComponent({
 		// 获取可选择目录
 		const getStorageDirectory = () => {
 			//if (!this.directoryList.length) {
-			listAllData('/admin/storage', { type: 'category' }).then((res) => {
-				data.categorys = res.data;
+			listAllData('/sys/storage', { type: 'category' }).then((res) => {
+				data.categorys = res.data.rows;
 			});
 		};
 
 		const add = () => {
-			refform.value.validate((valid) => {
+			refform.value.validate((valid:boolean) => {
 				if (valid) {
 					data.dialogLoading = true;
 					data.nameForm.type = 'category';
 
-					addData('/admin/storage', { ...data.nameForm })
+					addData('/sys/storage', { ...data.nameForm })
 						.then((res) => {
 							data.categorys.unshift({
 								...res.data,
@@ -485,7 +486,7 @@ export default defineComponent({
  
 
 		const rename = () => {
-			refform.value.validate((valid) => {
+			refform.value.validate((valid:boolean) => {
 				if (valid) {
 					data.dialogLoading = true;
 					// renameStorageItem(data.nameForm.storageId, data.nameForm.name)

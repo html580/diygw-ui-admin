@@ -11,7 +11,9 @@
 	},
 	"dependencies": {
 		"@element-plus/icons-vue": "^2.0.3",
+		"@qiun/vue-ucharts": "^2.4.3-20220505",
 		"@wangeditor/editor": "^5.1.1",
+		"@wangeditor/editor-for-vue": "^5.1.12",
 		"axios": "^0.27.2",
 		"countup.js": "^2.2.0",
 		"cropperjs": "^1.5.12",

@@ -171,10 +171,10 @@ import { reactive,ref, unref, getCurrentInstance } from 'vue';
 import IconSelector from '@/components/iconSelector/index.vue';
 import { listData, addData, updateData } from '@/api';
 import { ElMessage } from 'element-plus';
-import { Session } from '@/utils/storage';
+
 
 import { handleTree } from '@/utils';
-const props = defineProps({
+defineProps({
 	title: {
 		type: String,
 		default: () => '',
@@ -214,13 +214,13 @@ const state = reactive({
 		remark: '', // 备注
 	},
 	// 显示状态数据字典
-	isHideOptions: [],
+	isHideOptions: <any>[],
 	// 菜单状态数据字典
-	statusOptions: [],
+	statusOptions: <any>[],
 	// 菜单类型数据字典
-	menuTypeOptions: [],
+	menuTypeOptions: <any>[],
 	// 数字是否数据字典
-	yesOrNoOptions: [],
+	yesOrNoOptions: <any>[],
 	// 菜单树选项
 	menuOptions: <any>[],
 	// 表单校验
@@ -292,18 +292,17 @@ const onSubmit = () => {
 			state.loading = true;
 			if (state.ruleForm.menuId != undefined && state.ruleForm.menuId != 0) {
 				updateData('/sys/menu', state.ruleForm)
-					.then((response) => {
+					.then(() => {
 						ElMessage.success('修改成功');
 						state.loading = false;
 						closeDialog(); // 关闭弹窗
-						//resetSession(response)
 					})
 					.finally(() => {
 						state.loading = false;
 					});
 			} else {
 				addData('/sys/menu', state.ruleForm)
-					.then((response) => {
+					.then(() => {
 						ElMessage.success('新增成功');
 						state.loading = false;
 						closeDialog(); // 关闭弹窗
@@ -315,19 +314,7 @@ const onSubmit = () => {
 		}
 	});
 };
-// 重置session
-const resetSession = (res: any) => {
-	let permissions = res.data.permissions;
-	permissions.push('base');
-	let menus = res.data.menus;
-	Session.set('menus', menus);
-	let userInfos: any = Session.get('userInfo');
-	userInfos.authBtnList = permissions;
-	userInfos.authPageList = permissions;
-	Session.set('userInfo', userInfos);
-	//window.location.reload()   //页面刷新有
-	//initBackEndControlRoutes();
-};
+
 // 表单初始化，方法：`resetFields()` 无法使用
 const initForm = () => {
 	state.ruleForm.menuId = 0; // 菜单ID

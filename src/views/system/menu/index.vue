@@ -29,7 +29,12 @@
 
 			<!--数据表格-->
 			<el-table v-loading="loading" :data="menuList" row-key="menuId" border :tree-props="{ children: 'children', hasChildren: 'hasChildren' }">
-				<el-table-column prop="menuName" label="菜单名称" :show-overflow-tooltip="true" width="150"></el-table-column>
+				
+				<el-table-column prop="menuName" label="菜单名称" :show-overflow-tooltip="true">
+					<template #default="scope">
+						{{scope.row.menuId}}:{{scope.row.menuName}}
+					</template>
+				</el-table-column>
 				<el-table-column prop="icon" label="图标" align="center" width="100">
 					<template #default="scope">
 						<SvgIcon :name="scope.row.icon"></SvgIcon>
@@ -44,7 +49,7 @@
 					</template>
 				</el-table-column>
 				<el-table-column prop="permission" label="权限标识"  width="100" :show-overflow-tooltip="true"></el-table-column>
-				<el-table-column prop="component" label="组件路径" :show-overflow-tooltip="true"></el-table-column>
+				<el-table-column prop="component" label="组件路径"  width="150" :show-overflow-tooltip="true"></el-table-column>
 				<el-table-column prop="status" label="状态" width="80">
 					<template #default="scope">
 						<el-tag :type="scope.row.status === '1' ? 'danger' : 'success'" disable-transitions>{{ statusFormat(scope.row) || '-- --' }} </el-tag>

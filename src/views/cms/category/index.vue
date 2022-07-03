@@ -49,7 +49,7 @@
     </el-form>
 
       <!--数据表格-->
-      <el-table
+    <el-table
       v-loading="state.loading"
       :data="state.tableData"
       row-key="categoryId"
@@ -108,7 +108,6 @@
           >
           <el-button
             v-if="scope.row.parentId != 0"
-
             type="text"
             v-auth="'system:category:delete'"
             @click="onTabelRowDel(scope.row)"
@@ -139,7 +138,7 @@ const state = reactive({
   // 分类表格树数据
   tableData: [] as any,
   // 状态数据字典
-  statusOptions: [],
+  statusOptions: [] as any,
   // 查询参数
   queryParams: {
     categoryName: undefined,
@@ -204,7 +203,7 @@ onMounted(() => {
   proxy.getDicts("sys_normal_disable").then((response: any) => {
     state.statusOptions = response.data.rows;
   });
-  proxy.mittBus.on("onEditCategoryModule", (res: any) => {
+  proxy.mittBus.on("onEditCategoryModule", () => {
     handleQuery();
   });
 });

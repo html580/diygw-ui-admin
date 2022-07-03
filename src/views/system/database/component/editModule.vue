@@ -115,7 +115,7 @@ import { ElMessage } from 'element-plus';
 import { addData, getOneData, listData, updateData } from '@/api';
 import { handleTree } from '@/utils';
 
-const props = defineProps({
+ defineProps({
 	title: {
 		type: String,
 		default: () => '',

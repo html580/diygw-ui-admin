@@ -115,7 +115,7 @@ import { ElMessage } from 'element-plus';
 import { addData, getOneData, listData, updateData } from '@/api';
 import { handleTree } from "@/utils";
 
-const props = defineProps({
+defineProps({
 	title: {
 		type: String,
 		default: () => '',
@@ -212,7 +212,7 @@ const openDialog = (row: any) => {
 
 				state.ruleForm.password = '';
 			})
-			.then((response: any) => {});
+			.then(() => {});
 	} else {
 		initForm();
 	}
@@ -256,7 +256,7 @@ const onSubmit = () => {
 			state.ruleForm.roleIds = state.roleIds.join(',');
 			state.loading = true;
 			if (state.ruleForm.articleId != undefined) {
-				updateData('/cms/article', state.ruleForm).then((response) => {
+				updateData('/cms/article', state.ruleForm).then(() => {
 					ElMessage.success('修改成功');
 					state.loading = false;
 					closeDialog(); // 关闭弹窗
@@ -264,7 +264,7 @@ const onSubmit = () => {
           state.loading = false;
         });
 			} else {
-				addData('/cms/article', state.ruleForm).then((response) => {
+				addData('/cms/article', state.ruleForm).then(() => {
 					ElMessage.success('新增成功');
 					state.loading = false;
 					closeDialog(); // 关闭弹窗
@@ -297,24 +297,6 @@ const initForm = () => {
 	state.ruleForm.remark = ''; // 备注
 	state.ruleForm.postIds = '';
 	state.ruleForm.roleIds = '';
-};
-
-// 头像上传
-const handleAvatarSuccess = (file: any) => {
-	//   state.imageUrl = URL.createObjectURL(file.raw);
-};
-// 头像上传前校验
-const beforeAvatarUpload = (file: any) => {
-	const isJPG = file.type === 'image/jpeg';
-	const isLt2M = file.size / 1024 / 1024 < 2;
-
-	if (!isJPG) {
-		ElMessage.error('上传头像图片只能是 JPG 格式!');
-	}
-	if (!isLt2M) {
-		ElMessage.error('上传头像图片大小不能超过 2MB!');
-	}
-	return isJPG && isLt2M;
 };
 
 defineExpose({

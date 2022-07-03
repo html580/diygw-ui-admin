@@ -10,6 +10,7 @@
       :drag="drag"
       :accept="accept"
       :limit="limit"
+      :headers="headers"
       :auto-upload="autoUpload"
       :on-remove="handleRemove"
       :before-upload="handleBeforeUpload"
@@ -23,9 +24,10 @@
 </template>
 
 <script lang="ts">
-import { defineComponent,onMounted, reactive, ref, toRefs } from "vue";
-import {getUploadToken} from '@/api/index'
+import { defineComponent, reactive, ref, toRefs } from "vue";
+import { Session } from '@/utils/storage';
 import { ElMessage } from "element-plus";
+import type { UploadInstance } from 'element-plus'
 export default defineComponent({
   name: "DiyUpload",
   props: {
@@ -91,23 +93,25 @@ export default defineComponent({
       loading: false,
       moduleName: "",
       tokenLoading: false,
-      uploadUrl: "/admin/storage/upload",
-      params: {},
+      uploadUrl: "/api/sys/storage/upload",
+      params: <any>{},
+      headers:{
+        Authorization: Session.get('token')
+      }
     });
 
-    const getToken = () => {
-      // 检测Token是否过期
-       getUploadToken(props.parentId).then(res => {
-            data.uploadUrl =  res.data.uploadUrl
-       })
-    }
+    // const getToken = () => {
+    //   // 检测Token是否过期
+    //    getUploadToken(props.parentId).then(res => {
+    //         data.uploadUrl =  res.data.uploadUrl
+    //    })
+    // }
     
-    onMounted(() => {
-			getToken();
-		});
-    
+    // onMounted(() => {
+		// 	getToken();
+		// });
 
-    const upload = ref(null);
+    const upload = ref<UploadInstance>()
 
     const handleClose = () => {
       // 替换资源后需要更换Token
@@ -122,7 +126,7 @@ export default defineComponent({
     };
 
     // 删除资源
-    const handleRemove = (file, fileList) => {
+    const handleRemove = (file:any, fileList:any) => {
       if (file.status === "success" && file.response) {
         const response = file.response.data;
         if (response && response[0].storage_id) {
@@ -134,13 +138,13 @@ export default defineComponent({
     };
 
     // 上传文件之前的钩子
-    const handleBeforeUpload = (file) => {
+    const handleBeforeUpload = () => {
       // 生成上传请求参数
       data.params["timestamp"] = Math.round(new Date().getTime() / 1000) + 100;
       data.params["format"] = "json";
       data.params["type"] = props.type;
       data.params["parentId"] = props.parentId
-      // data.params["token"] =  window['globalConfig'].token
+      // data.params["token"] = Session.get('token')
       // 本地上传所需要的权限参数
 
       // 自动上传时,"确定"按钮将改变状态
@@ -149,7 +153,7 @@ export default defineComponent({
       }
     };
     // 文件上传成功时的钩子
-    const handleSuccess = (response, file, fileList) => {
+    const handleSuccess = (response:any, file:any, fileList:any) => {
       if (response.code === 200 && response.data) {
         emit("upload", fileList);
         handleChange(fileList);
@@ -159,7 +163,7 @@ export default defineComponent({
       handleError(response.msg, file, fileList);
     };
     // 文件上传失败时的钩子
-    const handleError = (err, file, fileList) => {
+    const handleError = (err:any, file:any, fileList:any) => {
       ElMessage.error(err);
       for (let i = fileList.length - 1; i >= 0; i--) {
         if (file === fileList[i]) {
@@ -172,24 +176,24 @@ export default defineComponent({
       handleChange(fileList);
     };
     // 文件超出个数限制时的钩子
-    const handleExceed = (files, fileList) => {
+    const handleExceed = (files:any, fileList:any) => {
       if (files.length + fileList.length > props.limit) {
         const count = props.limit - fileList.length;
         ElMessage.error(`上传数量超出限制，最多还能选择 ${count} 个文件`);
       }
     };
     // "确定"按钮状态转换
-    const handleChange = (fileList) => {
+    const handleChange = (fileList:any) => {
       if (props.autoUpload) {
         if ( Object.keys(fileList).every((item) => fileList[item].status === "success")) {
           data.loading = false;
         }
-        let successFileList = fileList.filter((item) => {
+        let successFileList = fileList.filter((item:any) => {
           return item.status === "success";
         });
         if(successFileList.length==fileList.length){
           setTimeout(function(){
-              upload.value.clearFiles()
+              upload.value!.clearFiles()
           },500)
         }
         emit("confirm", successFileList);

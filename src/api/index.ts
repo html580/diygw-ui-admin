@@ -25,7 +25,7 @@ export function getData(url: string, params: object) {
  */
 export function getUploadToken(parent_id:any, type = 'web') {
 	return request({
-		url: '/admin/storage/token',
+		url: '/sys/storage/token',
 		method: 'post',
 		data: {
 			parent_id,

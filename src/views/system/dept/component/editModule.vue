@@ -168,7 +168,7 @@ const onSubmit = () => {
 			state.loading = true;
 			if (state.ruleForm.deptId != undefined && state.ruleForm.deptId != 0) {
 				updateData('/sys/dept', state.ruleForm)
-					.then((response) => {
+					.then(() => {
 						ElMessage.success('修改成功');
 						state.loading = false;
 						closeDialog(state.ruleForm); // 关闭弹窗
@@ -178,7 +178,7 @@ const onSubmit = () => {
 					});
 			} else {
 				addData('/sys/dept', state.ruleForm)
-					.then((response) => {
+					.then(() => {
 						ElMessage.success('新增成功');
 						state.loading = false;
 						closeDialog(state.ruleForm); // 关闭弹窗
