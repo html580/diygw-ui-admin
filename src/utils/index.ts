@@ -1,3 +1,7 @@
+import { ElMessage } from 'element-plus';
+import { useRoutesList } from './../stores/routesList';
+import { useRouter } from 'vue-router';
+
 // 回显数据字典
 export function selectDictLabel(datas: any, value: any) {
     var actions = [] as any;
@@ -117,4 +121,18 @@ export function letterAvatar(name: string, size = 60, color = '') {
 		}
 	}
 	return tree;
+}
+
+export function navigeteTo(e:any){
+    const router = useRouter()
+    let dataset = e.currentTarget ? e.currentTarget.dataset : e;
+	let { type } = dataset;
+    if (type == 'page' || type == 'inner' || type == 'href') {
+        router.push({
+            path:dataset.url
+        })
+    }else{
+        ElMessage.error('待实现点击事件');
+    }
+
 }

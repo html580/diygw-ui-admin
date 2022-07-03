@@ -1,5 +1,5 @@
 import type { App } from 'vue';
-
+import { useRouter } from 'vue-router';
 /**
  * 按钮波浪指令
  * @directive 默认方式：v-waves，如 `<div v-waves></div>`
