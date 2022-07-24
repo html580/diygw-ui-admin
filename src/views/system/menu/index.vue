@@ -60,14 +60,14 @@
 						<el-tag :type="scope.row.status === '1' ? 'danger' : 'success'" disable-transitions>{{ isHideFormat(scope.row) || '-- --' }} </el-tag>
 					</template>
 				</el-table-column>
-				<el-table-column label="操作" align="center" fixed="right"  width="280">
+				<el-table-column label="操作" align="center" fixed="right"  width="380">
 					<template #default="scope">
 						<div class="flex">
 							<el-button type="text" icon="el-icon-edit" @click="onOpenEditMenu(scope.row)"><SvgIcon name="ele-Edit" />修改</el-button>
-						<el-button type="text" icon="el-icon-plus" @click="onOpenAddMenu(scope.row)"><SvgIcon name="ele-Plus" />新增</el-button>
-						<el-button type="text" icon="el-icon-delete" @click="handleDelete(scope.row)"><SvgIcon name="ele-Delete" />删除</el-button>
+							<el-button type="text" icon="el-icon-plus" @click="onOpenAddMenu(scope.row)"><SvgIcon name="ele-Plus" />新增</el-button>
+							<el-button type="text" icon="el-icon-edit" @click="handleCopy(scope.row)"><SvgIcon name="ele-CopyDocument" />复制</el-button>
+							<el-button type="text" icon="el-icon-delete" @click="handleDelete(scope.row)"><SvgIcon name="ele-Delete" />删除</el-button>
 						</div>
-						
 					</template>
 				</el-table-column>
 			</el-table>
@@ -82,7 +82,7 @@ import { toRefs, getCurrentInstance, onMounted, onUnmounted, reactive, ref } fro
 
 import EditMenu from './component/editMenu.vue';
 import { ElMessage, ElMessageBox } from 'element-plus';
-import { delData, listData } from '@/api';
+import { delData, listData, copyData } from '@/api';
 import { handleTree } from '@/utils';
 const { proxy } = getCurrentInstance() as any;
 const editMenuRef = ref();
@@ -159,6 +159,24 @@ const handleDelete = (row: any) => {
         });
 	});
 };
+
+/** 删除按钮操作 */
+const handleCopy = (row: any) => {
+	ElMessageBox({
+		message: '是否确认复制名称为"' + row.menuName + '"的数据项?',
+		title: '警告',
+		showCancelButton: true,
+		confirmButtonText: '确定',
+		cancelButtonText: '取消',
+		type: 'warning',
+	}).then(function () {
+        return copyData('/sys/menu',row.menuId).then(() => {
+            handleQuery();
+            ElMessage.success("复制成功");
+        });
+	});
+};
+
 // 菜单显示隐藏字典翻译
 const isHideFormat = (row: any) => {
 	if (row.menuType == 'F') {
