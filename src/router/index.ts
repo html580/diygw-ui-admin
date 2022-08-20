@@ -8,6 +8,7 @@ import { useRoutesList } from '@/stores/routesList';
 import { useThemeConfig } from '@/stores/themeConfig';
 import { Session } from '@/utils/storage';
 import { staticRoutes } from '@/router/route';
+import { initFrontEndControlRoutes } from '@/router/frontEnd';
 import { initBackEndControlRoutes } from '@/router/backEnd';
 
 /**
@@ -108,6 +109,9 @@ router.beforeEach(async (to, from, next) => {
 					await initBackEndControlRoutes();
 					// 动态添加路由：防止非首页刷新时跳转回首页的问题
 					// 确保 addRoute() 时动态添加的路由已经被完全加载上去
+					next({ ...to, replace: true });
+				} else {
+					await initFrontEndControlRoutes();
 					next({ ...to, replace: true });
 				}
 			} else {

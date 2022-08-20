@@ -1,84 +1,84 @@
 <template>
-	<el-dialog :title="title" top="5vh"  v-model="visible" append-to-body center width="800px">
+	<el-dialog :title="title" top="5vh" v-model="visible" append-to-body center width="800px">
 		<div class="flex storages">
-					<div class="categorys diy-tree file-border flex flex-direction-column">
-						<el-button type="primary" @click="handleAdd()">新增目录</el-button>
-						<div class="mt-1 text-center" plain :class="[!form.parentId ? 'selected' : '']" @click="selectCategory('')">全部</div>
-						<div
-							class="mt-1 p-1 text-center"
-							plain
-              :key="item"
-							:class="[form.parentId == item.storageId ? 'selected' : '']"
-							@click="selectCategory(item.storageId)"
-							v-for="item in categorys"
+			<div class="categorys diy-tree file-border flex flex-direction-column">
+				<el-button type="primary" @click="handleAdd()">新增目录</el-button>
+				<div class="mt-1 text-center" plain :class="[!form.parentId ? 'selected' : '']" @click="selectCategory('')">全部</div>
+				<div
+					class="mt-1 p-1 text-center"
+					plain
+					:key="item"
+					:class="[form.parentId == item.storageId ? 'selected' : '']"
+					@click="selectCategory(item.storageId)"
+					v-for="item in categorys"
+				>
+					{{ item.name }}
+				</div>
+			</div>
+			<div class="flex1 file-border">
+				<!-- 文件列表开始 -->
+				<div class="flex justify-between">
+					<div class="diy-mb-20">
+						<el-input
+							v-model="form.name"
+							label-width="0px"
+							placeholder="输入名称搜索"
+							style="width: 250px"
+							@keyup.enter.native="handleSearch()"
+							@clear="handleSearch()"
+							:clearable="true"
 						>
-							{{ item.name }}
-						</div>
+							<template #suffix>
+								<SvgIcon @click="handleSearch" name="ele-Search" :size="20" />
+							</template>
+						</el-input>
 					</div>
-					<div class="flex1 file-border">
-						<!-- 文件列表开始 -->
-						<div class="flex justify-between">
-							<div class="diy-mb-20">
-								<el-input
-									v-model="form.name"
-									label-width="0px"
-									placeholder="输入名称搜索"
-									style="width: 250px"
-									@keyup.enter.native="handleSearch()"
-									@clear="handleSearch()"
-									:clearable="true" 
-								>
-									<template #suffix>
-                    <SvgIcon @click="handleSearch" name="ele-Search" :size="20" />
-									</template>
-								</el-input>
-							</div>
 
-							<diy-upload
-								ref="upload"
-								:upload-tip="uploadConfig.uploadTip"
-								:multiple="uploadConfig.multiple"
-								:type="uploadConfig.type"
-								:accept="uploadConfig.accept"
-								:limit="uploadConfig.limit"
-								:parent-id="form.parentId"
-								@confirm="_getUploadFileList"
-							></diy-upload>
-						</div>
-						<div class="files" :max="limit !== 0 ? limit : 100">
-							<div class="file-list" v-loading="loading">
-									<div :key="index" v-for="(item, index) in currentTableData" class="item" :data-label="item.name" :class="item.selectclz">
-										<div
-											class="file-image"
-											:style="{
-												backgroundImage: 'url(' + getImageThumb(item) + ')',
-											}"
-											@click="selectFile(item)"
-										></div>
-										<div class="file-name">
-											{{ item.name }}
-										</div>
-										<div class="mask" @click="selectFile(item)">
-                       <SvgIcon  name="ele-Check" :size="20" />
-										</div>
-										<div class="el-dropdown" @click="handleDelete(item.storageId)">
-                       <SvgIcon  class="delete" name="ele-Delete" :size="20" />
-										</div>
-									</div>
+					<diy-upload
+						ref="upload"
+						:upload-tip="uploadConfig.uploadTip"
+						:multiple="uploadConfig.multiple"
+						:type="type"
+						:accept="accept"
+						:limit="uploadConfig.limit"
+						:parent-id="form.parentId"
+						@confirm="_getUploadFileList"
+					></diy-upload>
+				</div>
+				<div class="files" :max="limit !== 0 ? limit : 100">
+					<div class="file-list" v-loading="loading">
+						<div :key="index" v-for="(item, index) in currentTableData" class="item" :data-label="item.name" :class="item.selectclz">
+							<div
+								class="file-image"
+								:style="{
+									backgroundImage: 'url(' + getImageThumb(item) + ')',
+								}"
+								@click="selectFile(item)"
+							></div>
+							<div class="file-name">
+								{{ item.name }}
+							</div>
+							<div class="mask" @click="selectFile(item)">
+								<SvgIcon name="ele-Check" :size="20" />
+							</div>
+							<div class="el-dropdown" @click="handleDelete(item.storageId)">
+								<SvgIcon class="delete" name="ele-Delete" :size="20" />
 							</div>
 						</div>
-
-						<!-- 翻页开始 -->
-						<diy-pagefooter
-							style="margin: 0; padding: 20px 0 0 0"
-							:current="page.current"
-							:size="page.size"
-							:total="page.total"
-							:is-size="false"
-							@change="handlePaginationChange"
-						/>
 					</div>
 				</div>
+
+				<!-- 翻页开始 -->
+				<diy-pagefooter
+					style="margin: 0; padding: 20px 0 0 0"
+					:current="page.current"
+					:size="page.size"
+					:total="page.total"
+					:is-size="false"
+					@change="handlePaginationChange"
+				/>
+			</div>
+		</div>
 
 		<!-- 确认,取消 -->
 		<template #footer v-if="isSelect == '1'" class="dialog-footer">
@@ -89,7 +89,7 @@
 				<span v-else>当前已选 {{ checkList.length }} 个文件</span>
 			</div>
 			<el-button @click="visible = false">取消</el-button>
-			<el-button type="primary" :loading="loadingCollection" :disabled="checkList.length > limit && limit !== 0" @click="handleConfirm" 
+			<el-button type="primary" :loading="loadingCollection" :disabled="checkList.length > limit && limit !== 0" @click="handleConfirm"
 				>确定</el-button
 			>
 		</template>
@@ -103,11 +103,11 @@
 		</el-form>
 
 		<template #footer>
-			<el-button @click="nameFormVisible = false" >取消</el-button>
+			<el-button @click="nameFormVisible = false">取消</el-button>
 
-			<el-button v-if="nameStatus === 'add'" type="primary" :loading="dialogLoading" @click="add" >确定</el-button>
+			<el-button v-if="nameStatus === 'add'" type="primary" :loading="dialogLoading" @click="add">确定</el-button>
 
-			<el-button v-else type="primary" :loading="dialogLoading" @click="rename" >修改</el-button>
+			<el-button v-else type="primary" :loading="dialogLoading" @click="rename">修改</el-button>
 		</template>
 	</el-dialog>
 </template>
@@ -119,7 +119,6 @@ import { ElMessageBox, ElMessage } from 'element-plus';
 import DiyUpload from './upload.vue';
 import DiyPagefooter from './pagefooter.vue';
 
-
 export default defineComponent({
 	name: 'DiyStorage',
 	components: {
@@ -127,9 +126,11 @@ export default defineComponent({
 		DiyPagefooter,
 	},
 	props: {
-		project: {
-			type: Object,
-			default: () => {},
+		type: {
+			default: 'image',
+		},
+		accept: {
+			default: 'image/*',
 		},
 		// 最大选择数(0表示不限制)
 		limit: {
@@ -157,21 +158,20 @@ export default defineComponent({
 				type: 'image',
 				replace: false,
 			},
-			storageType: '',
+			storageType: props.type,
 			source: '',
 			loadingCollection: false,
-			checkList: <any>[],
-			categorys: <any>[],
-			syscategorys: <any>[],
-			currentTableData: <any>[],
-			currentSysTableData: <any>[],
-			searchSysTableData: <any>[],
+			checkList: [],
+			categorys: [],
+			syscategorys: [],
+			currentTableData: [],
+			currentSysTableData: [],
+			searchSysTableData: [],
 			dialogLoading: false,
 			nameForm: {
 				type: '',
 				name: undefined,
 				parentId: undefined,
-				
 			},
 			nameFormVisible: false,
 			nameStatus: 'edit',
@@ -214,7 +214,7 @@ export default defineComponent({
 
 		const upload = ref(null);
 
-		const getImageThumb = (item:any) => {
+		const getImageThumb = (item: any) => {
 			if (item.type == 'mp3') {
 				return '/static/images/mp3.png';
 			} else if (item.type == 'mp4') {
@@ -226,34 +226,34 @@ export default defineComponent({
 			}
 		};
 
-		const handleStorageDlg = (type:any, source = '', title = '') => {
+		const handleStorageDlg = (source = '', title = '') => {
 			data.title = title ? title : '文件管理';
-			if (type == 'mp3') {
-				data.uploadConfig.accept = '.mp3';
-			} else if (type == 'mp4') {
-				data.uploadConfig.accept = '.mp4';
-			} else {
-				data.uploadConfig.accept = 'image/*';
-			}
+			// if (type == 'mp3') {
+			// 	data.uploadConfig.accept = '.mp3';
+			// } else if (type == 'mp4') {
+			// 	data.uploadConfig.accept = '.mp4';
+			// } else {
+			// 	data.uploadConfig.accept = 'image/*';
+			// }
 			data.visible = true;
-			data.storageType = type;
+			data.storageType = props.type;
 			data.source = source;
 			data.checkList = [];
 
 			if (!data.isLoad) {
 				data.loadingCollection = false;
 				data.currentTableData = [];
-				data.uploadConfig.type = type;
+				data.uploadConfig.type = props.type;
 				handleSubmit();
 				nextTick(() => {
 					getStorageDirectory();
 					if (upload.value) {
-						upload.value.handleClose();
+						upload.value?.handleClose();
 					}
 				});
 			}
 		};
-		const handlePaginationChange = (val:any) => {
+		const handlePaginationChange = (val: any) => {
 			data.page = val;
 			nextTick(() => {
 				handleSubmit();
@@ -313,7 +313,7 @@ export default defineComponent({
 		};
 
 		const handleSysSearch = () => {
-			let findData = data.currentSysTableData.filter((item:any) => {
+			let findData = data.currentSysTableData.filter((item: any) => {
 				return item.name.indexOf(data.sysform.name) >= 0 || item.cname.indexOf(data.sysform.name) >= 0;
 			});
 			data.searchSysTableData = findData;
@@ -352,7 +352,7 @@ export default defineComponent({
 		// 	upload.value.handleUploadDlg();
 		// };
 
-		const selectCategory = (id:any) => {
+		const selectCategory = (id: any) => {
 			if (data.loading) {
 				ElMessage.error('点击过快，正在加载数据');
 				return;
@@ -361,7 +361,7 @@ export default defineComponent({
 			handleSubmit();
 		};
 
-		const selectSystemCategory = (item:any) => {
+		const selectSystemCategory = (item: any) => {
 			if (data.loading) {
 				ElMessage.error('点击过快，正在加载数据');
 				return;
@@ -372,15 +372,15 @@ export default defineComponent({
 			handleSysSubmit();
 		};
 
-		const selectFile = (item:any) => {
+		const selectFile = (item: any) => {
 			if (props.limit === 1) {
-				data.currentSysTableData.forEach((item:any) => {
+				data.currentSysTableData.forEach((item: any) => {
 					item.selectclz = '';
 				});
-				data.currentTableData.forEach((item:any) => {
+				data.currentTableData.forEach((item: any) => {
 					item.selectclz = '';
 				});
-				let index = data.checkList.findIndex((checkitem:any) => {
+				let index = data.checkList.findIndex((checkitem: any) => {
 					return checkitem == item.storageId;
 				});
 				if (index >= 0) {
@@ -394,7 +394,7 @@ export default defineComponent({
 					item.selectclz = 'active';
 				}
 			} else {
-				let index = data.checkList.findIndex((checkitem:any) => {
+				let index = data.checkList.findIndex((checkitem: any) => {
 					return checkitem.storageId == item.storageId;
 				});
 				if (index >= 0) {
@@ -408,7 +408,7 @@ export default defineComponent({
 		};
 
 		// 批量删除
-		const handleDelete = (val:any) => {
+		const handleDelete = (val: any) => {
 			const storageId = val ? [val] : data.checkList;
 			if (storageId.length === 0) {
 				ElMessage.error('请选择要操作的数据');
@@ -433,10 +433,10 @@ export default defineComponent({
 				.catch(() => {});
 		};
 		// 文件上传成功后处理
-		const _getUploadFileList = (files:any) => {
+		const _getUploadFileList = (files: any) => {
 			for (const value of files) {
 				let stroage = value.response.data;
-				let index = data.currentTableData.findIndex((item:any) => {
+				let index = data.currentTableData.findIndex((item: any) => {
 					return item.url == stroage.url;
 				});
 				if (index == 0) {
@@ -461,7 +461,7 @@ export default defineComponent({
 		};
 
 		const add = () => {
-			refform.value.validate((valid:boolean) => {
+			refform.value.validate((valid: boolean) => {
 				if (valid) {
 					data.dialogLoading = true;
 					data.nameForm.type = 'category';
@@ -483,10 +483,8 @@ export default defineComponent({
 			});
 		};
 
- 
-
 		const rename = () => {
-			refform.value.validate((valid:boolean) => {
+			refform.value.validate((valid: boolean) => {
 				if (valid) {
 					data.dialogLoading = true;
 					// renameStorageItem(data.nameForm.storageId, data.nameForm.name)
@@ -555,12 +553,11 @@ export default defineComponent({
 </script>
 <style>
 .storages .el-input__suffix {
-  top:5px;
-  height: auto;
+	top: 5px;
+	height: auto;
 }
 </style>
 <style lang="scss" scoped>
-
 .breadcrumb {
 	border: 1px solid #dcdfe6;
 	padding: 10px !important;
@@ -581,11 +578,11 @@ export default defineComponent({
 		background-color: transparent;
 	}
 }
-.mt-1{
-  margin-top:0.25rem;
+.mt-1 {
+	margin-top: 0.25rem;
 }
-.p-1{
-  padding: 0.25rem;
+.p-1 {
+	padding: 0.25rem;
 }
 .delete {
 	color: #fff;

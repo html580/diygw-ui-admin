@@ -99,9 +99,8 @@ export default defineComponent({
 		const { proxy } = <any>getCurrentInstance();
 		onMounted(() => {
 			// 设置 i18n，App.vue 中的 el-config-provider
-			
 			proxy.mittBus.on('onImageStoregeShow', () => {
-				storage.value!.handleStorageDlg('image', '', '上传图片');
+				storage.value!.handleStorageDlg( '', '上传图片');
 			});
 		});
 

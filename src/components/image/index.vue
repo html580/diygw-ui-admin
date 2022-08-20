@@ -8,9 +8,9 @@
           content="点击选择图片"
           placement="top"
         >
-          <SvgIcon v-if="!data" @click="handleStorage(getAttachmentFileList, 'image', 'data','选择图片')" name="ele-CirclePlus" :size="20" />
+          <SvgIcon v-if="!data" @click="handleStorage(getAttachmentFileList, 'data','选择图片')" name="ele-CirclePlus" :size="20" />
     
-          <img @click="handleStorage(getAttachmentFileList, 'image', 'data','选择图片')" class="input-addon" v-else :src="data" />
+          <img @click="handleStorage(getAttachmentFileList, 'data','选择图片')" class="input-addon" v-else :src="data" />
         </el-tooltip>
       </template>
     </el-input>
@@ -90,10 +90,10 @@ export default defineComponent({
     const diygwuploadp = inject('diygwuploadp')
     const providePreviewpage = inject('previewpage')
     // 打开资源选择框
-    const handleStorage = (callback, type, source = "", title = "") => {
+    const handleStorage = (callback,source = "", title = "") => {
       obj['storageCallback'] = callback;
       obj['uploadConfig']['limit'] = 1;
-      storage.value.handleStorageDlg(type, source, title);
+      storage.value.handleStorageDlg( source, title);
     };
     // 获取商品相册资源
     const getAttachmentFileList = (files) => {
