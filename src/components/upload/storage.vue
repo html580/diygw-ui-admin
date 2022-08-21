@@ -239,6 +239,9 @@ export default defineComponent({
 			data.storageType = props.type;
 			data.source = source;
 			data.checkList = [];
+			data.currentTableData.forEach((item:any) => {
+				item.selectclz = '';
+			});
 
 			if (!data.isLoad) {
 				data.loadingCollection = false;

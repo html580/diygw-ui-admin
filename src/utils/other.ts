@@ -8,6 +8,7 @@ import { useThemeConfig } from '@/stores/themeConfig';
 import { i18n } from '@/i18n/index';
 import { Local } from '@/utils/storage';
 import SvgIcon from '@/components/svgIcon/index.vue';
+import { isArray } from 'lodash';
 
 /**
  * 导出全局注册 element plus svg 图标
@@ -158,6 +159,22 @@ export function handleEmpty(list: any) {
 	return arr;
 }
 
+/*
+* 转换行数据到表单
+*/
+export function changeRowToForm(row: any,formdata: any){
+	for (let attr in formdata) {
+		if (formdata[attr] && isArray( formdata[attr])) {
+			if(row[attr]  && typeof row[attr] === 'string'){
+				row[attr] = row[attr].split(",")
+			}else{
+				row[attr] = []
+			}
+		}
+	}
+	return row
+}
+
 /**
  * 统一批量导出
  * @method elSvg 导出全局注册 element plus svg 图标
@@ -195,6 +212,7 @@ const other = {
 		return handleEmpty(list);
 	},
 };
+
 
 // 统一批量导出
 export default other;
