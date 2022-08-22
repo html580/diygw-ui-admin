@@ -166,7 +166,7 @@ export function changeRowToForm(row: any,formdata: any){
 	for (let attr in formdata) {
 		if (formdata[attr] && isArray( formdata[attr])) {
 			if(row[attr]  && typeof row[attr] === 'string'){
-				row[attr] = row[attr].split(",")
+				row[attr] = JSON.parse(row[attr])
 			}else{
 				row[attr] = []
 			}
