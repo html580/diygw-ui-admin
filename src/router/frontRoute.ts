@@ -26,15 +26,15 @@ let routes: Array<RouteRecordRaw> = [
 		path: '/',
 		name: '/',
 		component: () => import('@/layout/index.vue'),
-		redirect: '/index',
+		redirect: '/home',
 		meta: {
-			isKeepAlive: true
+			isKeepAlive: true,
 		},
 		children: [
 			{
-				path: '/index',
-				name: 'index',
-				component: () => import('@/views/index.vue'),
+				path: '/home',
+				name: 'home',
+				component: () => import('@/views/home/index.vue'),
 				meta: {
 					title: '首页',
 					isLink: '',
@@ -43,46 +43,13 @@ let routes: Array<RouteRecordRaw> = [
 					isAffix: false,
 					isIframe: false,
 					roles: ['admin', 'common'],
-					icon: 'iconfont icon-a-01pinglun1'
-				}
-			},
-			{
-				path: '/group1',
-				name: 'group1',
-				component: 'layout/routerView/parent',
-				redirect: '/test/test',
-				meta: {
-					title: 'dsf',
-					isLink: '',
-					isHide: false,
-					isKeepAlive: true,
-					isAffix: false,
-					isIframe: false,
-					roles: ['admin', 'common'],
-					icon: 'iconfont icon-a-02pinglun2'
+					icon: 'fa fa-book',
 				},
-				children: [
-					{
-						path: '/test/test',
-						name: 'testtest',
-						component: () => import('@/views/test/test.vue'),
-						meta: {
-							title: '首页',
-							isLink: '',
-							isHide: false,
-							isKeepAlive: false,
-							isAffix: false,
-							isIframe: false,
-							roles: ['admin', 'common'],
-							icon: 'diy-icon-home'
-						}
-					}
-				]
 			}
-		]
-	}
+		],
+	},
 ];
 
-export const frontRoutes = {
-	dynamicRoutes: routes
+export const frontRoutes={
+    dynamicRoutes:routes
 };
