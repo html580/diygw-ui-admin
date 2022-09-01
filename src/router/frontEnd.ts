@@ -139,6 +139,9 @@ export function hasRoles(roles: any, route: any) {
  */
 export function setFilterHasRolesMenu(routes: any, roles: any) {
 	const menu: any = [];
+	if(roles.length==0){
+		roles = ['admin']
+	}
 	routes.forEach((route: any) => {
 		const item = { ...route };
 		if (hasRoles(roles, item)) {

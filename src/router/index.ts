@@ -86,6 +86,7 @@ export function formatTwoStageRoutes(arr: any) {
 
 // 路由加载前
 router.beforeEach(async (to, from, next) => {
+	console.log(router.getRoutes())
 	NProgress.configure({ showSpinner: false });
 	if (to.meta.title) NProgress.start();
 	const token = Session.get('token');
@@ -98,7 +99,7 @@ router.beforeEach(async (to, from, next) => {
 			Session.clear();
 			NProgress.done();
 		} else if (token && to.path === '/login') {
-			next('/home');
+			next('/');
 			NProgress.done();
 		} else {
 			const storesRoutesList = useRoutesList(pinia);
