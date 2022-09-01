@@ -277,7 +277,7 @@ export default defineComponent({
 			})
 				.then((res) => {
 					data.currentTableData = res.data.rows || [];
-					data.page.total = res.total;
+					data.page.total = res.data.total;
 					data.isLoad = true;
 				})
 				.finally(() => {

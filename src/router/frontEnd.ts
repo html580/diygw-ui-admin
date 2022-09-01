@@ -1,7 +1,8 @@
 import { RouteRecordRaw } from 'vue-router';
 import { storeToRefs } from 'pinia';
 import { formatTwoStageRoutes, formatFlatteningRoutes, router } from '@/router/index';
-import { dynamicRoutes, notFoundAndNoPower } from '@/router/route';
+import { notFoundAndNoPower } from '@/router/route';
+import { frontRoutes } from '@/router/frontRoute';
 import pinia from '@/stores/index';
 import { Session } from '@/utils/storage';
 import { useUserInfo } from '@/stores/userInfo';
@@ -10,6 +11,7 @@ import { useRoutesList } from '@/stores/routesList';
 import { NextLoading } from '@/utils/loading';
 
 // 前端控制路由
+const dynamicRoutes = frontRoutes.dynamicRoutes
 
 /**
  * 前端控制路由：初始化方法，防止刷新时路由丢失

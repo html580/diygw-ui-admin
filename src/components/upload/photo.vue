@@ -35,7 +35,7 @@
 </template>
 
 <script lang="ts" setup>
-import { nextTick, ref, reactive, defineEmits } from 'vue';
+import { nextTick, ref, reactive} from 'vue';
 import { useVModel } from '@vueuse/core';
 import { VueDraggableNext } from 'vue-draggable-next';
 import { ElMessageBox } from 'element-plus';
@@ -78,7 +78,7 @@ const props = defineProps({
 const state = reactive({
 	isdrag: false,
 });
-const storage = ref(null);
+const storage = ref();
 
 const emit = defineEmits(['update:modelValue']);
 
@@ -86,7 +86,7 @@ const imageList = useVModel(props, 'modelValue', emit);
 
 const handleStorage = () => {
 	nextTick(() => {
-		storage.value!.handleStorageDlg( '', '上传图片');
+		storage.value.handleStorageDlg( '', '上传图片');
 	});
 };
 // 获取商品相册资源

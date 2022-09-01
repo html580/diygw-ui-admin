@@ -11,6 +11,10 @@ const service = axios.create({
 // 添加请求拦截器
 service.interceptors.request.use(
 	(config) => {
+		let ishttp = /^http(s)?:\/\/.*/i.test(config.url as string);
+		if(!ishttp){
+			config.baseURL = import.meta.env.VITE_API_URL
+		}
 		// 在发送请求之前做些什么 token
 		if (Session.get('token')) {
 			(<any>config.headers).common['Authorization'] = `${Session.get('token')}`;

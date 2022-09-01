@@ -24,7 +24,6 @@ import { initBackEndControlRoutes } from '@/router/backEnd';
 const storesThemeConfig = useThemeConfig(pinia);
 const { themeConfig } = storeToRefs(storesThemeConfig);
 const { isRequestRoutes } = themeConfig.value;
-if (isRequestRoutes) staticRoutes.splice(0, 1);
 
 /**
  * 创建一个可以被 Vue 应用程序使用的路由实例
@@ -67,6 +66,7 @@ export function formatTwoStageRoutes(arr: any) {
 			newArr.push({ component: v.component, name: v.name, path: v.path, redirect: v.redirect, meta: v.meta, children: [] });
 		} else {
 			// 判断是否是动态路由（xx/:id/:name），用于 tagsView 等中使用
+			// 修复：https://gitee.com/lyt-top/vue-next-admin/issues/I3YX6G
 			if (v.path.indexOf('/:') > -1) {
 				v.meta['isDynamic'] = true;
 				v.meta['isDynamicPath'] = v.path;
