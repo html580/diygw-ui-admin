@@ -1,7 +1,12 @@
 import type { App } from 'vue';
 import { useUserInfo } from '@/stores/userInfo';
 import { judementSameArr } from '@/utils/arrayOperation';
-
+import { storeToRefs } from 'pinia';
+import pinia from '@/stores/index';
+import { useThemeConfig } from '@/stores/themeConfig';
+const storesThemeConfig = useThemeConfig(pinia);
+const { themeConfig } = storeToRefs(storesThemeConfig);
+const { isRequestRoutes } = themeConfig.value;
 /**
  * 用户权限指令
  * @directive 单个权限验证（v-auth="xxx"）
@@ -13,7 +18,11 @@ export function authDirective(app: App) {
 	app.directive('auth', {
 		mounted(el, binding) {
 			const stores = useUserInfo();
-			if (!stores.userInfos.authBtnList.some((v: string) => v === binding.value)) el.parentNode.removeChild(el);
+			//如果是静态路由不验证按钮权限
+			if(isRequestRoutes){
+				if (!stores.userInfos.authBtnList.some((v: string) => v === binding.value)) el.parentNode.removeChild(el);
+			}
+			
 		},
 	});
 	// 多个权限验证，满足一个则显示（v-auths="[xxx,xxx]"）
@@ -21,12 +30,14 @@ export function authDirective(app: App) {
 		mounted(el, binding) {
 			let flag = false;
 			const stores = useUserInfo();
-			stores.userInfos.authBtnList.map((val: string) => {
-				binding.value.map((v: string) => {
-					if (val === v) flag = true;
+			if(isRequestRoutes){
+				stores.userInfos.authBtnList.map((val: string) => {
+					binding.value.map((v: string) => {
+						if (val === v) flag = true;
+					});
 				});
-			});
-			if (!flag) el.parentNode.removeChild(el);
+				if (!flag) el.parentNode.removeChild(el);
+			}
 		},
 	});
 	// 多个权限验证，全部满足则显示（v-auth-all="[xxx,xxx]"）
