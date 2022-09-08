@@ -32,6 +32,9 @@
 
 - <a target="_blank" href="https://gitee.com/diygw/diygw-ui-php">基于thinkphp6实现的DIYGW-UI-PHP</a>
 
+#### 💒 在线可视化集成教程
+- <a target="_blank" href="https://www.bilibili.com/video/BV1CP411V7TV?spm_id_from=333.999.0.0&vd_source=dc541827a3c20d8e063187146f12aa57">在线视频教程</a>
+
 
 #### 🏭 环境支持
 
