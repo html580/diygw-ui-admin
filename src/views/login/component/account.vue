@@ -61,8 +61,8 @@ const router = useRouter();
 const loginFormRef = ref()
 
 const loginForm = reactive({
-	username: 'admin',
-	password: '123456'
+	username: '',
+	password: ''
 })
 const loginRules = reactive({
 	username: [
