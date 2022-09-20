@@ -35,6 +35,9 @@
 #### 💒 在线可视化集成教程
 - <a target="_blank" href="https://www.bilibili.com/video/BV1CP411V7TV?spm_id_from=333.999.0.0&vd_source=dc541827a3c20d8e063187146f12aa57">在线视频教程</a>
 
+#### ⚡ ⚡ ⚡ ⚡ ⚡ 重要配置
+> 为了开发的方便，环境已关闭了动态路由，启用静态路由，如需要开启动态路由，请配置stores--->themeConfig.ts---->isRequestRoutes 设置为true。
+如果已运行后，在后台管理界面主题设置，重置所有的设置。
 
 #### 🏭 环境支持
 
