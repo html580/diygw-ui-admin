@@ -28,6 +28,8 @@ import { defineComponent, reactive, ref, toRefs } from "vue";
 import { Session } from '@/utils/storage';
 import { ElMessage } from "element-plus";
 import type { UploadInstance } from 'element-plus'
+
+
 export default defineComponent({
   name: "DiyUpload",
   props: {
@@ -87,13 +89,12 @@ export default defineComponent({
 
   emits: ["update:value", "upload", "confirm"],
   setup(props, { emit }) {
-
    const data = reactive({
       visible: false,
       loading: false,
       moduleName: "",
       tokenLoading: false,
-      uploadUrl: "/api/sys/storage/upload",
+      uploadUrl: (process.env.NODE_ENV === 'production'?"":"/api")+"/sys/storage/upload",
       params: <any>{},
       headers:{
         Authorization: Session.get('token')
