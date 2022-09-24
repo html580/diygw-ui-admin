@@ -26,75 +26,30 @@ let routes: Array<RouteRecordRaw> = [
 		path: '/',
 		name: '/',
 		component: () => import('@/layout/index.vue'),
-		redirect: '/hdp',
+		redirect: '/home',
 		meta: {
-			isKeepAlive: true
+			isKeepAlive: true,
 		},
 		children: [
 			{
-				path: '/hdp',
-				name: 'hdp',
-				component: () => import('@/views/hdp.vue'),
+				path: '/home',
+				name: 'home',
+				component: () => import('@/views/home/index.vue'),
 				meta: {
-					title: '幻灯片',
+					title: '首页',
 					isLink: '',
 					isHide: false,
 					isKeepAlive: false,
 					isAffix: false,
 					isIframe: false,
 					roles: ['admin', 'common'],
-					icon: 'diy-icon-tupian'
-				}
-			},
-			{
-				path: '/gg',
-				name: 'gg',
-				component: () => import('@/views/gg.vue'),
-				meta: {
-					title: '公告',
-					isLink: '',
-					isHide: false,
-					isKeepAlive: false,
-					isAffix: false,
-					isIframe: false,
-					roles: ['admin', 'common'],
-					icon: 'diy-icon-message'
-				}
-			},
-			{
-				path: '/fl',
-				name: 'fl',
-				component: () => import('@/views/fl.vue'),
-				meta: {
-					title: '文章分类',
-					isLink: '',
-					isHide: false,
-					isKeepAlive: false,
-					isAffix: false,
-					isIframe: false,
-					roles: ['admin', 'common'],
-					icon: 'diy-icon-list'
-				}
-			},
-			{
-				path: '/wz',
-				name: 'wz',
-				component: () => import('@/views/wz.vue'),
-				meta: {
-					title: '文章',
-					isLink: '',
-					isHide: false,
-					isKeepAlive: false,
-					isAffix: false,
-					isIframe: false,
-					roles: ['admin', 'common'],
-					icon: 'diy-icon-newshot'
-				}
+					icon: 'fa fa-book',
+				},
 			}
-		]
-	}
+		],
+	},
 ];
 
-export const frontRoutes = {
-	dynamicRoutes: routes
+export const frontRoutes={
+    dynamicRoutes:routes
 };
