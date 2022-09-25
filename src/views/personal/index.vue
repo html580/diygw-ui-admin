@@ -62,7 +62,7 @@
 			</el-col>
 
 			<!-- 营销推荐 -->
-			<el-col :span="24">
+			<!-- <el-col :span="24">
 				<el-card shadow="hover" class="mt15" header="营销推荐">
 					<el-row :gutter="15" class="personal-recommend-row">
 						<el-col :sm="6" v-for="(v, k) in recommendList" :key="k" class="personal-recommend-col">
@@ -76,12 +76,12 @@
 						</el-col>
 					</el-row>
 				</el-card>
-			</el-col>
+			</el-col> -->
 
 			<!-- 更新信息 -->
 			<el-col :span="24">
 				<el-card shadow="hover" class="mt15 personal-edit" header="更新信息">
-					<div class="personal-edit-title">基本信息</div>
+					<!-- <div class="personal-edit-title">基本信息</div>
 					<el-form :model="personalForm" size="default" label-width="40px" class="mt35 mb35">
 						<el-row :gutter="35">
 							<el-col :xs="24" :sm="12" :md="8" :lg="6" :xl="4" class="mb20">
@@ -132,20 +132,20 @@
 								</el-form-item>
 							</el-col>
 						</el-row>
-					</el-form>
+					</el-form> -->
 					<div class="personal-edit-title mb15">账号安全</div>
 					<div class="personal-edit-safe-box">
 						<div class="personal-edit-safe-item">
 							<div class="personal-edit-safe-item-left">
 								<div class="personal-edit-safe-item-left-label">账户密码</div>
-								<div class="personal-edit-safe-item-left-value">当前密码强度：强</div>
+								<!-- <div class="personal-edit-safe-item-left-value">当前密码强度：强</div> -->
 							</div>
 							<div class="personal-edit-safe-item-right">
-								<el-button text type="primary">立即修改</el-button>
+								<el-button text type="primary" @click="passwordDialog=true">立即修改</el-button>
 							</div>
 						</div>
 					</div>
-					<div class="personal-edit-safe-box">
+					<!-- <div class="personal-edit-safe-box">
 						<div class="personal-edit-safe-item">
 							<div class="personal-edit-safe-item-left">
 								<div class="personal-edit-safe-item-left-label">密保手机</div>
@@ -177,10 +177,36 @@
 								<el-button text type="primary">立即设置</el-button>
 							</div>
 						</div>
-					</div>
+					</div> -->
 				</el-card>
 			</el-col>
 		</el-row>
+
+		<el-dialog title="修改密码" width="600px" v-model="passwordDialog" modal close-on-click-modal close-on-press-escape show-close>
+			<div class="flex flex-wrap diygw-col-24">
+				<el-form ref="passwordFormRef" :model="passwordForm" :rules="passwordFormRules" label-width="120px" label-postition="right" class="flex flex-wrap diygw-col-24">
+					<div class="flex diygw-col-24">
+						<el-form-item class="diygw-el-rate" label="旧密码" prop="password">
+							<el-input type="password" placeholder="请输入提示" v-model="passwordForm.password"> </el-input>
+						</el-form-item>
+					</div>
+					<div class="flex diygw-col-24">
+						<el-form-item class="diygw-el-rate" label="新密码" prop="newpassword">
+							<el-input type="password" placeholder="请输入提示" v-model="passwordForm.newpassword"> </el-input>
+						</el-form-item>
+					</div>
+					<div class="flex diygw-col-24">
+						<el-form-item class="diygw-el-rate" label="再次输入密码" prop="confirmpassword">
+							<el-input type="password" placeholder="请输入提示" v-model="passwordForm.confirmpassword"> </el-input>
+						</el-form-item>
+					</div>
+				</el-form>
+			</div>
+			<template #footer>
+				<div class="dialog-footer flex justify-end"><el-button type="danger" @click="passwordDialog = false"> 取消 </el-button> <el-button type="primary" @click="submitForm"> 确定 </el-button></div>
+			</template>
+		</el-dialog>
+
 	</div>
 </template>
 
@@ -191,22 +217,70 @@ import { newsInfoList, recommendList } from './mock';
 import { letterAvatar } from '@/utils/index';
 import { storeToRefs } from 'pinia';
 import { useUserInfo } from '@/stores/userInfo';
+import { postData } from '@/api';
+import { ElMessage } from 'element-plus';
 
 const stores = useUserInfo();
 const { userInfos } = storeToRefs(stores);
 // 定义接口来定义对象的类型
 interface PersonalState {
+	passwordFormRef:any,
+	passwordDialog: boolean;
 	newsInfoList: any;
 	recommendList: any;
 	personalForm: any;
+	passwordFormRules: any;
+	passwordForm: any
 }
 
 export default defineComponent({
 	name: 'personal',
 	setup() {
 		const state = reactive<PersonalState>({
+			passwordFormRef:null,
 			newsInfoList,
 			recommendList,
+			passwordDialog: false,
+			passwordFormRules: {
+				password: [
+					{
+						trigger: ['blur','change'],
+						required: true,
+						message: '旧密码不能为空哟'
+					}
+				],
+				newpassword: [
+					{
+						trigger: ['blur','change'],
+						required: true,
+						message: '新密码不能为空哟'
+					},{
+						trigger: ['chanage', 'blur'],
+						message: '请输入新的密码，不能与旧密码一致',
+						validator: (rule:any, val:any, callback:any) => {
+							return val != state.passwordForm.password;
+						}
+					}
+				],
+				confirmpassword: [
+					{
+						trigger: ['blur','change'],
+						required: true,
+						message: '再次输入密码不能为空哟'
+					},{
+						trigger: ['chanage', 'blur'],
+						message: '输入新密码不一致',
+						validator: (rule:any, val:any, callback:any) => {
+							return val == state.passwordForm.newpassword;
+						}
+					}
+				]
+			},
+			passwordForm: {
+				password: '',
+				newpassword: '',
+				confirmpassword: ''
+			},
 			personalForm: {
 				name: '',
 				email: '',
@@ -220,7 +294,26 @@ export default defineComponent({
 		const currentTime = computed(() => {
 			return formatAxis(new Date());
 		});
+
+		const submitForm = async () => {
+			if (!state.passwordFormRef) return;
+			await state.passwordFormRef.validate((valid:any, fields:any) => {
+				if (valid) {
+					postData('/admin/index/changePassword',state.passwordForm).then(res=>{
+						ElMessage.success(res.msg);
+						state.passwordDialog = false
+					}).then((res:any)=>{
+						ElMessage.error(res.msg);
+					})
+					console.log('submit!');
+				} else {
+					console.log('error submit!', fields);
+				}
+			});
+		};
+
 		return {
+			submitForm,
 			currentTime,
 			userInfos,
 			letterAvatar,

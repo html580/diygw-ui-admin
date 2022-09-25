@@ -73,6 +73,15 @@ export const notFoundAndNoPower = [
 			isHide: true,
 		},
 	},
+	{
+		path: '/personal',
+		name: 'personal',
+		component: () => import('@/views/personal/index.vue'),
+		meta: {
+			title: 'message.router.personal',
+			isHide: true,
+		},
+	},
 ];
 
 /**
