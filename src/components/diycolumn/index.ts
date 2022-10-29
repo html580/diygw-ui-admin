@@ -9,7 +9,6 @@ for (const path in modules) {
 
 const install = (Vue: App) => {
     components.forEach((component: any) => {
-        debugger
         Vue.component(component.name, component)
     });
 }
