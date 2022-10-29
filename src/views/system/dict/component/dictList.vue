@@ -71,7 +71,7 @@
 </template>
 
 <script setup lang="ts">
-import { reactive,  ref, getCurrentInstance, onUnmounted, onMounted } from 'vue';
+import { reactive, ref, getCurrentInstance, onUnmounted, onMounted } from 'vue';
 import { delData, listData } from '@/api';
 import { ElMessageBox, ElMessage } from 'element-plus';
 import editDictItem from './editDictItem.vue';
@@ -115,7 +115,7 @@ const openDrawer = (row: any) => {
 	resetScreenSize();
 	state.queryParams.dictType = row.dictType;
 	proxy.getDicts(row.dictType).then((response: any) => {
-		state.tableData = response.data.rows;
+		state.tableData = response.rows;
 		state.loading = false;
 	});
 	state.isShowDrawer = true;
@@ -124,8 +124,8 @@ const openDrawer = (row: any) => {
 /** 查询字典列表 */
 const handleQuery = () => {
 	state.loading = true;
-	listData("/sys/dictData",state.queryParams).then((response) => {
-		state.tableData = response.data.rows;
+	listData('/sys/dictData', state.queryParams).then((response) => {
+		state.tableData = response.rows;
 		state.loading = false;
 	});
 };
@@ -166,7 +166,7 @@ const onTabelRowDel = (row: any) => {
 		cancelButtonText: '取消',
 		type: 'warning',
 	}).then(function () {
-		return delData("/sys/dictData",dictCode).then(() => {
+		return delData('/sys/dictData', dictCode).then(() => {
 			handleQuery();
 			ElMessage.success('删除成功');
 		});
@@ -184,6 +184,6 @@ onUnmounted(() => {
 });
 
 defineExpose({
-    openDrawer
-})
+	openDrawer,
+});
 </script>

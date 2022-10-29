@@ -5,7 +5,7 @@
 				<!--部门数据-->
 				<el-col :span="4" :xs="24">
 					<div class="head-container">
-						<el-input v-model="state.deptName" placeholder="请输入部门名称" clearable prefix-icon="el-icon-search" style="margin-bottom: 20px" />
+						<el-input v-model="state.deptName" placeholder="请输入部门名称" clearable :prefix-icon="Search" style="margin-bottom: 20px" />
 					</div>
 					<div class="head-container">
 						<el-tree
@@ -25,7 +25,13 @@
 					<!-- 查询-->
 					<el-form :model="state.queryParams" ref="queryForm" :inline="true" label-width="78px">
 						<el-form-item label="用户名称" prop="username">
-							<el-input placeholder="用户名称模糊查询" clearable @keyup.enter="handleQuery" style="width: 240px" v-model="state.queryParams.username" />
+							<el-input
+								placeholder="用户名称模糊查询"
+								clearable
+								@keyup.enter="handleQuery"
+								style="width: 240px"
+								v-model="state.queryParams.username"
+							/>
 						</el-form-item>
 						<el-form-item label="手机号码" prop="phone">
 							<el-input v-model="state.queryParams.phone" placeholder="请输入手机号码" clearable style="width: 240px" @keyup.enter="handleQuery" />
@@ -70,7 +76,7 @@
 							</template>
 						</el-table-column>
 						<el-table-column prop="createTime" label="创建时间" show-overflow-tooltip></el-table-column>
-						<el-table-column prop="path" label="操作" fixed="right"  width="180">
+						<el-table-column prop="path" label="操作" fixed="right" width="180">
 							<template #default="scope">
 								<el-button type="text" @click="handleUpdate(scope.row)"><SvgIcon name="ele-Edit" />修改</el-button>
 								<el-button type="text" @click="handleDelete(scope.row)"><SvgIcon name="ele-Delete" />删除</el-button>
@@ -101,9 +107,8 @@
 <script lang="ts" setup>
 import { reactive, onMounted, ref, watch, getCurrentInstance, onUnmounted } from 'vue';
 
-
 import { ElMessageBox, ElMessage } from 'element-plus';
-
+import { Search } from '@element-plus/icons-vue';
 import EditModule from './component/editModule.vue';
 import { letterAvatar } from '@/utils/index';
 import { listData, changeStatus, delData } from '@/api';
@@ -158,12 +163,12 @@ watch(
 /** 查询用户列表 */
 const getList = async () => {
 	state.loading = true;
-	listData('/sys/user',state.queryParams).then((response: any) => {
+	listData('/sys/user', state.queryParams).then((response: any) => {
 		if (response.code != 200) {
 			state.loading = false;
 		}
-		state.tableData = response.data.rows;
-		state.total = response.data.total;
+		state.tableData = response.rows;
+		state.total = response.total;
 		state.loading = false;
 	});
 };
@@ -203,8 +208,8 @@ const handleUpdate = (row: any) => {
 
 /** 查询部门下拉树结构 */
 const getTreeselect = async () => {
-	listData('/sys/dept',{}).then((response) => {
-		state.deptOptions = handleTree(response.data.rows,"deptId","parentId","children");
+	listData('/sys/dept', {}).then((response) => {
+		state.deptOptions = handleTree(response.rows, 'deptId', 'parentId', 'children');
 	});
 };
 // 用户状态修改
@@ -218,7 +223,7 @@ const handleStatusChange = (row: any) => {
 		cancelButtonText: '取消',
 		beforeClose: (action, instance, done) => {
 			if (action === 'confirm') {
-				return changeStatus('/sys/user',{userId:row.userId,status:row.status}).then(() => {
+				return changeStatus('/sys/user', { userId: row.userId, status: row.status }).then(() => {
 					ElMessage.success(text + '成功');
 					done();
 				});
@@ -240,7 +245,7 @@ const handleDelete = (row: any) => {
 		confirmButtonText: '确定',
 		cancelButtonText: '取消',
 	}).then(function () {
-    return delData('/sys/user', userId).then(() => {
+		return delData('/sys/user', userId).then(() => {
 			handleQuery();
 			ElMessage.success('删除成功');
 		});
@@ -260,7 +265,7 @@ const onHandleCurrentChange = (val: number) => {
 // 筛选节点
 const filterNode = (value: string, data: any) => {
 	if (!value) return true;
-	return data.label.indexOf(value) !== -1;
+	return data.deptName.indexOf(value) !== -1;
 };
 // 节点单击事件
 const handleNodeClick = (data: any) => {
@@ -294,13 +299,14 @@ const sexFormat = (row: any) => {
 onMounted(() => {
 	getList();
 	getTreeselect();
-	// 查询显示状态数据字典
-	proxy.getDicts('sys_normal_disable').then((response: any) => {
-		state.statusOptions = response.data.rows;
-	});
+	// // 查询显示状态数据字典
+	state.statusOptions = proxy.getDict('sys_normal_disable');
+	// proxy.getDicts('sys_normal_disable').then((response: any) => {
+	// 	state.statusOptions = response.rows;
+	// });
 	// 查询显示性別数据字典
 	proxy.getDicts('sys_user_sex').then((response: any) => {
-		state.sexOptions = response.data.rows;
+		state.sexOptions = response.rows;
 	});
 
 	proxy.mittBus.on('onEditUserModule', () => {

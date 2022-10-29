@@ -66,7 +66,7 @@
 					</el-col>
 					<el-col :xs="24" :sm="12" :md="12" :lg="12" :xl="12">
 						<el-form-item label="岗位">
-							<el-select  class="w100"  v-model="state.postIds" multiple collapse-tags="true" placeholder="请选择">
+							<el-select class="w100" v-model="state.postIds" multiple collapse-tags="true" placeholder="请选择">
 								<el-option
 									v-for="item in state.postOptions"
 									:key="item.postId"
@@ -79,7 +79,7 @@
 					</el-col>
 					<el-col :xs="24" :sm="12" :md="12" :lg="12" :xl="12">
 						<el-form-item label="角色">
-							<el-select  class="w100"  v-model="state.roleIds" multiple collapse-tags="true" placeholder="请选择">
+							<el-select class="w100" v-model="state.roleIds" multiple collapse-tags="true" placeholder="请选择">
 								<el-option
 									v-for="item in state.roleOptions"
 									:key="item.roleId"
@@ -192,17 +192,17 @@ const openDialog = (row: any) => {
 	if (row && row.userId && row.userId != undefined && row.userId != 0) {
 		Promise.all([listData('/sys/post', {}), listData('/sys/role', {}), getOneData('/sys/user', row.userId)])
 			.then((res) => {
-				state.postOptions = res[0].data.rows;
-				state.roleOptions = res[1].data.rows;
+				state.postOptions = res[0].rows;
+				state.roleOptions = res[1].rows;
 				state.ruleForm = res[2].data;
-				if (state.ruleForm.postIds != '') {
+				if (state.ruleForm.postIds) {
 					state.postIds = state.ruleForm.postIds.split(',').map((item: string) => {
 						return Number(item);
 					});
 				} else {
 					state.postIds = [];
 				}
-				if (state.ruleForm.roleIds != '') {
+				if (state.ruleForm.roleIds) {
 					state.roleIds = state.ruleForm.roleIds.split(',').map((item: string) => {
 						return Number(item);
 					});
@@ -221,11 +221,11 @@ const openDialog = (row: any) => {
 	state.loading = false;
 	// 查询显示性別数据字典
 	proxy.getDicts('sys_user_sex').then((response: any) => {
-		state.sexOptions = response.data.rows;
+		state.sexOptions = response.rows;
 	});
 	// 查询显示狀態数据字典
 	proxy.getDicts('sys_normal_disable').then((response: any) => {
-		state.statusOptions = response.data.rows;
+		state.statusOptions = response.rows;
 	});
 };
 // 关闭弹窗
@@ -241,7 +241,7 @@ const onCancel = () => {
 /** 查询部门下拉树结构 */
 const getTreeselect = async () => {
 	listData('/sys/dept', {}).then((response) => {
-		state.deptOptions = handleTree(response.data.rows, 'deptId', 'parentId', 'children');
+		state.deptOptions = handleTree(response.rows, 'deptId', 'parentId', 'children');
 	});
 };
 /** 提交按钮 */
@@ -256,21 +256,25 @@ const onSubmit = () => {
 			state.ruleForm.roleIds = state.roleIds.join(',');
 			state.loading = true;
 			if (state.ruleForm.userId != undefined) {
-				updateData('/sys/user', state.ruleForm).then(() => {
-					ElMessage.success('修改成功');
-					state.loading = false;
-					closeDialog(); // 关闭弹窗
-				}).finally(()=>{
-          state.loading = false;
-        });
+				updateData('/sys/user', state.ruleForm)
+					.then(() => {
+						ElMessage.success('修改成功');
+						state.loading = false;
+						closeDialog(); // 关闭弹窗
+					})
+					.finally(() => {
+						state.loading = false;
+					});
 			} else {
-				addData('/sys/user', state.ruleForm).then(() => {
-					ElMessage.success('新增成功');
-					state.loading = false;
-					closeDialog(); // 关闭弹窗
-				}).finally(()=>{
-          state.loading = false;
-        });
+				addData('/sys/user', state.ruleForm)
+					.then(() => {
+						ElMessage.success('新增成功');
+						state.loading = false;
+						closeDialog(); // 关闭弹窗
+					})
+					.finally(() => {
+						state.loading = false;
+					});
 			}
 		}
 	});
@@ -281,8 +285,8 @@ const onSubmit = () => {
 // 表单初始化，方法：`resetFields()` 无法使用
 const initForm = () => {
 	Promise.all([listData('/sys/post', {}), listData('/sys/role', {})]).then((res) => {
-		state.postOptions = res[0].data.rows;
-		state.roleOptions = res[1].data.rows;
+		state.postOptions = res[0].rows;
+		state.roleOptions = res[1].rows;
 	});
 	state.ruleForm.userId = undefined; // 用戶ID
 	state.ruleForm.username = ''; // 用戶名称
@@ -298,7 +302,6 @@ const initForm = () => {
 	state.ruleForm.postIds = '';
 	state.ruleForm.roleIds = '';
 };
-
 
 defineExpose({
 	openDialog,

@@ -13,7 +13,13 @@
 					/>
 				</el-form-item>
 				<el-form-item label="用户名称" prop="userName">
-					<el-input placeholder="请输入用户名称模糊查询" clearable @keyup.enter="handleQuery" style="width: 240px" v-model="state.queryParams.username" />
+					<el-input
+						placeholder="请输入用户名称模糊查询"
+						clearable
+						@keyup.enter="handleQuery"
+						style="width: 240px"
+						v-model="state.queryParams.username"
+					/>
 				</el-form-item>
 				<el-form-item>
 					<el-button type="primary" @click="handleQuery">
@@ -53,8 +59,7 @@
 						<el-tag :type="scope.row.status === '1' ? 'success' : 'danger'" disable-transitions>{{ statusFormat(scope.row) }}</el-tag>
 					</template>
 				</el-table-column>
-				<el-table-column label="登录时间" align="center" prop="createTime"  :show-overflow-tooltip="true" >
-				</el-table-column>
+				<el-table-column label="登录时间" align="center" prop="createTime" :show-overflow-tooltip="true"> </el-table-column>
 			</el-table>
 
 			<!-- 分页设置-->
@@ -76,10 +81,10 @@
 </template>
 
 <script lang="ts" setup>
-import { reactive, onMounted,  ref, getCurrentInstance } from 'vue';
+import { reactive, onMounted, ref, getCurrentInstance } from 'vue';
 
 import { ElMessageBox, ElMessage } from 'element-plus';
-import { delData, listData,clearData } from '@/api';
+import { delData, listData, clearData } from '@/api';
 const { proxy } = getCurrentInstance() as any;
 const ruleFormRef = ref<HTMLElement | null>(null);
 const state = reactive({
@@ -111,9 +116,9 @@ const state = reactive({
 /** 查询定时任务列表 */
 const handleQuery = () => {
 	state.loading = true;
-    listData('/log/logins',state.queryParams).then((response) => {
-		state.tableData = response.data.rows;
-		state.total = response.data.total;
+	listData('/log/logins', state.queryParams).then((response) => {
+		state.tableData = response.rows;
+		state.total = response.total;
 		state.loading = false;
 	});
 };
@@ -155,7 +160,7 @@ const onTabelRowDel = (row: any) => {
 		cancelButtonText: '取消',
 		type: 'warning',
 	}).then(function () {
-		return delData('log/logins',infoIds).then(() => {
+		return delData('log/logins', infoIds).then(() => {
 			handleQuery();
 			ElMessage.success('删除成功');
 		});
@@ -189,7 +194,7 @@ onMounted(() => {
 	// 查询列表数据信息
 	handleQuery();
 	proxy.getDicts('sys_common_status').then((response: any) => {
-		state.statusOptions = response.data.rows;
+		state.statusOptions = response.rows;
 	});
 });
 </script>

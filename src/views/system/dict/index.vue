@@ -39,7 +39,7 @@
 			</el-row>
 
 			<!--数据表格-->
-			<el-table  v-loading="loading" border :data="tableData" @selection-change="handleSelectionChange">
+			<el-table v-loading="loading" border :data="tableData" @selection-change="handleSelectionChange">
 				<el-table-column type="selection" align="center" />
 				<el-table-column label="编号" align="center" prop="dictId" width="60" />
 				<el-table-column label="字典名称" align="center" prop="dictName" :show-overflow-tooltip="true" />
@@ -56,7 +56,7 @@
 						<el-tag :type="scope.row.status === '1' ? 'danger' : 'success'" disable-transitions>{{ statusFormat(scope.row) }}</el-tag>
 					</template>
 				</el-table-column>
-				<el-table-column label="操作" align="center" fixed="right"  width="280" >
+				<el-table-column label="操作" align="center" fixed="right" width="280">
 					<template #default="scope">
 						<el-button type="text" icon="el-icon-s-tools" @click="editDictItem(scope.row)"><SvgIcon name="ele-Tools" />字典配置</el-button>
 						<el-button type="text" v-auth="'system:dictT:edit'" @click="onOpenEditModule(scope.row)"><SvgIcon name="ele-Edit" />修改</el-button>
@@ -141,8 +141,8 @@ const { loading, multiple, title, tableData, total, statusOptions, queryParams }
 const handleQuery = () => {
 	state.loading = true;
 	listData('/sys/dict', state.queryParams).then((response) => {
-		state.tableData = response.data.rows;
-		state.total = response.data.total;
+		state.tableData = response.rows;
+		state.total = response.total;
 		state.loading = false;
 	});
 };

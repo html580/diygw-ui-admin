@@ -24,7 +24,6 @@
 						重置
 					</el-button>
 				</el-form-item>
-				
 			</el-form>
 
 			<!-- 操作按钮 -->
@@ -55,9 +54,8 @@
 					</template>
 				</el-table-column>
 				<el-table-column label="备注" align="center" prop="remark" :show-overflow-tooltip="true" />
-				<el-table-column label="创建时间" align="center" prop="createTime" width="180">
-				</el-table-column>
-				<el-table-column label="操作" align="center" fixed="right"  width="180">
+				<el-table-column label="创建时间" align="center" prop="createTime" width="180"> </el-table-column>
+				<el-table-column label="操作" align="center" fixed="right" width="180">
 					<template #default="scope">
 						<el-button type="text" v-auth="'system:config:edit'" @click="onOpenEditModule(scope.row)"><SvgIcon name="ele-Edit" />修改</el-button>
 						<el-button v-if="scope.row.parentId != 0" type="text" v-auth="'system:config:delete'" @click="onTabelRowDel(scope.row)"
@@ -128,8 +126,8 @@ const handleQuery = () => {
 	state.loading = true;
 
 	listData('/sys/config', state.queryParams).then((response) => {
-		state.tableData = response.data.rows;
-		state.total = response.data.total;
+		state.tableData = response.rows;
+		state.total = response.total;
 		state.loading = false;
 	});
 };
@@ -216,7 +214,7 @@ onMounted(() => {
 	handleQuery();
 	// 查询配置参数状态数据配置参数
 	proxy.getDicts('sys_yes_no').then((response: any) => {
-		state.typeOptions = response.data.rows;
+		state.typeOptions = response.rows;
 	});
 	proxy.mittBus.on('onEditPostModule', (res: any) => {
 		handleQuery();

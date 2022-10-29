@@ -19,6 +19,7 @@ import setIntroduction from '@/utils/setIconfont';
 import LockScreen from '@/layout/lockScreen/index.vue';
 import Setings from '@/layout/navBars/breadcrumb/setings.vue';
 import CloseFull from '@/layout/navBars/breadcrumb/closeFull.vue';
+import useWangeditor from '@/utils/useWangeditor';
 
 export default defineComponent({
 	name: 'app',
@@ -41,6 +42,7 @@ export default defineComponent({
 		const openSetingsDrawer = () => {
 			setingsRef.value.openDrawer();
 		};
+		useWangeditor();
 		// 设置初始化，防止刷新时恢复默认
 		onBeforeMount(() => {
 			// 设置批量第三方 icon 图标

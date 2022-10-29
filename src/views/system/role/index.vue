@@ -30,7 +30,8 @@
 			<div class="mb8">
 				<el-button type="primary" plain v-auth="'system:role:add'" @click="handleAdd"><SvgIcon name="ele-Plus" />新增</el-button>
 				<el-button type="danger" plain v-auth="'system:role:delete'" :disabled="state.multiple" @click="handleDelete"
-						><SvgIcon name="ele-Delete" />删除</el-button>
+					><SvgIcon name="ele-Delete" />删除</el-button
+				>
 				<el-button type="warning" plain v-auth="'system:role:export'" @click="handleExport"><SvgIcon name="ele-Download" />导出</el-button>
 			</div>
 
@@ -38,7 +39,7 @@
 			<el-table v-loading="state.loading" border :data="state.roleList" @selection-change="handleSelectionChange">
 				<el-table-column type="selection" width="55" align="center" />
 				<el-table-column label="角色编号" prop="roleId" width="120" />
-				<el-table-column label="角色名称" prop="roleName" :show-overflow-tooltip="true"  />
+				<el-table-column label="角色名称" prop="roleName" :show-overflow-tooltip="true" />
 				<el-table-column label="权限字符" prop="roleKey" :show-overflow-tooltip="true" width="150" />
 				<el-table-column label="显示顺序" prop="roleSort" width="100" />
 				<el-table-column label="状态" align="center" width="100">
@@ -47,7 +48,7 @@
 					</template>
 				</el-table-column>
 				<el-table-column label="创建时间" align="center" prop="createTime" width="180"> </el-table-column>
-				<el-table-column label="操作" align="center" fixed="right"  width="280">
+				<el-table-column label="操作" align="center" fixed="right" width="280">
 					<template #default="scope">
 						<el-button type="text" v-auth="'system:role:edit'" @click="handleUpdate(scope.row)"><SvgIcon name="ele-Edit" />修改</el-button>
 						<el-button type="text" @click="handleDataScope(scope.row)"><SvgIcon name="ele-CircleCheck" />数据权限</el-button>
@@ -188,7 +189,7 @@
 <script lang="ts" setup>
 import { getCurrentInstance, onMounted, reactive, ref, unref, nextTick } from 'vue';
 import { ElMessage, ElMessageBox } from 'element-plus';
-import { addData, changeStatus, delData, exportData, getOneData,  listData,  updateData } from '@/api';
+import { addData, changeStatus, delData, exportData, getOneData, listData, updateData } from '@/api';
 import { handleTree } from '@/utils';
 const { proxy } = getCurrentInstance() as any;
 const roleFormRef = ref<HTMLElement | null>(null);
@@ -305,8 +306,8 @@ const resetQuery = () => {
 const getList = () => {
 	state.loading = true;
 	listData('/sys/role', state.queryParams).then((response) => {
-		state.roleList = response.data.rows;
-		state.total = response.data.total;
+		state.roleList = response.rows;
+		state.total = response.total;
 		state.loading = false;
 	});
 };
@@ -349,7 +350,7 @@ const handleQuery = () => {
 /** 查询菜单树结构 */
 const getMenuTreeselect = () => {
 	listData('/sys/menu', {}).then((response) => {
-		state.menuOptions = handleTree(response.data.rows, 'menuId', 'parentId', 'children');
+		state.menuOptions = handleTree(response.rows, 'menuId', 'parentId', 'children');
 	});
 };
 
@@ -463,14 +464,14 @@ const handleExport = () => {
 /** 根据角色ID查询部门树结构 */
 const getRoleDeptTreeselect = () => {
 	return listData('/sys/dept', {}).then((response) => {
-		state.deptOptions = handleTree(response.data.rows, 'deptId', 'parentId', 'children');
+		state.deptOptions = handleTree(response.rows, 'deptId', 'parentId', 'children');
 		return response.data;
 	});
 };
 /** 根据角色ID查询菜单树结构 */
 const getRoleMenuTreeselect = () => {
 	return listData('/sys/menu', {}).then((response) => {
-		state.menuOptions = handleTree(response.data.rows, 'menuId', 'parentId', 'children');
+		state.menuOptions = handleTree(response.rows, 'menuId', 'parentId', 'children');
 		return response.data;
 	});
 };
@@ -560,7 +561,7 @@ const handleCheckedTreeNodeAll = (value: any, type: any) => {
 onMounted(() => {
 	getList();
 	proxy.getDicts('sys_normal_disable').then((response: any) => {
-		state.statusOptions = response.data.rows;
+		state.statusOptions = response.rows;
 	});
 });
 </script>

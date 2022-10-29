@@ -86,7 +86,7 @@ const openDialog = (row: any) => {
 	state.loading = false;
 	// 查询配置参数状态数据配置参数
 	proxy.getDicts('sys_yes_no').then((response: any) => {
-		state.typeOptions = response.data.rows;
+		state.typeOptions = response.rows;
 	});
 };
 

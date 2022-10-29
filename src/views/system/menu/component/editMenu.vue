@@ -38,8 +38,8 @@
 						</el-form-item>
 					</el-col>
 					<el-col :xs="24" :sm="12" :md="12" :lg="12" :xl="12">
-						<el-form-item label="菜单排序" prop="sort">
-							<el-input-number v-model="state.ruleForm.sort" placeholder="菜单排序" clearable></el-input-number>
+						<el-form-item label="菜单排序" prop="orderNum">
+							<el-input-number v-model="state.ruleForm.orderNum" placeholder="菜单排序" clearable></el-input-number>
 						</el-form-item>
 					</el-col>
 
@@ -167,11 +167,10 @@
 </template>
 
 <script lang="ts" setup>
-import { reactive,ref, unref, getCurrentInstance } from 'vue';
+import { reactive, ref, unref, getCurrentInstance } from 'vue';
 import IconSelector from '@/components/iconSelector/index.vue';
 import { listData, addData, updateData } from '@/api';
 import { ElMessage } from 'element-plus';
-
 
 import { handleTree } from '@/utils';
 defineProps({
@@ -180,7 +179,6 @@ defineProps({
 		default: () => '',
 	},
 });
-
 
 const { proxy } = getCurrentInstance() as any;
 const ruleFormRef = ref<HTMLElement | null>(null);
@@ -201,7 +199,7 @@ const state = reactive({
 		parentId: 0, // 父菜单ID
 		component: '', // 组件地址
 		path: '',
-		sort: 1, // 菜单排序
+		orderNum: 1, // 菜单排序
 		status: '', //菜单状态
 		title: '', // 菜单名称
 		icon: '', // 菜单图标
@@ -229,7 +227,7 @@ const state = reactive({
 		parentId: [{ required: true, message: '父菜单不能为空', trigger: 'blur' }],
 		menuType: [{ required: true, message: '菜单类型不能为空', trigger: 'blur' }],
 		status: [{ required: true, message: '菜单状态不能为空', trigger: 'blur' }],
-		sort: [{ required: true, message: '菜单顺序不能为空', trigger: 'blur' }],
+		orderNum: [{ required: true, message: '菜单顺序不能为空', trigger: 'blur' }],
 	},
 });
 // 打开弹窗
@@ -245,24 +243,24 @@ const openDialog = (row: any) => {
 	state.loading = false;
 	// 查询显示状态数据字典
 	proxy.getDicts('sys_show_hide').then((response: any) => {
-		state.isHideOptions = response.data.rows;
+		state.isHideOptions = response.rows;
 	});
 	// 查询菜单状态数据字典
 	proxy.getDicts('sys_normal_disable').then((response: any) => {
-		state.statusOptions = response.data.rows;
+		state.statusOptions = response.rows;
 	});
 	// 查询菜单类型数据字典
 	proxy.getDicts('sys_menu_type').then((response: any) => {
-		state.menuTypeOptions = response.data.rows;
+		state.menuTypeOptions = response.rows;
 	});
 	// 查询数字是否数据字典
 	proxy.getDicts('sys_num_yes_no').then((response: any) => {
-		state.yesOrNoOptions = response.data.rows;
+		state.yesOrNoOptions = response.rows;
 	});
 	// 查询菜单下拉树结构
 	listData('/sys/menu', {}).then((response: any) => {
-		response.data.rows.unshift({ menuId: 0, menuName: '顶级菜单' });
-		state.menuOptions = handleTree(response.data.rows, 'menuId', 'parentId', 'children');
+		response.rows.unshift({ menuId: 0, menuName: '顶级菜单' });
+		state.menuOptions = handleTree(response.rows, 'menuId', 'parentId', 'children');
 	});
 };
 // 关闭弹窗
@@ -323,7 +321,7 @@ const initForm = () => {
 	state.ruleForm.parentId = 0; // 父菜单ID
 	state.ruleForm.component = ''; // 组件地址
 	state.ruleForm.path = ''; // 路由地址
-	state.ruleForm.sort = 1; // 菜单排序
+	state.ruleForm.orderNum = 1; // 菜单排序
 	state.ruleForm.status = ''; //菜单状态
 	state.ruleForm.title = ''; // 菜单名称
 	state.ruleForm.icon = ''; // 菜单图标

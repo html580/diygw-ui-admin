@@ -58,6 +58,9 @@ body,
 		.el-scrollbar__view {
 			overflow: hidden;
 		}
+		i+span{
+			margin-left: 5px;
+		}
 	}
 	.layout-header {
 		padding: 0 !important;

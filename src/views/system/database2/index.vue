@@ -25,7 +25,13 @@
 					<!-- 查询-->
 					<el-form :model="state.queryParams" ref="queryForm" :inline="true" label-width="78px">
 						<el-form-item label="用户名称" prop="username">
-							<el-input placeholder="用户名称模糊查询" clearable @keyup.enter="handleQuery" style="width: 240px" v-model="state.queryParams.username" />
+							<el-input
+								placeholder="用户名称模糊查询"
+								clearable
+								@keyup.enter="handleQuery"
+								style="width: 240px"
+								v-model="state.queryParams.username"
+							/>
 						</el-form-item>
 						<el-form-item label="手机号码" prop="phone">
 							<el-input v-model="state.queryParams.phone" placeholder="请输入手机号码" clearable style="width: 240px" @keyup.enter="handleQuery" />
@@ -58,12 +64,11 @@
 					</el-col>
 
 					<el-table v-loading="state.loading" :data="state.tableData" stripe @selection-change="handleSelectionChange" style="width: 100%">
-						<el-table-column label="表名"  prop="name" />
-						<el-table-column prop="engine" label="引擎"/>
+						<el-table-column label="表名" prop="name" />
+						<el-table-column prop="engine" label="引擎" />
 						<el-table-column prop="collation" label="字符集" />
 						<el-table-column prop="rows" label="数据行数" />
-						<el-table-column prop="indexLength" label="索引大小">
-						</el-table-column>
+						<el-table-column prop="indexLength" label="索引大小"> </el-table-column>
 						<el-table-column prop="comment" label="注释" />
 						<el-table-column prop="updateTime" label="创建时间" />
 						<el-table-column prop="path" label="操作" width="150">
@@ -96,7 +101,6 @@
 
 <script lang="ts" setup>
 import { reactive, onMounted, ref, watch, getCurrentInstance, onUnmounted } from 'vue';
-
 
 import { ElMessageBox, ElMessage } from 'element-plus';
 
@@ -154,12 +158,12 @@ watch(
 /** 查询用户列表 */
 const getList = async () => {
 	state.loading = true;
-	listData('/sys/database',state.queryParams).then((response: any) => {
+	listData('/sys/database', state.queryParams).then((response: any) => {
 		if (response.code != 200) {
 			state.loading = false;
 		}
-		state.tableData = response.data.rows;
-		state.total = response.data.total;
+		state.tableData = response.rows;
+		state.total = response.total;
 		state.loading = false;
 	});
 };
@@ -199,8 +203,8 @@ const handleUpdate = (row: any) => {
 
 /** 查询部门下拉树结构 */
 const getTreeselect = async () => {
-	listData('/sys/dept',{}).then((response) => {
-		state.deptOptions = handleTree(response.data.rows,"deptId","parentId","children");;
+	listData('/sys/dept', {}).then((response) => {
+		state.deptOptions = handleTree(response.rows, 'deptId', 'parentId', 'children');
 	});
 };
 // 用户状态修改
@@ -214,7 +218,7 @@ const handleStatusChange = (row: any) => {
 		cancelButtonText: '取消',
 		beforeClose: (action, instance, done) => {
 			if (action === 'confirm') {
-				return changeStatus('/sys/user',{userId:row.userId,status:row.status}).then(() => {
+				return changeStatus('/sys/user', { userId: row.userId, status: row.status }).then(() => {
 					ElMessage.success(text + '成功');
 					done();
 				});
@@ -236,7 +240,7 @@ const handleDelete = (row: any) => {
 		confirmButtonText: '确定',
 		cancelButtonText: '取消',
 	}).then(function () {
-    return delData('/sys/user', userId).then(() => {
+		return delData('/sys/user', userId).then(() => {
 			handleQuery();
 			ElMessage.success('删除成功');
 		});
@@ -292,11 +296,11 @@ onMounted(() => {
 	getTreeselect();
 	// 查询显示状态数据字典
 	proxy.getDicts('sys_normal_disable').then((response: any) => {
-		state.statusOptions = response.data.rows;
+		state.statusOptions = response.rows;
 	});
 	// 查询显示性別数据字典
 	proxy.getDicts('sys_user_sex').then((response: any) => {
-		state.sexOptions = response.data.rows;
+		state.sexOptions = response.rows;
 	});
 
 	proxy.mittBus.on('onEditUserModule', (res: any) => {

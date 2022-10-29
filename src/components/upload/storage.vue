@@ -239,7 +239,7 @@ export default defineComponent({
 			data.storageType = props.type;
 			data.source = source;
 			data.checkList = [];
-			data.currentTableData.forEach((item:any) => {
+			data.currentTableData.forEach((item: any) => {
 				item.selectclz = '';
 			});
 
@@ -276,8 +276,8 @@ export default defineComponent({
 				pageSize: data.page.size,
 			})
 				.then((res) => {
-					data.currentTableData = res.data.rows || [];
-					data.page.total = res.data.total;
+					data.currentTableData = res.rows || [];
+					data.page.total = res.total;
 					data.isLoad = true;
 				})
 				.finally(() => {
@@ -291,8 +291,8 @@ export default defineComponent({
 				...data.sysform,
 			})
 				.then((res) => {
-					data.currentSysTableData = res.data.rows || [];
-					data.searchSysTableData = res.data.rows || [];
+					data.currentSysTableData = res.rows || [];
+					data.searchSysTableData = res.rows || [];
 				})
 				.finally(() => {
 					data.loading = false;
@@ -305,9 +305,9 @@ export default defineComponent({
 				...data.sysform,
 			})
 				.then((res) => {
-					data.syscategorys = res.data.rows || [];
+					data.syscategorys = res.rows || [];
 					data.sysform.type = 'system';
-					data.sysform.parentId = res.data.rows[0].storageId;
+					data.sysform.parentId = res.rows[0].storageId;
 					handleSysSubmit();
 				})
 				.finally(() => {
@@ -459,7 +459,7 @@ export default defineComponent({
 		const getStorageDirectory = () => {
 			//if (!this.directoryList.length) {
 			listAllData('/sys/storage', { type: 'category' }).then((res) => {
-				data.categorys = res.data.rows;
+				data.categorys = res.rows;
 			});
 		};
 

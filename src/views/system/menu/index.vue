@@ -29,18 +29,15 @@
 
 			<!--数据表格-->
 			<el-table v-loading="loading" :data="menuList" row-key="menuId" border :tree-props="{ children: 'children', hasChildren: 'hasChildren' }">
-				
 				<el-table-column prop="menuName" label="菜单名称" :show-overflow-tooltip="true">
-					<template #default="scope">
-						{{scope.row.menuId}}:{{scope.row.menuName}}
-					</template>
+					<template #default="scope"> {{ scope.row.menuId }}:{{ scope.row.menuName }} </template>
 				</el-table-column>
 				<el-table-column prop="icon" label="图标" align="center" width="100">
 					<template #default="scope">
 						<SvgIcon :name="scope.row.icon"></SvgIcon>
 					</template>
 				</el-table-column>
-				<el-table-column prop="sort" label="排序" width="60"></el-table-column>
+				<el-table-column prop="orderNum" label="排序" width="60"></el-table-column>
 				<el-table-column prop="icon" label="分类" align="center" width="100">
 					<template #default="scope">
 						<el-tag :type="scope.row.menuType === 'M' ? 'danger' : scope.row.menuType === 'C' ? 'success' : 'warning'" disable-transitions
@@ -48,8 +45,8 @@
 						</el-tag>
 					</template>
 				</el-table-column>
-				<el-table-column prop="permission" label="权限标识"  width="100" :show-overflow-tooltip="true"></el-table-column>
-				<el-table-column prop="component" label="组件路径"  width="150" :show-overflow-tooltip="true"></el-table-column>
+				<el-table-column prop="permission" label="权限标识" width="100" :show-overflow-tooltip="true"></el-table-column>
+				<el-table-column prop="component" label="组件路径" width="150" :show-overflow-tooltip="true"></el-table-column>
 				<el-table-column prop="status" label="状态" width="80">
 					<template #default="scope">
 						<el-tag :type="scope.row.status === '1' ? 'danger' : 'success'" disable-transitions>{{ statusFormat(scope.row) || '-- --' }} </el-tag>
@@ -60,7 +57,7 @@
 						<el-tag :type="scope.row.status === '1' ? 'danger' : 'success'" disable-transitions>{{ isHideFormat(scope.row) || '-- --' }} </el-tag>
 					</template>
 				</el-table-column>
-				<el-table-column label="操作" align="center" fixed="right"  width="380">
+				<el-table-column label="操作" align="center" fixed="right" width="380">
 					<template #default="scope">
 						<div class="flex">
 							<el-button type="text" icon="el-icon-edit" @click="onOpenEditMenu(scope.row)"><SvgIcon name="ele-Edit" />修改</el-button>
@@ -109,12 +106,12 @@ const state: any = reactive({
 		status: undefined,
 	},
 });
-const { loading, menuList,  title,   statusOptions,  queryParams } = toRefs(state);
+const { loading, menuList, title, statusOptions, queryParams } = toRefs(state);
 /** 查询菜单列表 */
 const getList = () => {
 	state.loading = true;
 	listData('/sys/menu', state.queryParams).then((response: any) => {
-		state.menuList = handleTree(response.data.rows, 'menuId', 'parentId', 'children');
+		state.menuList = handleTree(response.rows, 'menuId', 'parentId', 'children');
 		state.loading = false;
 	});
 };
@@ -153,10 +150,10 @@ const handleDelete = (row: any) => {
 		cancelButtonText: '取消',
 		type: 'warning',
 	}).then(function () {
-        return delData('/sys/menu',row.menuId).then(() => {
-            handleQuery();
-            ElMessage.success("删除成功");
-        });
+		return delData('/sys/menu', row.menuId).then(() => {
+			handleQuery();
+			ElMessage.success('删除成功');
+		});
 	});
 };
 
@@ -170,10 +167,10 @@ const handleCopy = (row: any) => {
 		cancelButtonText: '取消',
 		type: 'warning',
 	}).then(function () {
-        return copyData('/sys/menu',row.menuId).then(() => {
-            handleQuery();
-            ElMessage.success("复制成功");
-        });
+		return copyData('/sys/menu', row.menuId).then(() => {
+			handleQuery();
+			ElMessage.success('复制成功');
+		});
 	});
 };
 
@@ -200,14 +197,14 @@ onMounted(() => {
 	getList();
 	// 查询显示状态数据字典
 	proxy.getDicts('sys_show_hide').then((response: any) => {
-		state.isHideOptions = response.data.rows;
+		state.isHideOptions = response.rows;
 	});
 	proxy.getDicts('sys_menu_type').then((response: any) => {
-		state.menuTypeOptions = response.data.rows;
+		state.menuTypeOptions = response.rows;
 	});
 	// 查询菜单状态数据字典
 	proxy.getDicts('sys_normal_disable').then((response: any) => {
-		state.statusOptions = response.data.rows;
+		state.statusOptions = response.rows;
 	});
 	proxy.mittBus.on('onEditMenuModule', () => {
 		handleQuery();
@@ -218,5 +215,3 @@ onUnmounted(() => {
 	proxy.mittBus.off('onEditDeptModule');
 });
 </script>
-
-

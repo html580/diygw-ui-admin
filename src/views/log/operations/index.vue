@@ -175,8 +175,8 @@ const state = reactive({
 const handleQuery = () => {
 	state.loading = true;
 	listData('/log/operations', state.queryParams).then((response) => {
-		state.tableData = response.data.rows;
-		state.total = response.data.total;
+		state.tableData = response.rows;
+		state.total = response.total;
 		state.loading = false;
 	});
 };
@@ -267,10 +267,10 @@ onMounted(() => {
 	// 查询列表数据信息
 	handleQuery();
 	proxy.getDicts('sys_common_status').then((response: any) => {
-		state.statusOptions = response.data.rows;
+		state.statusOptions = response.rows;
 	});
 	proxy.getDicts('sys_oper_type').then((response: any) => {
-		state.typeOptions = response.data.rows;
+		state.typeOptions = response.rows;
 	});
 });
 </script>

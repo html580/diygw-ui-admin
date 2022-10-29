@@ -54,8 +54,14 @@
 						</el-form-item>
 					</el-col>
 					<el-col :xs="24" :sm="12" :md="12" :lg="12" :xl="12">
-						<el-form-item label="部门排序" prop="sort">
-							<el-input-number v-model="state.ruleForm.sort" placeholder="部门排序" clearable controls-position="right" :min="0"></el-input-number>
+						<el-form-item label="部门排序" prop="orderNum">
+							<el-input-number
+								v-model="state.ruleForm.orderNum"
+								placeholder="部门排序"
+								clearable
+								controls-position="right"
+								:min="0"
+							></el-input-number>
 						</el-form-item>
 					</el-col>
 				</el-row>
@@ -92,7 +98,7 @@ const state = reactive({
 		deptId: 0, // 部门ID
 		deptName: '', // 部门名称
 		parentId: 0, // 父部门ID
-		sort: 0, // 部门排序
+		orderNum: 0, // 部门排序
 		status: '', //部门状态
 		leader: '', // 部门负责人
 		phone: '', // 联系电话
@@ -107,7 +113,7 @@ const state = reactive({
 		deptName: [{ required: true, message: '部门名称不能为空', trigger: 'blur' }],
 		parentId: [{ required: true, message: '父部门不能为空', trigger: 'blur' }],
 		status: [{ required: true, message: '部门状态不能为空', trigger: 'blur' }],
-		sort: [{ required: true, message: '部门顺序不能为空', trigger: 'blur' }],
+		orderNum: [{ required: true, message: '部门顺序不能为空', trigger: 'blur' }],
 		email: [
 			{
 				type: 'email',
@@ -137,13 +143,13 @@ const openDialog = (row: any) => {
 	state.loading = false;
 	// 查询部门状态数据字典
 	proxy.getDicts('sys_normal_disable').then((response: any) => {
-		state.statusOptions = response.data.rows;
+		state.statusOptions = response.rows;
 	});
 
 	// 查询部门下拉树结构
 	listData('/sys/dept', {}).then((response: any) => {
-		response.data.rows.unshift({ deptId: 0, deptName: '顶级部门' });
-		state.deptOptions = handleTree(response.data.rows, 'deptId', 'parentId', 'children');
+		response.rows.unshift({ deptId: 0, deptName: '顶级部门' });
+		state.deptOptions = handleTree(response.rows, 'deptId', 'parentId', 'children');
 		//state.deptOptions = dataList;
 	});
 };
@@ -195,7 +201,7 @@ const initForm = () => {
 	state.ruleForm.deptId = 0; // 部门ID
 	state.ruleForm.deptName = ''; // 部门名称
 	state.ruleForm.parentId = 0; // 父部门ID
-	state.ruleForm.sort = 0; // 部门排序
+	state.ruleForm.orderNum = 0; // 部门排序
 	state.ruleForm.status = state.ruleForm.status ? state.ruleForm.status : '0'; //部门状态
 	state.ruleForm.leader = ''; // 部门负责人
 	state.ruleForm.phone = ''; // 联系电话
