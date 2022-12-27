@@ -6,7 +6,6 @@ import { directive } from '@/utils/directive';
 import { i18n } from '@/i18n/index';
 import other from '@/utils/other';
 import http from '@/utils/http';
-import { navigateTo } from '@/utils/index';
 import { useDict, getDict } from '@/utils/dict';
 import ElementPlus from 'element-plus';
 import 'element-plus/dist/index.css';
@@ -26,11 +25,7 @@ directive(app);
 other.elSvg(app);
 
 app.use(pinia).use(router).use(ElementPlus, { i18n: i18n.global.t }).use(i18n).use(Column).use(VueGridLayout).mount('#app');
-app.mixin({
-    methods: {
-        navigateTo
-    }
-})
+
 app.config.globalProperties.mittBus = mitt();
 app.config.globalProperties.getDicts = getDicts
 app.config.globalProperties.selectDictLabel = selectDictLabel
