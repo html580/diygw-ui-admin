@@ -23,21 +23,22 @@
 
 基于 vue3.x + CompositionAPI + typescript + vite + element plus + vue-router-next + pinia，适配手机、平板、pc 的后台开源免费模板，希望减少工作量，帮助大家实现快速开发。
 
-
 #### 💒 代码仓库
 
 - <a href="https://gitee.com/diygw/diygw-ui-admin" target="_blank">https://gitee.com/diygw/diygw-ui-admin</a>
 
 #### 💒 集成后端
 
-- <a target="_blank" href="https://gitee.com/diygw/diygw-ui-php">基于thinkphp6实现的DIYGW-UI-PHP</a>
+- <a target="_blank" href="https://gitee.com/diygw/diygw-ui-php">基于 thinkphp6 实现的 DIYGW-UI-PHP</a>
 
 #### 💒 在线可视化集成教程
+
 - <a target="_blank" href="https://www.bilibili.com/video/BV1CP411V7TV?spm_id_from=333.999.0.0&vd_source=dc541827a3c20d8e063187146f12aa57">在线视频教程</a>
 
 #### ⚡ ⚡ ⚡ ⚡ ⚡ 重要配置
-> 为了开发的方便，环境已关闭了动态路由，启用静态路由，如需要开启动态路由，请配置stores--->themeConfig.ts---->isRequestRoutes 设置为true。
-如果已运行后，在后台管理界面主题设置，重置所有的设置。
+
+> 为了开发的方便，环境已关闭了动态路由，启用静态路由，如需要开启动态路由，请配置 stores--->themeConfig.ts---->isRequestRoutes 设置为 true。
+> 如果已运行后，在后台管理界面主题设置，重置所有的设置。
 
 #### 🏭 环境支持
 
@@ -48,7 +49,6 @@
 > 由于 Vue3 不再支持 IE11，故而 ElementPlus 也不支持 IE11 及之前版本。
 
 #### ⚡ 使用说明
-
 
 ```bash
 # 克隆项目
@@ -87,15 +87,18 @@ npm run build
 
 ```
 
+### ⚡ 路由开启
+
+DIY 可视化为了设计后台方便，关闭了动态路由功能，如果需要开启数据库加载动态路由功能，请开启 stores/themeConfig.ts 找到 isRequestRoutes 设置为 true，即可。设置后如果已经登录清下缓存，退出后重新登录即可。
+
 ### ⚡ 部分截图
+
 ![DIYGW可视化UNIAPP代码生成器](https://libs.diygw.com/upload/1/php0.png)
 ![DIYGW可视化支持轻松在线可视化导出微信小程序代码](https://libs.diygw.com/upload/1/php1.png)
 ![DIYGW可视化支持轻松在线可视化导出支付宝小程序代码](https://libs.diygw.com/upload/1/php2.png)
 ![DIYGW可视化头条小程序代码生成器](https://libs.diygw.com/upload/1/php3.png)
 ![DIYGW可视化H5代码生成器](https://libs.diygw.com/upload/1/php4.png)
 ![DIYGW可视化Element Plus代码生成器](https://libs.diygw.com/upload/1/php5.png)
-
-
 
 #### ❤️ 鸣谢列表
 
@@ -127,7 +130,6 @@ npm run build
 - <a href="https://github.com/jsplumb/jsplumb" target="_blank">jsplumb</a>
 
 #### 💕 特别感谢
-
 
 - <a href="https://gitee.com/lyt-top/vue-next-admin" target="_blank">@lyt-Top</a>
 
