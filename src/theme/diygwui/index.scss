@@ -5,7 +5,6 @@
 @import './mixins.scss';
 @import './var.scss';
 
-
 :root {
 	/* Color 可以自定义相关配色 */
 	/* var属性兼容性 --> https://www.caniuse.com/#feat=css-variables */
@@ -66,12 +65,12 @@
 	--greyShadow: rgba(114, 130, 138, 0.2);
 	--grayShadow: rgba(114, 130, 138, 0.2);
 	--blackShadow: rgba(26, 26, 26, 0.15);
-	--primary-font-size:12px;
-	--form-label-width:5em;
+	--primary-font-size: 12px;
+	--form-label-width: 5em;
 }
 @import './iconfont.scss';
-[class*=diygw-] {
-     font-size: inherit;
+[class*='diygw-'] {
+	font-size: inherit;
 }
 
 view,
@@ -85,101 +84,100 @@ navigator,
 image {
 	box-sizing: border-box;
 }
-.htmlcontent{
+.htmlcontent {
 	white-space: pre-line;
 	width: 100%;
-
 }
-.hide{
-	display: none  !important;
+.hide {
+	display: none !important;
 }
 .response {
 	width: 100%;
 }
-.diygw-absolute{
+.diygw-absolute {
 	position: absolute !important;
-	z-index:999;
-	left:0px;
-	top:0px;
+	z-index: 999;
+	left: 0px;
+	top: 0px;
 }
-.diygw-top{
+.diygw-top {
 	position: absolute !important;
-	z-index:999;
-	left:0px;
-	top:0px;
+	z-index: 999;
+	left: 0px;
+	top: 0px;
 }
-.clearfix{
+.clearfix {
 	clear: both;
 }
-.not-border{
-	border:0 !important;
-	&::after,&::before{
-		border:0 !important;
+.not-border {
+	border: 0 !important;
+	&::after,
+	&::before {
+		border: 0 !important;
 	}
-	&.diygw-tag{
-		padding-left:0;
+	&.diygw-tag {
+		padding-left: 0;
 	}
 }
-.pad{
-    width:750px !important;
+
+.pad {
+	width: 750px !important;
 }
-.pc980{
-    width:980px !important;
+.pc980 {
+	width: 980px !important;
 }
-.pc1024{
-    width:1024px !important;
+.pc1024 {
+	width: 1024px !important;
 }
-.pc1366{
-    width:1366px !important;
+.pc1366 {
+	width: 1366px !important;
 }
-.pc1280{
-    width:1280px !important;
+.pc1280 {
+	width: 1280px !important;
 }
-.pc1440{
-    width:1440px !important;
+.pc1440 {
+	width: 1440px !important;
 }
-.pc1680{
-    width:1680px !important;
+.pc1680 {
+	width: 1680px !important;
 }
-.pc1920{
-    width:1920px !important;
+.pc1920 {
+	width: 1920px !important;
 }
-.diygw-block{
+.diygw-block {
 	display: block !important;
 }
-.font-normal{
+.font-normal {
 	font-weight: normal;
 }
-.no-mini{
+.no-mini {
 	min-height: inherit !important;
 }
-.font-bold{
+.font-bold {
 	font-weight: bold;
 }
-.border{
-	border:0;
+.border {
+	border: 0;
 }
-.width-auto{
+.width-auto {
 	width: auto !important;
 }
-[class*=diy-icon-]{
-	font-family: "diygwui" !important;
+[class*='diy-icon-'] {
+	font-family: 'diygwui' !important;
 	font-size: 16px;
 	font-style: normal;
 	-webkit-font-smoothing: antialiased;
 	-moz-osx-font-smoothing: grayscale;
-} 
+}
 @each $direction in $diygw-directions {
-    @include set-border($direction);
+	@include set-border($direction);
 }
 
 @each $size in $diygw-sizes {
-    @include set-margin($size);
+	@include set-margin($size);
 	@include set-padding($size);
 	@include set-lineheight($size);
 }
-
-  
 
 @import './shadow.scss';
 @import './background.scss';

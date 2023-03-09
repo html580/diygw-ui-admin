@@ -23,7 +23,7 @@ import { IDomEditor } from '@wangeditor/editor';
 import DiyStorage from '@/components/upload/storage.vue';
 
 export default defineComponent({
-	name: 'DiygwEditor',
+	name: 'DiyEditor',
 	components: { Editor, Toolbar, DiyStorage },
 	props: {
 		// 节点 id
@@ -69,8 +69,8 @@ export default defineComponent({
 				return;
 			}
 			const file = files[0];
-			editorRef.value.restoreSelection()
-			editorRef.value.dangerouslyInsertHtml( "<img src='" + file.url + "'/>");
+			editorRef.value.restoreSelection();
+			editorRef.value.dangerouslyInsertHtml("<img src='" + file.url + "'/>");
 		};
 
 		const data = useVModel(props, 'modelValue', emit);
@@ -91,7 +91,7 @@ export default defineComponent({
 
 		// 组件销毁时，也及时销毁编辑器
 		onBeforeUnmount(() => {
-			proxy.mittBus.off('onImageStoregeShow')
+			proxy.mittBus.off('onImageStoregeShow');
 			const editor = editorRef.value;
 			if (editor == null) return;
 			editor.destroy();
@@ -100,7 +100,7 @@ export default defineComponent({
 		onMounted(() => {
 			// 设置 i18n，App.vue 中的 el-config-provider
 			proxy.mittBus.on('onImageStoregeShow', () => {
-				storage.value!.handleStorageDlg( '', '上传图片');
+				storage.value!.handleStorageDlg('', '上传图片');
 			});
 		});
 

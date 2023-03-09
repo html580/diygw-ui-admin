@@ -22,7 +22,7 @@ export function selectDictLabel(datas: any, value: any) {
  * @param param   参数占位符
  * @returns
  */
- export function templateResolve(template: string, param: any) {
+export function templateResolve(template: string, param: any) {
     return template.replace(/\{\w+\}/g, (word) => {
         const key = word.substring(1, word.length - 1);
         const value = param[key];
@@ -38,9 +38,9 @@ export function letterAvatar(name: string, size = 60, color = '') {
     name = name || '';
     size = size || 60;
     var colours = [
-            "#1abc9c", "#2ecc71", "#3498db", "#9b59b6", "#34495e", "#16a085", "#27ae60", "#2980b9", "#8e44ad", "#2c3e50",
-            "#f1c40f", "#e67e22", "#e74c3c", "#00bcd4", "#95a5a6", "#f39c12", "#d35400", "#c0392b", "#bdc3c7", "#7f8c8d"
-        ],
+        "#1abc9c", "#2ecc71", "#3498db", "#9b59b6", "#34495e", "#16a085", "#27ae60", "#2980b9", "#8e44ad", "#2c3e50",
+        "#f1c40f", "#e67e22", "#e74c3c", "#00bcd4", "#95a5a6", "#f39c12", "#d35400", "#c0392b", "#bdc3c7", "#7f8c8d"
+    ],
         nameSplit = String(name).split(' '),
         initials, charIndex, colourIndex, canvas, context, dataURI;
 
@@ -79,59 +79,63 @@ export function letterAvatar(name: string, size = 60, color = '') {
  * @param {*} parentId 父节点字段 默认 'parentId'
  * @param {*} children 孩子节点字段 默认 'children'
  */
- export function handleTree(data: any, id:string, parentId:string, children:string) {
-	let config = {
-		id: id || 'id',
-		parentId: parentId || 'parentId',
-		childrenList: children || 'children'
-	};
+export function handleTree(data: any, id: string, parentId: string, children: string) {
+    let config = {
+        id: id || 'id',
+        parentId: parentId || 'parentId',
+        childrenList: children || 'children'
+    };
 
-	var childrenListMap:any = {};
-	var nodeIds:any = {};
-	var tree = [];
+    var childrenListMap: any = {};
+    var nodeIds: any = {};
+    var tree = [];
 
-	for (let d of data) {
-		let parentId = d[config.parentId];
-		if (childrenListMap[parentId] == null) {
-			childrenListMap[parentId] = [];
-		}
-		nodeIds[d[config.id]] = d;
-		childrenListMap[parentId].push(d);
-	}
+    for (let d of data) {
+        let parentId = d[config.parentId];
+        if (childrenListMap[parentId] == null) {
+            childrenListMap[parentId] = [];
+        }
+        nodeIds[d[config.id]] = d;
+        childrenListMap[parentId].push(d);
+    }
 
-	for (let d of data) {
-		let parentId = d[config.parentId];
-		if (nodeIds[parentId] == null) {
-			tree.push(d);
-		}
-	}
+    for (let d of data) {
+        let parentId = d[config.parentId];
+        if (nodeIds[parentId] == null) {
+            tree.push(d);
+        }
+    }
 
-	for (let t of tree) {
-		adaptToChildrenList(t);
-	}
+    for (let t of tree) {
+        adaptToChildrenList(t);
+    }
 
-	function adaptToChildrenList(o:any) {
-		if (childrenListMap[o[config.id]] !== null) {
-			o[config.childrenList] = childrenListMap[o[config.id]];
-		}
-		if (o[config.childrenList]) {
-			for (let c of o[config.childrenList]) {
-				adaptToChildrenList(c);
-			}
-		}
-	}
-	return tree;
+    function adaptToChildrenList(o: any) {
+        if (childrenListMap[o[config.id]] !== null) {
+            o[config.childrenList] = childrenListMap[o[config.id]];
+        }
+        if (o[config.childrenList]) {
+            for (let c of o[config.childrenList]) {
+                adaptToChildrenList(c);
+            }
+        }
+    }
+    return tree;
 }
 
-export function navigeteTo(e:any){
-    const router = useRouter()
+export function navigateTo(e: any, row: any) {
     let dataset = e.currentTarget ? e.currentTarget.dataset : e;
-	let { type } = dataset;
+    let { type } = dataset;
+    if (row) {
+        dataset = Object.assign(dataset, row)
+    }
     if (type == 'page' || type == 'inner' || type == 'href') {
-        router.push({
-            path:dataset.url
+        this.$router.push({
+            path: dataset.url
         })
-    }else{
+    } else if (typeof this[type] == 'function') {
+        this[type](dataset)
+    } else {
         ElMessage.error('待实现点击事件');
     }
 

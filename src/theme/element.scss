@@ -35,6 +35,29 @@
 // 	}
 // }
 
+.el-form-item {
+	flex: 1;
+	.el-form-item__content {
+		flex-direction: column;
+		padding-right: 10px;
+		.el-input,
+		.el-select,
+		.el-radio-group,
+		.el-checkbox-group {
+			width: 100%;
+		}
+		.diygw-help-text {
+			width: 100%;
+			text-align: left;
+		}
+	}
+	.diygw-help-text {
+		color: #777;
+		font-size: 12px;
+		margin-top: 6px;
+	}
+}
+
 /* Alert 警告
 ------------------------------- */
 .el-alert {
@@ -91,7 +114,7 @@
 	@include generalIcon;
 }
 // 水平菜单、横向菜单高亮 背景色，鼠标 hover 时，有子级菜单的背景色
-.el-menu-horizontal-warp{
+.el-menu-horizontal-warp {
 	.el-menu-item.is-active,
 	.el-sub-menu.is-active .el-sub-menu__title,
 	.el-sub-menu:not(.is-opened):hover .el-sub-menu__title {
@@ -208,29 +231,29 @@
 
 /* Dialog 对话框
 ------------------------------- */
-.el-overlay {
-	overflow: hidden;
-	.el-overlay-dialog {
-		display: flex;
-		align-items: center;
-		justify-content: center;
-		position: unset !important;
-		width: 100%;
-		height: 100%;
-		.el-dialog {
-			margin: 0 auto !important;
-			position: absolute;
-			.el-dialog__body {
-				padding: 20px !important;
-			}
-		}
-	}
-}
-.el-dialog__body {
-	max-height: calc(90vh - 111px) !important;
-	overflow-y: auto;
-	overflow-x: hidden;
-}
+// .el-overlay {
+// 	overflow: hidden;
+// 	.el-overlay-dialog {
+// 		display: flex;
+// 		align-items: center;
+// 		justify-content: center;
+// 		position: unset !important;
+// 		width: 100%;
+// 		height: 100%;
+// 		.el-dialog {
+// 			margin: 0 auto !important;
+// 			position: absolute;
+// 			.el-dialog__body {
+// 				padding: 20px !important;
+// 			}
+// 		}
+// 	}
+// }
+// .el-dialog__body {
+// 	max-height: calc(90vh - 111px) !important;
+// 	overflow-y: auto;
+// 	overflow-x: hidden;
+// }
 
 /* Card 卡片
 ------------------------------- */
