@@ -1,24 +1,25 @@
 <template>
-	<div style="line-height: 0">
-		<vue-draggable-next
-			v-model="imageList"
-			v-bind="{ scroll: true, animation: 400 }"
-			class="el-upload-list el-upload-list--picture-card"
+	<div style="line-height: 0; width: 100%" class="flex justify-start">
+		<draggable
 			tag="ul"
-			:disabled="!isMove"
-			@start="state.isdrag = true"
-			@end="state.isdrag = false"
+			v-bind="{ animation: 200, disabled: false, ghostClass: 'ghost' }"
+			v-model="imageList"
+			class="el-upload-list el-upload-list--picture-card"
+			group="subform"
+			item-key="id"
 		>
-			<li v-for="(item, index) in imageList" :key="index" class="el-upload-list__item" :style="`width:${width}px; height:${height}px;`">
-				<el-image :style="`width:100%; height:100%`" :src="item" fit="contain" />
+			<template #item="{ element: item, index }">
+				<li class="el-upload-list__item" :style="`width:${width}px; height:${height}px;`">
+					<el-image :style="`width:100%; height:100%`" :src="item" fit="contain" />
 
-				<span v-show="!state.isdrag" :class="{ 'el-upload-list__item-actions': true, 'diy-cm': isMove }">
-					<span class="el-upload-list__item-delete">
-						<SvgIcon name="ele-Delete" @click="remove(index)" :size="20" />
+					<span v-show="!state.isdrag" :class="{ 'el-upload-list__item-actions': true, 'diy-cm': isMove }">
+						<span class="el-upload-list__item-delete">
+							<SvgIcon name="ele-Delete" @click="remove(index)" :size="20" />
+						</span>
 					</span>
-				</span>
-			</li>
-		</vue-draggable-next>
+				</li>
+			</template>
+		</draggable>
 
 		<div
 			v-if="limit == 0 || (imageList.length == 0 && limit == 1)"
@@ -35,9 +36,9 @@
 </template>
 
 <script lang="ts" setup>
-import { nextTick, ref, reactive} from 'vue';
+import { nextTick, ref, reactive } from 'vue';
 import { useVModel } from '@vueuse/core';
-import { VueDraggableNext } from 'vue-draggable-next';
+import draggable from 'vuedraggable';
 import { ElMessageBox } from 'element-plus';
 import DiyStorage from './storage.vue';
 
@@ -86,7 +87,7 @@ const imageList = useVModel(props, 'modelValue', emit);
 
 const handleStorage = () => {
 	nextTick(() => {
-		storage.value.handleStorageDlg( '', '上传图片');
+		storage.value.handleStorageDlg('', '上传图片');
 	});
 };
 // 获取商品相册资源
