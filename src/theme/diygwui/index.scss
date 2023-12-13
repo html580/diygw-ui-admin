@@ -95,14 +95,23 @@ image {
 	width: 100%;
 }
 .container {
-	padding: 10px !important;
 	background: #fff;
 	border-radius: 5px;
 	height: 100%;
 	flex: 1;
-	display: flex;
+	box-shadow: var(--el-box-shadow-light);
+	padding: 15px;
+
 	.el-card {
 		flex: 1;
+		border: 0px;
+
+		.el-card__body {
+			padding: 0px;
+		}
+		&.is-always-shadow {
+			box-shadow: none !important;
+		}
 	}
 }
 .diygw-absolute {

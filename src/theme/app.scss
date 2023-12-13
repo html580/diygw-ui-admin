@@ -83,6 +83,7 @@ body,
 			@extend .layout-flex;
 			.layout-parent {
 				@extend .layout-flex;
+				padding: 10px;
 				position: relative;
 			}
 		}
