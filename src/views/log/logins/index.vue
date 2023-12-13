@@ -1,31 +1,21 @@
 <template>
-	<div class="system-user-container app-container">
+	<div class="system-user-container container">
 		<el-card shadow="always">
 			<!-- 查询 -->
 			<el-form :model="state.queryParams" ref="queryForm" :inline="true" label-width="68px">
 				<el-form-item label="登录地点" prop="loginLocation">
-					<el-input
-						placeholder="请输入登录地点模糊查询"
-						clearable
-						@keyup.enter="handleQuery"
-						style="width: 240px"
-						v-model="state.queryParams.loginLocation"
-					/>
+					<el-input placeholder="请输入登录地点模糊查询" clearable @keyup.enter="handleQuery" style="width: 240px"
+						v-model="state.queryParams.loginLocation" />
 				</el-form-item>
 				<el-form-item label="用户名称" prop="userName">
-					<el-input
-						placeholder="请输入用户名称模糊查询"
-						clearable
-						@keyup.enter="handleQuery"
-						style="width: 240px"
-						v-model="state.queryParams.username"
-					/>
+					<el-input placeholder="请输入用户名称模糊查询" clearable @keyup.enter="handleQuery" style="width: 240px"
+						v-model="state.queryParams.username" />
 				</el-form-item>
 				<el-form-item>
 					<el-button type="primary" @click="handleQuery">
 						<SvgIcon name="elementSearch" />
-						搜索</el-button
-					>
+						搜索
+					</el-button>
 					<el-button @click="resetQuery">
 						<SvgIcon name="elementRefresh" />
 						重置
@@ -36,12 +26,15 @@
 			<!-- 操作按钮 -->
 			<el-row :gutter="10" class="mb8">
 				<el-col :span="1.5">
-					<el-button type="danger" plain :disabled="state.multiple" @click="onTabelRowDel" v-auth="'log:login:delete'"
-						><SvgIcon name="elementDelete" />删除</el-button
-					>
+					<el-button type="danger" plain :disabled="state.multiple" @click="onTabelRowDel"
+						v-auth="'log:login:delete'">
+						<SvgIcon name="elementDelete" />删除
+					</el-button>
 				</el-col>
 				<el-col :span="1.5">
-					<el-button type="danger" plain @click="handleClean" v-auth="'log:login:clean'"><SvgIcon name="elementDelete" />清空</el-button>
+					<el-button type="danger" plain @click="handleClean" v-auth="'log:login:clean'">
+						<SvgIcon name="elementDelete" />清空
+					</el-button>
 				</el-col>
 			</el-row>
 
@@ -56,25 +49,21 @@
 				<el-table-column label="操作系统" align="center" prop="os" />
 				<el-table-column label="登录状态" align="center" prop="status">
 					<template #default="scope">
-						<el-tag :type="scope.row.status === '1' ? 'success' : 'danger'" disable-transitions>{{ statusFormat(scope.row) }}</el-tag>
+						<el-tag :type="scope.row.status === '1' ? 'success' : 'danger'" disable-transitions>{{
+							statusFormat(scope.row) }}</el-tag>
 					</template>
 				</el-table-column>
-				<el-table-column label="登录时间" align="center" prop="createTime" :show-overflow-tooltip="true"> </el-table-column>
+				<el-table-column label="登录时间" align="center" prop="createTime" :show-overflow-tooltip="true">
+				</el-table-column>
 			</el-table>
 
 			<!-- 分页设置-->
 			<div v-show="state.total > 0">
 				<el-divider></el-divider>
-				<el-pagination
-					background
-					:total="state.total"
-					:current-page="state.queryParams.pageNum"
-					:page-sizes="[10, 20, 30, 40]"
-					:page-size="state.queryParams.pageSize"
-					layout="total, sizes, prev, pager, next, jumper"
-					@size-change="handleSizeChange"
-					@current-change="handleCurrentChange"
-				/>
+				<el-pagination background :total="state.total" :current-page="state.queryParams.pageNum"
+					:page-sizes="[10, 20, 30, 40]" :page-size="state.queryParams.pageSize"
+					layout="total, sizes, prev, pager, next, jumper" @size-change="handleSizeChange"
+					@current-change="handleCurrentChange" />
 			</div>
 		</el-card>
 	</div>

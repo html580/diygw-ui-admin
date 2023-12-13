@@ -1,29 +1,23 @@
 <template>
 	<el-form size="large" ref="loginFormRef" :model="loginForm" class="login-content-form" :rules="loginRules">
 		<el-form-item class="login-animation1" prop="username">
-			<el-input type="text" :placeholder="$t('message.account.accountPlaceholder1')" v-model="loginForm.username" clearable autocomplete="off">
+			<el-input type="text" :placeholder="$t('message.account.accountPlaceholder1')" v-model="loginForm.username"
+				clearable autocomplete="off">
 				<template #prefix>
 					<el-icon class="el-input__icon"><ele-User /></el-icon>
 				</template>
 			</el-input>
 		</el-form-item>
 		<el-form-item class="login-animation2" prop="password">
-			<el-input
-				:type="isShowPassword ? 'text' : 'password'"
-				:placeholder="$t('message.account.accountPlaceholder2')"
-				v-model="loginForm.password"
-				clearable
-				autocomplete="off"
-			>
+			<el-input :type="isShowPassword ? 'text' : 'password'" :placeholder="$t('message.account.accountPlaceholder2')"
+				v-model="loginForm.password" clearable autocomplete="off">
 				<template #prefix>
 					<el-icon class="el-input__icon"><ele-Unlock /></el-icon>
 				</template>
 				<template #suffix>
-					<i
-						class="iconfont el-input__icon login-content-password"
+					<i class="iconfont el-input__icon login-content-password"
 						:class="isShowPassword ? 'icon-yincangmima' : 'icon-xianshimima'"
-						@click="isShowPassword = !isShowPassword"
-					>
+						@click="isShowPassword = !isShowPassword">
 					</i>
 				</template>
 			</el-input>
@@ -37,7 +31,7 @@
 </template>
 
 <script lang="ts" setup>
-import { reactive, computed ,ref} from 'vue';
+import { reactive, computed, ref } from 'vue';
 import { useRoute, useRouter } from 'vue-router';
 import { ElMessage } from 'element-plus';
 import { useI18n } from 'vue-i18n';
@@ -66,10 +60,10 @@ const loginForm = reactive({
 })
 const loginRules = reactive({
 	username: [
-		{ required: true, message:  t('message.account.accountPlaceholder1'), trigger: 'blur' }
+		{ required: true, message: t('message.account.accountPlaceholder1'), trigger: 'blur' }
 	],
 	password: [
-		{ required: true, message:  t('message.account.accountPlaceholder2'), trigger: 'blur' }
+		{ required: true, message: t('message.account.accountPlaceholder2'), trigger: 'blur' }
 	]
 })
 
@@ -85,22 +79,23 @@ const currentTime = computed(() => {
 });
 // 登录
 const onSignIn = async () => {
-	
+
 	loginFormRef.value.validate((valid: any) => {
 		if (valid) {
-			postData("/admin/login/login",{
-				username:loginForm.username,
-				password:loginForm.password
-			}).then(async res=>{
-				
+			postData("/admin/login/login", {
+				username: loginForm.username,
+				password: loginForm.password
+			}).then(async res => {
+
 				loading.signIn = true;
 				// 用户信息数据
 				const userInfos = {
+					userId: res.data.userId,
 					userName: loginForm.username,
 					nickname: res.data.nickname,
-					photo: res.data.avatar || letterAvatar(res.data.username),
+					avatar: res.data.avatar || letterAvatar(res.data.username),
 					time: new Date().getTime(),
-					roles:  res.data.roles,
+					roles: res.data.roles,
 					authBtnList: res.data.auths,
 				};
 
@@ -109,12 +104,11 @@ const onSignIn = async () => {
 				// 存储用户信息到浏览器缓存
 				Session.set('userInfo', userInfos);
 				loading.signIn = true;
-				
 				// 模拟数据，对接接口时，记得删除多余代码及对应依赖的引入。用于 `/src/stores/userInfo.ts` 中不同用户登录判断（模拟数据）
 				Cookies.set('userName', loginForm.username);
 				// 添加完动态路由，再进行 router 跳转，否则可能报错 No match found for location with path "/"
 				if (!themeConfig.value.isRequestRoutes) {
-				// 前端控制路由，2、请注意执行顺序
+					// 前端控制路由，2、请注意执行顺序
 					await initFrontEndControlRoutes();
 				} else {
 					// 模拟后端控制路由，isRequestRoutes 为 true，则开启后端控制路由
@@ -125,9 +119,9 @@ const onSignIn = async () => {
 				signInSuccess();
 			})
 		}
-	})	
-	
-	
+	})
+
+
 };
 // 登录成功后的跳转
 const signInSuccess = () => {
@@ -145,7 +139,7 @@ const signInSuccess = () => {
 	}
 	// 登录成功提示
 	// 关闭 loading
-    loading.signIn = true;
+	loading.signIn = true;
 	const signInText = t('message.signInText');
 	ElMessage.success(`${currentTimeInfo}，${signInText}`);
 	// 添加 loading，防止第一次进入界面时出现短暂空白
@@ -156,6 +150,7 @@ const signInSuccess = () => {
 <style scoped lang="scss">
 .login-content-form {
 	margin-top: 20px;
+
 	@for $i from 1 through 4 {
 		.login-animation#{$i} {
 			opacity: 0;
@@ -165,20 +160,24 @@ const signInSuccess = () => {
 			animation-delay: calc($i/10) + s;
 		}
 	}
+
 	.login-content-password {
 		display: inline-block;
 		width: 20px;
 		cursor: pointer;
+
 		&:hover {
 			color: #909399;
 		}
 	}
+
 	.login-content-code {
 		width: 100%;
 		padding: 0;
 		font-weight: bold;
 		letter-spacing: 5px;
 	}
+
 	.login-content-submit {
 		width: 100%;
 		letter-spacing: 2px;

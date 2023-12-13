@@ -2,33 +2,27 @@
 	<div class="system-menu-container">
 		<el-dialog v-model="state.isShowDialog" width="769px" center>
 			<template #title>
-				<div style="font-size: large" v-drag="['.system-menu-container .el-dialog', '.system-menu-container .el-dialog__header']">{{ title }}</div>
+				<div style="font-size: large"
+					v-drag="['.system-menu-container .el-dialog', '.system-menu-container .el-dialog__header']">{{ title }}
+				</div>
 			</template>
 			<el-form :model="state.ruleForm" :rules="state.ruleRules" ref="ruleFormRef" label-width="80px">
 				<el-row :gutter="35">
 					<el-col :span="24">
 						<el-form-item label="上级菜单" prop="parentId">
-							<el-cascader
-								v-model="state.ruleForm.parentId"
-								:options="state.menuOptions"
-								class="w100"
-								:props="{
-									label: 'menuName',
-									value: 'menuId',
-									checkStrictly: true,
-									emitPath: false,
-								}"
-								clearable
-								filterable
-								placeholder="选择上级菜单"
-								:show-all-levels="false"
-							></el-cascader>
+							<el-cascader v-model="state.ruleForm.parentId" :options="state.menuOptions" class="w100" :props="{
+								label: 'menuName',
+								value: 'menuId',
+								checkStrictly: true,
+								emitPath: false,
+							}" clearable filterable placeholder="选择上级菜单" :show-all-levels="false"></el-cascader>
 						</el-form-item>
 					</el-col>
 					<el-col :span="24">
 						<el-form-item label="菜单类型" prop="menuType">
 							<el-radio-group v-model="state.ruleForm.menuType">
-								<el-radio v-for="dict in state.menuTypeOptions" :key="dict.dictValue" :label="dict.dictValue">{{ dict.dictLabel }} </el-radio>
+								<el-radio v-for="dict in state.menuTypeOptions" :key="dict.dictValue"
+									:label="dict.dictValue">{{ dict.dictLabel }} </el-radio>
 							</el-radio-group>
 						</el-form-item>
 					</el-col>
@@ -38,8 +32,8 @@
 						</el-form-item>
 					</el-col>
 					<el-col :xs="24" :sm="12" :md="12" :lg="12" :xl="12">
-						<el-form-item label="菜单排序" prop="orderNum">
-							<el-input-number v-model="state.ruleForm.orderNum" placeholder="菜单排序" clearable></el-input-number>
+						<el-form-item label="菜单排序" prop="sort">
+							<el-input-number v-model="state.ruleForm.sort" placeholder="菜单排序" clearable></el-input-number>
 						</el-form-item>
 					</el-col>
 
@@ -52,12 +46,8 @@
 						<el-row :gutter="8">
 							<el-col :span="22">
 								<el-form-item label="权限标识" prop="permission">
-									<el-input
-										v-model="state.ruleForm.permission"
-										placeholder="路由权限标识"
-										clearable
-										:disabled="state.ruleForm.menuType == 'M' ? true : false"
-									></el-input>
+									<el-input v-model="state.ruleForm.permission" placeholder="路由权限标识" clearable
+										:disabled="state.ruleForm.menuType == 'M' ? true : false"></el-input>
 								</el-form-item>
 							</el-col>
 							<el-col :span="2">
@@ -77,8 +67,7 @@
 							<el-col :span="2">
 								<el-tooltip
 									content="菜单对应的具体vue页面文件路径views的下级路径/system/user/index,外链请填写/layout/routerView/link，内链请填写/layout/routerView/iframes"
-									placement="top"
-								>
+									placement="top">
 									<i class="fa fa-exclamation-circle ml10 mt10"></i>
 								</el-tooltip>
 							</el-col>
@@ -101,21 +90,24 @@
 					<el-col :xs="24" :sm="12" :md="12" :lg="12" :xl="12">
 						<el-form-item label="菜单状态" prop="status">
 							<el-radio-group v-model="state.ruleForm.status">
-								<el-radio v-for="dict in state.statusOptions" :key="dict.dictValue" :label="dict.dictValue">{{ dict.dictLabel }} </el-radio>
+								<el-radio v-for="dict in state.statusOptions" :key="dict.dictValue"
+									:label="dict.dictValue">{{ dict.dictLabel }} </el-radio>
 							</el-radio-group>
 						</el-form-item>
 					</el-col>
 					<el-col :xs="24" :sm="12" :md="12" :lg="12" :xl="12" v-if="state.ruleForm.menuType != 'F'">
 						<el-form-item label="是否隐藏">
 							<el-radio-group v-model="state.ruleForm.isHide">
-								<el-radio v-for="dict in state.isHideOptions" :key="dict.dictValue" :label="dict.dictValue">{{ dict.dictLabel }} </el-radio>
+								<el-radio v-for="dict in state.isHideOptions" :key="dict.dictValue"
+									:label="dict.dictValue">{{ dict.dictLabel }} </el-radio>
 							</el-radio-group>
 						</el-form-item>
 					</el-col>
 					<el-col :xs="24" :sm="12" :md="12" :lg="12" :xl="12" v-if="state.ruleForm.menuType != 'F'">
 						<el-form-item label="是否缓存">
 							<el-radio-group v-model="state.ruleForm.isKeepAlive">
-								<el-radio v-for="dict in state.yesOrNoOptions" :key="dict.dictValue" :label="dict.dictValue">{{ dict.dictLabel }} </el-radio>
+								<el-radio v-for="dict in state.yesOrNoOptions" :key="dict.dictValue"
+									:label="dict.dictValue">{{ dict.dictLabel }} </el-radio>
 							</el-radio-group>
 						</el-form-item>
 					</el-col>
@@ -124,7 +116,8 @@
 							<el-col :span="22">
 								<el-form-item label="是否固定">
 									<el-radio-group v-model="state.ruleForm.isAffix">
-										<el-radio v-for="dict in state.yesOrNoOptions" :key="dict.dictValue" :label="dict.dictValue">{{ dict.dictLabel }} </el-radio>
+										<el-radio v-for="dict in state.yesOrNoOptions" :key="dict.dictValue"
+											:label="dict.dictValue">{{ dict.dictLabel }} </el-radio>
 									</el-radio-group>
 								</el-form-item>
 							</el-col>
@@ -139,19 +132,22 @@
 					<el-col :xs="24" :sm="12" :md="12" :lg="12" :xl="12" v-if="state.ruleForm.menuType != 'F'">
 						<el-form-item label="是否内嵌">
 							<el-radio-group v-model="state.ruleForm.isIframe">
-								<el-radio v-for="dict in state.yesOrNoOptions" :key="dict.dictValue" :label="dict.dictValue">{{ dict.dictLabel }} </el-radio>
+								<el-radio v-for="dict in state.yesOrNoOptions" :key="dict.dictValue"
+									:label="dict.dictValue">{{ dict.dictLabel }} </el-radio>
 							</el-radio-group>
 						</el-form-item>
 					</el-col>
 					<el-col :xs="24" :sm="12" :md="12" :lg="12" :xl="12" v-if="state.ruleForm.menuType != 'F'">
 						<el-form-item label="链接地址">
-							<el-input v-model="state.ruleForm.isLink" placeholder="外链/内嵌时链接地址（http:xxx.com）" clearable> </el-input>
+							<el-input v-model="state.ruleForm.isLink" placeholder="外链/内嵌时链接地址（http://***.com）" clearable>
+							</el-input>
 						</el-form-item>
 					</el-col>
 
 					<el-col :xs="24" :sm="24" :md="24" :lg="24" :xl="24">
 						<el-form-item label="备注">
-							<el-input v-model="state.ruleForm.remark" placeholder="请输入备注内容" clearable type="textarea"></el-input>
+							<el-input v-model="state.ruleForm.remark" placeholder="请输入备注内容" clearable
+								type="textarea"></el-input>
 						</el-form-item>
 					</el-col>
 				</el-row>
@@ -199,7 +195,7 @@ const state = reactive({
 		parentId: 0, // 父菜单ID
 		component: '', // 组件地址
 		path: '',
-		orderNum: 1, // 菜单排序
+		sort: 1, // 菜单排序
 		status: '', //菜单状态
 		title: '', // 菜单名称
 		icon: '', // 菜单图标

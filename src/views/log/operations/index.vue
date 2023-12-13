@@ -1,36 +1,27 @@
 <template>
-	<div class="system-user-container app-container">
+	<div class="system-user-container container">
 		<el-card shadow="always">
 			<!-- 查询 -->
 			<el-form :model="state.queryParams" ref="queryForm" :inline="true" label-width="68px">
 				<el-form-item label="系统模块" prop="title">
-					<el-input
-						placeholder="请输入系统模块模糊查询"
-						clearable
-						@keyup.enter="handleQuery"
-						style="width: 240px"
-						v-model="state.queryParams.title"
-					/>
+					<el-input placeholder="请输入系统模块模糊查询" clearable @keyup.enter="handleQuery" style="width: 240px"
+						v-model="state.queryParams.title" />
 				</el-form-item>
 				<el-form-item label="操作人员" prop="operName">
-					<el-input
-						placeholder="请输入操作人员模糊查询"
-						clearable
-						@keyup.enter="handleQuery"
-						style="width: 240px"
-						v-model="state.queryParams.operName"
-					/>
+					<el-input placeholder="请输入操作人员模糊查询" clearable @keyup.enter="handleQuery" style="width: 240px"
+						v-model="state.queryParams.operName" />
 				</el-form-item>
 				<el-form-item label="类型" prop="businessType">
 					<el-select v-model="state.queryParams.businessType" placeholder="操作类型" clearable style="width: 240px">
-						<el-option v-for="dict in state.typeOptions" :key="dict.dictValue" :label="dict.dictLabel" :value="dict.dictValue" />
+						<el-option v-for="dict in state.typeOptions" :key="dict.dictValue" :label="dict.dictLabel"
+							:value="dict.dictValue" />
 					</el-select>
 				</el-form-item>
 				<el-form-item>
 					<el-button type="primary" @click="handleQuery">
 						<SvgIcon name="elementSearch" />
-						搜索</el-button
-					>
+						搜索
+					</el-button>
 					<el-button @click="resetQuery">
 						<SvgIcon name="elementRefresh" />
 						重置
@@ -41,12 +32,15 @@
 			<!-- 操作按钮 -->
 			<el-row :gutter="10" class="mb8">
 				<el-col :span="1.5">
-					<el-button type="danger" plain :disabled="state.multiple" @click="onTabelRowDel" v-auth="'log:operation:delete'"
-						><SvgIcon name="elementDelete" />删除</el-button
-					>
+					<el-button type="danger" plain :disabled="state.multiple" @click="onTabelRowDel"
+						v-auth="'log:operation:delete'">
+						<SvgIcon name="elementDelete" />删除
+					</el-button>
 				</el-col>
 				<el-col :span="1.5">
-					<el-button type="danger" plain @click="handleClean" v-auth="'log:operation:clean'"><SvgIcon name="elementDelete" />清空</el-button>
+					<el-button type="danger" plain @click="handleClean" v-auth="'log:operation:clean'">
+						<SvgIcon name="elementDelete" />清空
+					</el-button>
 				</el-col>
 			</el-row>
 
@@ -62,13 +56,16 @@
 				<el-table-column label="操作地点" align="center" prop="operLocation" :show-overflow-tooltip="true" />
 				<el-table-column label="操作状态" align="center" prop="status">
 					<template #default="scope">
-						<el-tag :type="scope.row.status === '1' ? 'danger' : 'success'" disable-transitions>{{ statusFormat(scope.row) }} </el-tag>
+						<el-tag :type="scope.row.status === '1' ? 'danger' : 'success'" disable-transitions>{{
+							statusFormat(scope.row) }} </el-tag>
 					</template>
 				</el-table-column>
 				<el-table-column label="操作日期" align="center" prop="createTime" />
 				<el-table-column label="操作" align="center" class-name="small-padding fixed-width">
 					<template #default="scope">
-						<el-button type="text" @click="handleView(scope.row)"><SvgIcon name="elementView" />详细</el-button>
+						<el-button type="text" @click="handleView(scope.row)">
+							<SvgIcon name="elementView" />详细
+						</el-button>
 					</template>
 				</el-table-column>
 			</el-table>
@@ -76,16 +73,10 @@
 			<!-- 分页设置-->
 			<div v-show="state.total > 0">
 				<el-divider></el-divider>
-				<el-pagination
-					background
-					:total="state.total"
-					:current-page="state.queryParams.pageNum"
-					:page-sizes="[10, 20, 30, 40]"
-					:page-size="state.queryParams.pageSize"
-					layout="total, sizes, prev, pager, next, jumper"
-					@size-change="handleSizeChange"
-					@current-change="handleCurrentChange"
-				/>
+				<el-pagination background :total="state.total" :current-page="state.queryParams.pageNum"
+					:page-sizes="[10, 20, 30, 40]" :page-size="state.queryParams.pageSize"
+					layout="total, sizes, prev, pager, next, jumper" @size-change="handleSizeChange"
+					@current-change="handleCurrentChange" />
 			</div>
 		</el-card>
 		<!-- 操作日志详细 -->
@@ -93,9 +84,9 @@
 			<el-form ref="ruleFormRef" :model="state.modelForm" label-width="100px">
 				<el-row>
 					<el-col :span="12">
-						<el-form-item label="操作模块：">{{ state.modelForm.title }} / {{ typeFormat(state.modelForm) }} </el-form-item>
-						<el-form-item label="登录信息："
-							>{{ state.modelForm.operName }} / {{ state.modelForm.operIp }} /
+						<el-form-item label="操作模块：">{{ state.modelForm.title }} / {{ typeFormat(state.modelForm) }}
+						</el-form-item>
+						<el-form-item label="登录信息：">{{ state.modelForm.operName }} / {{ state.modelForm.operIp }} /
 							{{ state.modelForm.operLocation }}
 						</el-form-item>
 					</el-col>
@@ -117,7 +108,8 @@
 						<el-form-item label="操作时间：">{{ state.modelForm.createTime }} </el-form-item>
 					</el-col>
 					<el-col :span="24">
-						<el-form-item label="异常信息：" v-if="state.modelForm.status === '1'">{{ state.modelForm.errorMsg }} </el-form-item>
+						<el-form-item label="异常信息：" v-if="state.modelForm.status === '1'">{{ state.modelForm.errorMsg }}
+						</el-form-item>
 					</el-col>
 				</el-row>
 			</el-form>

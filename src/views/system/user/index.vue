@@ -1,23 +1,17 @@
 <template>
-	<div class="system-user-container app-container">
+	<div class="system-user-container container">
 		<el-card shadow="always">
 			<el-row :gutter="20">
 				<!--部门数据-->
 				<el-col :span="4" :xs="24">
 					<div class="head-container">
-						<el-input v-model="state.deptName" placeholder="请输入部门名称" clearable :prefix-icon="Search" style="margin-bottom: 20px" />
+						<el-input v-model="state.deptName" placeholder="请输入部门名称" clearable :prefix-icon="Search"
+							style="margin-bottom: 20px" />
 					</div>
 					<div class="head-container">
-						<el-tree
-							:data="state.deptOptions"
-							:props="state.defaultProps"
-							node-key="deptId"
-							:expand-on-click-node="false"
-							:filter-node-method="filterNode"
-							ref="tree"
-							default-expand-all
-							@node-click="handleNodeClick"
-						/>
+						<el-tree :data="state.deptOptions" :props="state.defaultProps" node-key="deptId"
+							:expand-on-click-node="false" :filter-node-method="filterNode" ref="tree" default-expand-all
+							@node-click="handleNodeClick" />
 					</div>
 				</el-col>
 
@@ -25,27 +19,24 @@
 					<!-- 查询-->
 					<el-form :model="state.queryParams" ref="queryForm" :inline="true" label-width="78px">
 						<el-form-item label="用户名称" prop="username">
-							<el-input
-								placeholder="用户名称模糊查询"
-								clearable
-								@keyup.enter="handleQuery"
-								style="width: 240px"
-								v-model="state.queryParams.username"
-							/>
+							<el-input placeholder="用户名称模糊查询" clearable @keyup.enter="handleQuery" style="width: 240px"
+								v-model="state.queryParams.username" />
 						</el-form-item>
 						<el-form-item label="手机号码" prop="phone">
-							<el-input v-model="state.queryParams.phone" placeholder="请输入手机号码" clearable style="width: 240px" @keyup.enter="handleQuery" />
+							<el-input v-model="state.queryParams.phone" placeholder="请输入手机号码" clearable style="width: 240px"
+								@keyup.enter="handleQuery" />
 						</el-form-item>
 						<el-form-item label="状态" prop="status">
 							<el-select v-model="state.queryParams.status" placeholder="用户状态" clearable style="width: 240px">
-								<el-option v-for="dict in state.statusOptions" :key="dict.dictValue" :label="dict.dictLabel" :value="dict.dictValue" />
+								<el-option v-for="dict in state.statusOptions" :key="dict.dictValue" :label="dict.dictLabel"
+									:value="dict.dictValue" />
 							</el-select>
 						</el-form-item>
 						<el-form-item>
 							<el-button type="primary" @click="handleQuery">
 								<SvgIcon name="ele-Search" />
-								搜索</el-button
-							>
+								搜索
+							</el-button>
 							<el-button @click="resetQuery">
 								<SvgIcon name="ele-Refresh" />
 								重置
@@ -53,18 +44,26 @@
 						</el-form-item>
 					</el-form>
 					<div class="mb8">
-						<el-button type="primary" plain @click="handleAdd"><SvgIcon name="ele-Plus" />新增</el-button>
-						<el-button type="danger" plain :disabled="state.multiple" @click="handleDelete"><SvgIcon name="ele-Delete" />删除</el-button>
-						<el-button type="warning" plain @click="handleExport"><SvgIcon name="ele-Download" />导出</el-button>
+						<el-button type="primary" plain @click="handleAdd">
+							<SvgIcon name="ele-Plus" />新增
+						</el-button>
+						<el-button type="danger" plain :disabled="state.multiple" @click="handleDelete">
+							<SvgIcon name="ele-Delete" />删除
+						</el-button>
+						<el-button type="warning" plain @click="handleExport">
+							<SvgIcon name="ele-Download" />导出
+						</el-button>
 					</div>
 
-					<el-table v-loading="state.loading" border :data="state.tableData" stripe @selection-change="handleSelectionChange" style="width: 100%">
+					<el-table v-loading="state.loading" border :data="state.tableData" stripe
+						@selection-change="handleSelectionChange" style="width: 100%">
 						<el-table-column type="selection" width="45" align="center" />
 						<el-table-column label="用户编号" align="center" key="userId" prop="userId" />
 						<el-table-column label="用户名" prop="username" show-overflow-tooltip></el-table-column>
 						<el-table-column label="头像" show-overflow-tooltip>
 							<template #default="scope">
-								<el-image class="system-user-photo" :src="scope.row.avatar ? scope.row.avatar : letterAvatar(scope.row.username)"></el-image>
+								<el-image class="system-user-photo"
+									:src="scope.row.avatar ? scope.row.avatar : letterAvatar(scope.row.username)"></el-image>
 							</template>
 						</el-table-column>
 						<el-table-column label="用户性别" align="center" prop="sex" :formatter="sexFormat" />
@@ -72,29 +71,28 @@
 						<el-table-column prop="email" label="邮箱" show-overflow-tooltip></el-table-column>
 						<el-table-column label="状态" align="center" key="status">
 							<template #default="scope">
-								<el-switch v-model="scope.row.status" active-value="0" inactive-value="1" @click="handleStatusChange(scope.row)"></el-switch>
+								<el-switch v-model="scope.row.status" active-value="0" inactive-value="1"
+									@click="handleStatusChange(scope.row)"></el-switch>
 							</template>
 						</el-table-column>
 						<el-table-column prop="createTime" label="创建时间" show-overflow-tooltip></el-table-column>
 						<el-table-column prop="path" label="操作" fixed="right" width="180">
 							<template #default="scope">
-								<el-button type="text" @click="handleUpdate(scope.row)"><SvgIcon name="ele-Edit" />修改</el-button>
-								<el-button type="text" @click="handleDelete(scope.row)"><SvgIcon name="ele-Delete" />删除</el-button>
+								<el-button type="text" @click="handleUpdate(scope.row)">
+									<SvgIcon name="ele-Edit" />修改
+								</el-button>
+								<el-button type="text" @click="handleDelete(scope.row)">
+									<SvgIcon name="ele-Delete" />删除
+								</el-button>
 							</template>
 						</el-table-column>
 					</el-table>
 					<div v-show="state.total > 0">
 						<el-divider></el-divider>
-						<el-pagination
-							background
-							:total="state.total"
-							:page-sizes="[10, 20, 30]"
-							:current-page="state.queryParams.pageNum"
-							:page-size="state.queryParams.pageSize"
-							layout="total, sizes, prev, pager, next, jumper"
-							@size-change="onHandleSizeChange"
-							@current-change="onHandleCurrentChange"
-						/>
+						<el-pagination background :total="state.total" :page-sizes="[10, 20, 30]"
+							:current-page="state.queryParams.pageNum" :page-size="state.queryParams.pageSize"
+							layout="total, sizes, prev, pager, next, jumper" @size-change="onHandleSizeChange"
+							@current-change="onHandleCurrentChange" />
 					</div>
 				</el-col>
 			</el-row>

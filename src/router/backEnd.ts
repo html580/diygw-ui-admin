@@ -11,25 +11,23 @@ import { useRoutesList } from '@/stores/routesList';
 import { useTagsViewRoutes } from '@/stores/tagsViewRoutes';
 import { useMenuApi } from '@/api/menu/index';
 import { handleTree } from '../utils';
-
-const menuApi = useMenuApi();
-
-const layouModules: any = import.meta.glob('../layout/routerView/*.{vue,tsx}');
-const viewsModules: any = import.meta.glob('../views/**/*.{vue,tsx}');
-
 // 后端控制路由
+
+// 引入 api 请求接口
+const menuApi = useMenuApi();
 
 /**
  * 获取目录下的 .vue、.tsx 全部文件
  * @method import.meta.glob
  * @link 参考：https://cn.vitejs.dev/guide/features.html#json
  */
+const layouModules: any = import.meta.glob('../layout/routerView/*.{vue,tsx}');
+const viewsModules: any = import.meta.glob('../views/**/*.{vue,tsx}');
 const dynamicViewsModules: Record<string, Function> = Object.assign({}, { ...layouModules }, { ...viewsModules });
 
 
-
-function firstToUpper(str:string){
-    return str.toLowerCase().replace(/( |^)[a-z]/g,(L)=>L.toUpperCase());
+function firstToLower(str: string) {
+	return str.toLowerCase().replace(/( |^)[a-z]/g, (L) => L.toLowerCase());
 }
 
 
@@ -39,7 +37,7 @@ function getName(path: string) {
 		let result = ""
 		paths.forEach(item => {
 			if (item) {
-				result += firstToUpper(item)
+				result += firstToLower(item)
 			}
 		})
 		return result;
@@ -47,33 +45,40 @@ function getName(path: string) {
 	return path;
 }
 
-function getPanretRedirctPath(data: any){
-	data.forEach((item:any) => {
-		if(item.children&&item.children.length>0){
+function getPanretRedirctPath(data: any) {
+	data.forEach((item: any) => {
+		if (item.children && item.children.length > 0) {
 			item.redirect = item.children[0].path;
 			getPanretRedirctPath(item.children)
 		}
 	});
 }
-
 /**
  * 后端控制路由：初始化方法，防止刷新时路由丢失
  * @method NextLoading 界面 loading 动画开始执行
  * @method useUserInfo().setUserInfos() 触发初始化用户信息 pinia
  * @method useRequestOldRoutes().setRequestOldRoutes() 存储接口原始路由（未处理component），根据需求选择使用
  * @method setAddRoute 添加动态路由
- * @method setFilterMenuAndCacheTagsViewRoutes 设置路由到 vuex routesList 中（已处理成多级嵌套路由）及缓存多级嵌套数组处理后的一维数组
+ * @method setFilterMenuAndCacheTagsViewRoutes 设置路由到 pinia routesList 中（已处理成多级嵌套路由）及缓存多级嵌套数组处理后的一维数组
  */
-
 export async function initBackEndControlRoutes() {
 	// 界面 loading 动画开始执行
 	if (window.nextLoading === undefined) NextLoading.start();
 	// 无 token 停止执行下一步
 	if (!Session.get('token')) return false;
 	// 触发初始化用户信息 pinia
-	useUserInfo().setUserInfos();
+	// https://gitee.com/lyt-top/vue-next-admin/issues/I5F1HP
+	await useUserInfo().setUserInfos();
 	// 获取路由菜单数据
 	const res = await getBackEndControlRoutes();
+	// // 无登录权限时，添加判断
+	// // https://gitee.com/lyt-top/vue-next-admin/issues/I64HVO
+	// if (res.data.length <= 0) return Promise.resolve(true);
+	// // 存储接口原始路由（未处理component），根据需求选择使用
+	// useRequestOldRoutes().setRequestOldRoutes(JSON.parse(JSON.stringify(res.data)));
+	// // 处理路由（component），替换 dynamicRoutes（@/router/route）第一个顶级 children 的路由
+	// dynamicRoutes[0].children = await backEndComponent(res.data);
+
 
 	let data: any = []
 	if (res.data) {
@@ -86,7 +91,7 @@ export async function initBackEndControlRoutes() {
 				"parentId": item.parentId,
 				meta: {
 					"title": item.menuName,
-					"isLink": item.isLink == '1',
+					"isLink": item.isLink,
 					"isHide": item.isHide == '1',
 					"isKeepAlive": item.isKeepAlive == '1',
 					"isAffix": item.isAffix == '1',
@@ -97,31 +102,39 @@ export async function initBackEndControlRoutes() {
 			}
 			data.push(itemdata)
 		});
-		
+
 		data = handleTree(data, "menuId", "parentId", "children")
 		getPanretRedirctPath(data)
 	}
 
 
 	// 存储接口原始路由（未处理component），根据需求选择使用
-	useRequestOldRoutes().setRequestOldRoutes(data);
+	// useRequestOldRoutes().setRequestOldRoutes(data);
+
 	// 处理路由（component），替换 dynamicRoutes（@/router/route）第一个顶级 children 的路由
+	// dynamicRoutes[0].children = await backEndComponent(data);
 	dynamicRoutes[0].children = await backEndComponent(data);
 	// 添加动态路由
 	await setAddRoute();
-	// 设置路由到 vuex routesList 中（已处理成多级嵌套路由）及缓存多级嵌套数组处理后的一维数组
-	await setFilterMenuAndCacheTagsViewRoutes();
+	// 设置路由到 pinia routesList 中（已处理成多级嵌套路由）及缓存多级嵌套数组处理后的一维数组
+	setFilterMenuAndCacheTagsViewRoutes();
 }
 
 /**
- * 设置路由到 vuex routesList 中（已处理成多级嵌套路由）及缓存多级嵌套数组处理后的一维数组
+ * 设置路由到 pinia routesList 中（已处理成多级嵌套路由）及缓存多级嵌套数组处理后的一维数组
  * @description 用于左侧菜单、横向菜单的显示
  * @description 用于 tagsView、菜单搜索中：未过滤隐藏的(isHide)
  */
-export function setFilterMenuAndCacheTagsViewRoutes() {
+export async function setFilterMenuAndCacheTagsViewRoutes() {
 	const storesRoutesList = useRoutesList(pinia);
 	storesRoutesList.setRoutesList(dynamicRoutes[0].children as any);
 	setCacheTagsViewRoutes();
+
+	// const stores = useUserInfo(pinia);
+	// const storesRoutesList = useRoutesList(pinia);
+	// const { userInfos } = storeToRefs(stores);
+	// storesRoutesList.setRoutesList(setFilterHasRolesMenu(dynamicRoutes[0].children, userInfos.value.roles));
+	// setCacheTagsViewRoutes();
 }
 
 /**
@@ -131,6 +144,7 @@ export function setFilterMenuAndCacheTagsViewRoutes() {
 export function setCacheTagsViewRoutes() {
 	const storesTagsView = useTagsViewRoutes(pinia);
 	storesTagsView.setTagsViewRoutes(formatTwoStageRoutes(formatFlatteningRoutes(dynamicRoutes))[0].children);
+
 }
 
 /**
@@ -140,6 +154,8 @@ export function setCacheTagsViewRoutes() {
  */
 export function setFilterRouteEnd() {
 	let filterRouteEnd: any = formatTwoStageRoutes(formatFlatteningRoutes(dynamicRoutes));
+	// notFoundAndNoPower 防止 404、401 不在 layout 布局中，不设置的话，404、401 界面将全屏显示
+	// 关联问题 No match found for location with path 'xxx'
 	filterRouteEnd[0].children = [...filterRouteEnd[0].children, ...notFoundAndNoPower];
 	return filterRouteEnd;
 }
@@ -163,6 +179,29 @@ export async function setAddRoute() {
  */
 export function getBackEndControlRoutes() {
 	return menuApi.getMenuAdmin()
+	// return {
+	// 	"code": 0,
+	// 	"type": "adminMenu",
+	// 	"data": [
+	// 		{
+	// 			"path": "/home",
+	// 			"name": "home",
+	// 			"component": "home/index",
+	// 			"meta": {
+	// 				"title": "message.router.home",
+	// 				"isLink": "",
+	// 				"isHide": false,
+	// 				"isKeepAlive": true,
+	// 				"isAffix": true,
+	// 				"isIframe": false,
+	// 				"roles": [
+	// 					"admin",
+	// 					"common"
+	// 				],
+	// 				"icon": "iconfont icon-shouye"
+	// 			}
+	// 		}]
+	// }
 }
 
 /**
@@ -170,8 +209,8 @@ export function getBackEndControlRoutes() {
  * @description 用于菜单管理界面刷新菜单（未进行测试）
  * @description 路径：/src/views/system/menu/component/addMenu.vue
  */
-export function setBackEndControlRefreshRoutes() {
-	getBackEndControlRoutes();
+export async function setBackEndControlRefreshRoutes() {
+	await getBackEndControlRoutes();
 }
 
 /**

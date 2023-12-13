@@ -43,13 +43,13 @@ let routes: Array<RouteRecordRaw> = [
 					isAffix: false,
 					isIframe: false,
 					roles: ['admin', 'common'],
-					icon: 'fa fa-book',
+					icon: 'iconfont icon-shouye',
 				},
 			}
 		],
 	},
 ];
 
-export const frontRoutes={
-    dynamicRoutes:routes
+export const frontRoutes = {
+	dynamicRoutes: routes
 };

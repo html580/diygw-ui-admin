@@ -1,10 +1,12 @@
 import { RouteRecordRaw } from 'vue-router';
 
 /**
+ * 建议：路由 path 路径与文件夹名称相同，找文件可浏览器地址找，方便定位文件位置
+ *
  * 路由meta对象参数说明
  * meta: {
  *      title:          菜单栏及 tagsView 栏、菜单搜索名称（国际化）
- *      isLink：        是否超链接菜单，开启外链条件，`1、isLink: 链接地址不为空`
+ *      isLink：        是否超链接菜单，开启外链条件，`1、isLink: 链接地址不为空 2、isIframe:false`
  *      isHide：        是否隐藏此路由
  *      isKeepAlive：   是否缓存组件状态
  *      isAffix：       是否固定在 tagsView 栏上
@@ -14,6 +16,27 @@ import { RouteRecordRaw } from 'vue-router';
  * }
  */
 
+// 扩展 RouteMeta 接口
+declare module 'vue-router' {
+	interface RouteMeta {
+		title?: string;
+		isLink?: string;
+		isHide?: boolean;
+		isKeepAlive?: boolean;
+		isAffix?: boolean;
+		isIframe?: boolean;
+		roles?: string[];
+		icon?: string;
+	}
+}
+
+/**
+ * 定义动态路由
+ * 前端添加路由，请在顶级节点的 `children 数组` 里添加
+ * @description 未开启 isRequestRoutes 为 true 时使用（前端控制路由），开启时第一个顶级 children 的路由将被替换成接口请求回来的路由数据
+ * @description 各字段请查看 `@/views/system/menu/component/addMenu.vue 下的 ruleForm`
+ * @returns 返回路由菜单数据
+ */
 /**
  * 定义动态路由
  * 前端添加路由，请在顶级节点的 `children 数组` 里添加
@@ -36,14 +59,14 @@ export const dynamicRoutes: Array<RouteRecordRaw> = [
 				name: 'home',
 				component: () => import('@/views/home/index.vue'),
 				meta: {
-					title: '首页',
+					title: 'message.router.home',
 					isLink: '',
 					isHide: false,
-					isKeepAlive: false,
-					isAffix: false,
+					isKeepAlive: true,
+					isAffix: true,
 					isIframe: false,
 					roles: ['admin', 'common'],
-					icon: 'fa fa-book',
+					icon: 'iconfont icon-shouye',
 				},
 			}
 		],

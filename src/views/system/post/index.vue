@@ -1,24 +1,27 @@
 <template>
-	<div class="app-container">
+	<div class="container">
 		<el-card shadow="always">
 			<!-- 查询 -->
 			<el-form :model="queryParams" ref="queryForm" :inline="true" label-width="68px">
 				<el-form-item label="岗位编码" prop="postCode">
-					<el-input placeholder="请输入岗位编码模糊查询" clearable @keyup.enter="handleQuery" style="width: 240px" v-model="queryParams.postCode" />
+					<el-input placeholder="请输入岗位编码模糊查询" clearable @keyup.enter="handleQuery" style="width: 240px"
+						v-model="queryParams.postCode" />
 				</el-form-item>
 				<el-form-item label="岗位名称" prop="postName">
-					<el-input placeholder="请输入岗位名称模糊查询" clearable @keyup.enter="handleQuery" style="width: 240px" v-model="queryParams.postName" />
+					<el-input placeholder="请输入岗位名称模糊查询" clearable @keyup.enter="handleQuery" style="width: 240px"
+						v-model="queryParams.postName" />
 				</el-form-item>
 				<el-form-item label="状态" prop="status">
 					<el-select v-model="queryParams.status" placeholder="岗位状态" clearable style="width: 240px">
-						<el-option v-for="dict in statusOptions" :key="dict.dictValue" :label="dict.dictLabel" :value="dict.dictValue" />
+						<el-option v-for="dict in statusOptions" :key="dict.dictValue" :label="dict.dictLabel"
+							:value="dict.dictValue" />
 					</el-select>
 				</el-form-item>
 				<el-form-item>
 					<el-button type="primary" @click="handleQuery">
 						<SvgIcon name="ele-Search" />
-						搜索</el-button
-					>
+						搜索
+					</el-button>
 					<el-button @click="resetQuery">
 						<SvgIcon name="ele-Refresh" />
 						重置
@@ -28,15 +31,20 @@
 			<!-- 操作按钮 -->
 			<el-row :gutter="10" class="mb8">
 				<el-col :span="1.5">
-					<el-button type="primary" plain v-auth="'system:post:add'" @click="onOpenAddModule"><SvgIcon name="ele-Plus" />新增</el-button>
+					<el-button type="primary" plain v-auth="'system:post:add'" @click="onOpenAddModule">
+						<SvgIcon name="ele-Plus" />新增
+					</el-button>
 				</el-col>
 				<el-col :span="1.5">
-					<el-button type="danger" plain v-auth="'system:post:delete'" :disabled="multiple" @click="onTabelRowDel"
-						><SvgIcon name="ele-Delete" />删除</el-button
-					>
+					<el-button type="danger" plain v-auth="'system:post:delete'" :disabled="multiple"
+						@click="onTabelRowDel">
+						<SvgIcon name="ele-Delete" />删除
+					</el-button>
 				</el-col>
 				<el-col :span="1.5">
-					<el-button type="warning" plain v-auth="'system:post:export'" @click="onTabelRowDel"><SvgIcon name="ele-Download" />导出</el-button>
+					<el-button type="warning" plain v-auth="'system:post:export'" @click="onTabelRowDel">
+						<SvgIcon name="ele-Download" />导出
+					</el-button>
 				</el-col>
 			</el-row>
 
@@ -49,30 +57,28 @@
 				<el-table-column label="岗位排序" align="center" prop="orderNum" />
 				<el-table-column label="状态" align="center" prop="status">
 					<template #default="scope">
-						<el-tag :type="scope.row.status === '1' ? 'danger' : 'success'" disable-transitions>{{ statusFormat(scope.row) }}</el-tag>
+						<el-tag :type="scope.row.status === '1' ? 'danger' : 'success'" disable-transitions>{{
+							statusFormat(scope.row) }}</el-tag>
 					</template>
 				</el-table-column>
 				<el-table-column label="操作" align="center" fixed="right" width="180">
 					<template #default="scope">
-						<el-button type="text" v-auth="'system:post:edit'" @click="onOpenEditModule(scope.row)"><SvgIcon name="ele-Edit" />修改</el-button>
-						<el-button v-if="scope.row.parentId != 0" type="text" v-auth="'system:post:delete'" @click="onTabelRowDel(scope.row)"
-							><SvgIcon name="ele-Delete" />删除</el-button
-						>
+						<el-button type="text" v-auth="'system:post:edit'" @click="onOpenEditModule(scope.row)">
+							<SvgIcon name="ele-Edit" />修改
+						</el-button>
+						<el-button v-if="scope.row.parentId != 0" type="text" v-auth="'system:post:delete'"
+							@click="onTabelRowDel(scope.row)">
+							<SvgIcon name="ele-Delete" />删除
+						</el-button>
 					</template>
 				</el-table-column>
 			</el-table>
 			<!-- 分页设置-->
 			<div v-show="total > 0">
 				<el-divider></el-divider>
-				<el-pagination
-					background
-					:total="total"
-					:current-page="queryParams.pageNum"
-					:page-size="queryParams.pageSize"
-					layout="total, sizes, prev, pager, next, jumper"
-					@size-change="handleSizeChange"
-					@current-change="handleCurrentChange"
-				/>
+				<el-pagination background :total="total" :current-page="queryParams.pageNum"
+					:page-size="queryParams.pageSize" layout="total, sizes, prev, pager, next, jumper"
+					@size-change="handleSizeChange" @current-change="handleCurrentChange" />
 			</div>
 		</el-card>
 		<!-- 添加或修改岗位对话框 -->

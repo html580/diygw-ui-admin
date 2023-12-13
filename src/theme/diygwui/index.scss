@@ -94,6 +94,17 @@ image {
 .response {
 	width: 100%;
 }
+.container {
+	padding: 10px !important;
+	background: #fff;
+	border-radius: 5px;
+	height: 100%;
+	flex: 1;
+	display: flex;
+	.el-card {
+		flex: 1;
+	}
+}
 .diygw-absolute {
 	position: absolute !important;
 	z-index: 999;

@@ -2,14 +2,9 @@
 	<div>
 		<template v-for="(item, index) in optionsValue">
 			<template v-if="values.includes(String(item[props.valueField]))">
-				<el-tag
-					:disable-transitions="true"
-					:key="item[props.valueField] + ''"
-					:index="index"
-					:type="item.elTagType === 'primary' ? '' : item.elTagType"
-					:class="item.elTagClass"
-					>{{ item[props.labelField] }}</el-tag
-				>
+				<el-tag :disable-transitions="true" :key="item[props.valueField] + ''" :index="index"
+					:type="item.elTagType === 'primary' ? '' : item.elTagType" :class="item.elTagClass">{{
+						item[props.labelField] }}</el-tag>
 			</template>
 		</template>
 	</div>
@@ -56,7 +51,14 @@ const optionsValue = computed(() => {
 
 const values = computed(() => {
 	if (props.value !== null && typeof props.value !== 'undefined') {
-		return Array.isArray(props.value) ? props.value : [String(props.value)];
+		if (Array.isArray(props.value)) {
+			return props.value
+		}
+		if (props.value.startsWith("[") && props.value.endsWith("]")) {
+			return JSON.parse(props.value)
+		} else {
+			return [String(props.value)];
+		}
 	} else {
 		return [];
 	}
@@ -64,7 +66,7 @@ const values = computed(() => {
 </script>
 
 <style scoped>
-.el-tag + .el-tag {
+.el-tag+.el-tag {
 	margin-left: 10px;
 }
 </style>

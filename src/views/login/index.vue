@@ -9,22 +9,15 @@
 		</div>
 		<div class="login-content">
 			<div class="login-content-main">
-				<h4 class="login-content-title ml15">{{ getThemeConfig.globalTitle }}后台模板</h4>
+				<h4 class="login-content-title ml15">{{ getThemeConfig.globalTitle }}</h4>
 				<div v-if="!isScan">
-					<el-tabs v-model="tabsActiveName">
-						<el-tab-pane :label="$t('message.label.one1')" name="account">
-							<Account />
-						</el-tab-pane>
-						<el-tab-pane :label="$t('message.label.two2')" name="mobile">
-							<Mobile />
-						</el-tab-pane>
-					</el-tabs>
+					<Account />
 				</div>
-				<Scan v-if="isScan" />
+				<!-- <Scan v-if="isScan" />
 				<div class="login-content-main-sacn" @click="isScan = !isScan">
 					<i class="iconfont" :class="isScan ? 'icon-diannao1' : 'icon-barcode-qr'"></i>
 					<div class="login-content-main-sacn-delta"></div>
-				</div>
+				</div> -->
 			</div>
 		</div>
 	</div>
@@ -81,25 +74,30 @@ export default defineComponent({
 	height: 100%;
 	position: relative;
 	background: var(--el-color-white);
+
 	.login-icon-group {
 		width: 100%;
 		height: 100%;
 		position: relative;
+
 		.login-icon-group-title {
 			position: absolute;
 			top: 50px;
 			left: 80px;
 			display: flex;
 			align-items: center;
+
 			img {
 				width: 30px;
 				height: 30px;
 			}
+
 			&-text {
 				padding-left: 15px;
 				color: var(--el-color-primary);
 			}
 		}
+
 		&::before {
 			content: '';
 			position: absolute;
@@ -112,6 +110,7 @@ export default defineComponent({
 			background: var(--el-color-primary-light-5);
 			transition: all 0.3s ease;
 		}
+
 		&::after {
 			content: '';
 			width: 150px;
@@ -123,6 +122,7 @@ export default defineComponent({
 			background: var(--el-color-primary-light-5);
 			transition: all 0.3s ease;
 		}
+
 		&-icon {
 			width: 60%;
 			height: 70%;
@@ -131,8 +131,9 @@ export default defineComponent({
 			bottom: 0;
 		}
 	}
+
 	.login-content {
-		width: 500px;
+		width: 400px;
 		padding: 20px;
 		position: absolute;
 		right: 200px;
@@ -143,10 +144,12 @@ export default defineComponent({
 		border-radius: 5px;
 		overflow: hidden;
 		z-index: 1;
-		height: 460px;
+		height: 360px;
+
 		.login-content-main {
 			margin: 0 auto;
 			width: 80%;
+
 			.login-content-title {
 				color: var(--el-text-color-primary);
 				font-weight: 500;
@@ -160,6 +163,7 @@ export default defineComponent({
 				transition: all 0.3s ease;
 			}
 		}
+
 		.login-content-main-sacn {
 			position: absolute;
 			top: 0;
@@ -170,6 +174,7 @@ export default defineComponent({
 			cursor: pointer;
 			transition: all ease 0.3s;
 			color: var(--el-text-color-primary);
+
 			&-delta {
 				position: absolute;
 				width: 35px;
@@ -180,11 +185,13 @@ export default defineComponent({
 				background: var(--el-color-white);
 				transform: rotate(-45deg);
 			}
+
 			&:hover {
 				opacity: 1;
 				transition: all ease 0.3s;
 				color: var(--el-color-primary) !important;
 			}
+
 			i {
 				width: 47px;
 				height: 50px;

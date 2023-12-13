@@ -2,39 +2,44 @@
 	<!-- 抽屉 -->
 	<el-drawer title="字典列表" :direction="state.direction" :size="state.screenWidth" v-model="state.isShowDrawer">
 		<!-- 抽屉内容的border -->
-		<div
-			:style="{
-				padding: '10px',
-				border: '1px solid #e9e9e9',
-				background: '#fff',
-			}"
-		>
+		<div :style="{
+			padding: '10px',
+			border: '1px solid #e9e9e9',
+			background: '#fff',
+		}">
 			<el-form :model="state.queryParams" ref="queryForm" :inline="true">
 				<el-row>
 					<el-col span="8">
 						<el-form-item label="标签" prop="dictName">
-							<el-input placeholder="标签查询" clearable @keyup.enter="handleQuery" style="width: 140px" v-model="state.queryParams.dictLabel" />
+							<el-input placeholder="标签查询" clearable @keyup.enter="handleQuery" style="width: 140px"
+								v-model="state.queryParams.dictLabel" />
 						</el-form-item>
 					</el-col>
 					<el-col span="8">
 						<el-form-item label="状态" prop="status">
 							<el-select v-model="state.queryParams.status" placeholder="状态" clearable style="width: 100px">
-								<el-option v-for="dict in state.statusOptions" :key="dict.dictValue" :label="dict.dictLabel" :value="dict.dictValue" />
+								<el-option v-for="dict in state.statusOptions" :key="dict.dictValue" :label="dict.dictLabel"
+									:value="dict.dictValue" />
 							</el-select>
 						</el-form-item>
 					</el-col>
 					<el-col span="8">
 						<el-form-item>
-							<el-button type="primary" @click="handleQuery"><SvgIcon name="ele-Search" />搜索</el-button>
-							<el-button @click="resetQuery"><SvgIcon name="ele-Refresh" />重置</el-button>
+							<el-button type="primary" @click="handleQuery">
+								<SvgIcon name="ele-Search" />搜索
+							</el-button>
+							<el-button @click="resetQuery">
+								<SvgIcon name="ele-Refresh" />重置
+							</el-button>
 						</el-form-item>
 					</el-col>
 				</el-row>
 				<el-row>
 					<el-col :md="2" :sm="2" :xs="8">
-						<el-button style="margin-bottom: 10px; margin-top: 10px" type="primary" v-auth="'system:dictD:add'" @click="onOpenAddModule"
-							><SvgIcon name="ele-Plus" />新增</el-button
-						>
+						<el-button style="margin-bottom: 10px; margin-top: 10px" type="primary" v-auth="'system:dictD:add'"
+							@click="onOpenAddModule">
+							<SvgIcon name="ele-Plus" />新增
+						</el-button>
 					</el-col>
 				</el-row>
 			</el-form>
@@ -56,10 +61,13 @@
 
 				<el-table-column label="操作" align="center" width="150" class-name="medium-padding fixed-width">
 					<template #default="scope">
-						<el-button type="text" icon="el-icon-edit" v-auth="'system:dictD:edit'" @click="onOpenEditModule(scope.row)"
-							><SvgIcon name="ele-Edit" />修改</el-button
-						>
-						<el-button type="text" v-auth="'system:dictD:delete'" @click="onTabelRowDel(scope.row)"><SvgIcon name="ele-Delete" />删除</el-button>
+						<el-button type="text" icon="el-icon-edit" v-auth="'system:dictD:edit'"
+							@click="onOpenEditModule(scope.row)">
+							<SvgIcon name="ele-Edit" />修改
+						</el-button>
+						<el-button type="text" v-auth="'system:dictD:delete'" @click="onTabelRowDel(scope.row)">
+							<SvgIcon name="ele-Delete" />删除
+						</el-button>
 					</template>
 				</el-table-column>
 			</el-table>
@@ -134,8 +142,6 @@ const resetScreenSize = () => {
 	let screenWidth = document.body.clientWidth;
 	if (screenWidth < 600) {
 		state.screenWidth = screenWidth;
-	} else {
-		state.screenWidth = 600;
 	}
 };
 /** 重置按钮操作 */
