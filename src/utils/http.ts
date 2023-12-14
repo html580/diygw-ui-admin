@@ -16,8 +16,9 @@ service.interceptors.request.use(
 			config.baseURL = import.meta.env.VITE_API_URL
 		}
 		// 在发送请求之前做些什么 token
+		// 在发送请求之前做些什么 token
 		if (Session.get('token')) {
-			(<any>config.headers).common['Authorization'] = `${Session.get('token')}`;
+			config.headers!['Authorization'] = `${Session.get('token')}`;
 		}
 
 		if (config.method === 'get' && config.params) {

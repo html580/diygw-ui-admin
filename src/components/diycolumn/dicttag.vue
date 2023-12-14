@@ -54,7 +54,8 @@ const values = computed(() => {
 		if (Array.isArray(props.value)) {
 			return props.value
 		}
-		if (props.value.startsWith("[") && props.value.endsWith("]")) {
+		
+		if (typeof props.value == 'string' &&props.value.startsWith("[") && props.value.endsWith("]")) {
 			return JSON.parse(props.value)
 		} else {
 			return [String(props.value)];
