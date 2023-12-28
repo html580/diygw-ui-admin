@@ -26,73 +26,28 @@ let routes: Array<RouteRecordRaw> = [
 		path: '/',
 		name: '/',
 		component: () => import('@/layout/index.vue'),
-		redirect: '/index',
+		redirect: '/home',
 		meta: {
-			isKeepAlive: true
+			isKeepAlive: true,
 		},
 		children: [
 			{
-				path: '/index',
-				name: 'index',
-				component: () => import('@/views/index.vue'),
+				path: '/home',
+				name: 'home',
+				component: () => import('@/views/home/index.vue'),
 				meta: {
-					title: '班级管理',
+					title: '首页',
 					isLink: '',
 					isHide: false,
 					isKeepAlive: false,
 					isAffix: false,
 					isIframe: false,
 					roles: ['admin', 'common'],
-					icon: 'diy-icon-home'
-				}
-			},
-			{
-				path: '/kemu',
-				name: 'kemu',
-				component: () => import('@/views/kemu.vue'),
-				meta: {
-					title: '科目管理',
-					isLink: '',
-					isHide: false,
-					isKeepAlive: false,
-					isAffix: false,
-					isIframe: false,
-					roles: ['admin', 'common'],
-					icon: 'diy-icon-home'
-				}
-			},
-			{
-				path: '/laoshi',
-				name: 'laoshi',
-				component: () => import('@/views/laoshi.vue'),
-				meta: {
-					title: '老师管理',
-					isLink: '',
-					isHide: false,
-					isKeepAlive: false,
-					isAffix: false,
-					isIframe: false,
-					roles: ['admin', 'common'],
-					icon: 'diy-icon-yuyin'
-				}
-			},
-			{
-				path: '/laoshi2',
-				name: 'laoshi2',
-				component: () => import('@/views/laoshi2.vue'),
-				meta: {
-					title: '老师管理',
-					isLink: '',
-					isHide: false,
-					isKeepAlive: false,
-					isAffix: false,
-					isIframe: false,
-					roles: ['admin', 'common'],
-					icon: 'diy-icon-mingci'
-				}
+					icon: 'fa fa-book',
+				},
 			}
-		]
-	}
+		],
+	},
 ];
 
 export const frontRoutes = {
