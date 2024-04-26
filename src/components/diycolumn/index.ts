@@ -1,5 +1,5 @@
 import type { App } from 'vue'
-const modules = import.meta.globEager('./*.(tsx|vue)')
+const modules = import.meta.glob('./*.(tsx|vue)', { eager: true })
 
 const components: any = []
 for (const path in modules) {

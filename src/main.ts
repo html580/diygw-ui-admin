@@ -11,7 +11,7 @@ import ElementPlus from 'element-plus';
 import '@/theme/index.scss';
 import mitt from 'mitt';
 
-import VueGridLayout from 'vue-grid-layout';
+// import VueGridLayout from 'vue-grid-layout';
 import { getDicts } from './api';
 import { selectDictLabel } from '@/utils/index'
 import Column from '@/components/diycolumn';
@@ -23,7 +23,7 @@ for (let iconName in ElIcon) {
 directive(app);
 other.elSvg(app);
 
-app.use(pinia).use(router).use(ElementPlus).use(i18n).use(Column).use(VueGridLayout).mount('#app');
+app.use(pinia).use(router).use(ElementPlus).use(i18n).use(Column).mount('#app');
 app.config.globalProperties.mittBus = mitt();
 app.config.globalProperties.getDicts = getDicts
 app.config.globalProperties.selectDictLabel = selectDictLabel
