@@ -6,6 +6,7 @@ import { directive } from '@/directive/index';
 import { i18n } from '@/i18n/index';
 import other from '@/utils/other';
 import http from '@/utils/http';
+import { download } from '@/utils/http'
 import { useDict, getDict } from '@/utils/dict';
 import ElementPlus from 'element-plus';
 import '@/theme/index.scss';
@@ -30,3 +31,4 @@ app.config.globalProperties.selectDictLabel = selectDictLabel
 app.config.globalProperties.$http = http
 app.config.globalProperties.useDict = useDict
 app.config.globalProperties.getDict = getDict
+app.config.globalProperties.download = download

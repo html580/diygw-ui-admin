@@ -28,13 +28,13 @@ let routes: Array<RouteRecordRaw> = [
 		component: () => import('@/layout/index.vue'),
 		redirect: '/home',
 		meta: {
-			isKeepAlive: true,
+			isKeepAlive: true
 		},
 		children: [
 			{
 				path: '/home',
 				name: 'home',
-				component: () => import('@/views/home/index.vue'),
+				component: () => import('@/views/home.vue'),
 				meta: {
 					title: '首页',
 					isLink: '',
@@ -43,11 +43,200 @@ let routes: Array<RouteRecordRaw> = [
 					isAffix: false,
 					isIframe: false,
 					roles: ['admin', 'common'],
-					icon: 'fa fa-book',
+					icon: 'diy-icon-home'
+				}
+			},
+			{
+				path: '/clazz',
+				name: 'clazz',
+				component: () => import('@/layout/routerView/parent.vue'),
+				redirect: '/clazz/xuesheng',
+				meta: {
+					title: '班级管理',
+					isLink: '',
+					isHide: false,
+					isKeepAlive: true,
+					isAffix: false,
+					isIframe: false,
+					roles: ['admin', 'common'],
+					icon: 'diy-icon-choiceness'
 				},
+				children: [
+					{
+						path: '/clazz/xuesheng',
+						name: 'clazzxuesheng',
+						component: () => import('@/views/clazz/xuesheng.vue'),
+						meta: {
+							title: '学生管理',
+							isLink: '',
+							isHide: false,
+							isKeepAlive: false,
+							isAffix: false,
+							isIframe: false,
+							roles: ['admin', 'common'],
+							icon: 'diy-icon-star'
+						}
+					},
+					{
+						path: '/clazz/laoshi',
+						name: 'clazzlaoshi',
+						component: () => import('@/views/clazz/laoshi.vue'),
+						meta: {
+							title: '老师管理',
+							isLink: '',
+							isHide: false,
+							isKeepAlive: false,
+							isAffix: false,
+							isIframe: false,
+							roles: ['admin', 'common'],
+							icon: 'diy-icon-yuyin'
+						}
+					},
+					{
+						path: '/clazz/index',
+						name: 'clazzindex',
+						component: () => import('@/views/clazz/index.vue'),
+						meta: {
+							title: '班级管理',
+							isLink: '',
+							isHide: false,
+							isKeepAlive: false,
+							isAffix: false,
+							isIframe: false,
+							roles: ['admin', 'common'],
+							icon: 'diy-icon-home'
+						}
+					},
+					{
+						path: '/clazz/kemu',
+						name: 'clazzkemu',
+						component: () => import('@/views/clazz/kemu.vue'),
+						meta: {
+							title: '科目管理',
+							isLink: '',
+							isHide: false,
+							isKeepAlive: false,
+							isAffix: false,
+							isIframe: false,
+							roles: ['admin', 'common'],
+							icon: 'diy-icon-circle'
+						}
+					}
+				]
+			},
+			{
+				path: '/sell',
+				name: 'sell',
+				component: () => import('@/layout/routerView/parent.vue'),
+				redirect: '/sell/fenlei',
+				meta: {
+					title: '进销存',
+					isLink: '',
+					isHide: false,
+					isKeepAlive: true,
+					isAffix: false,
+					isIframe: false,
+					roles: ['admin', 'common'],
+					icon: 'diy-icon-shop'
+				},
+				children: [
+					{
+						path: '/sell/fenlei',
+						name: 'sellfenlei',
+						component: () => import('@/views/sell/fenlei.vue'),
+						meta: {
+							title: '分类管理',
+							isLink: '',
+							isHide: false,
+							isKeepAlive: false,
+							isAffix: false,
+							isIframe: false,
+							roles: ['admin', 'common'],
+							icon: 'diy-icon-circle'
+						}
+					},
+					{
+						path: '/sell/shangpin',
+						name: 'sellshangpin',
+						component: () => import('@/views/sell/shangpin.vue'),
+						meta: {
+							title: '商品管理',
+							isLink: '',
+							isHide: false,
+							isKeepAlive: false,
+							isAffix: false,
+							isIframe: false,
+							roles: ['admin', 'common'],
+							icon: 'diy-icon-lihe'
+						}
+					},
+					{
+						path: '/sell/ruku',
+						name: 'sellruku',
+						component: () => import('@/views/sell/ruku.vue'),
+						meta: {
+							title: '入库管理',
+							isLink: '',
+							isHide: false,
+							isKeepAlive: false,
+							isAffix: false,
+							isIframe: false,
+							roles: ['admin', 'common'],
+							icon: 'diy-icon-lihe'
+						}
+					}
+				]
+			},
+			{
+				path: '/workflow',
+				name: 'workflow',
+				component: () => import('@/layout/routerView/parent.vue'),
+				redirect: '/workflow/definition',
+				meta: {
+					title: '工作流',
+					isLink: '',
+					isHide: false,
+					isKeepAlive: true,
+					isAffix: false,
+					isIframe: false,
+					roles: ['admin', 'common'],
+					icon: 'diy-icon-activity'
+				},
+				children: [
+					{
+						path: '/workflow/definition',
+						name: 'workflowdefinition',
+						component: () => import('@/views/workflow/definition.vue'),
+						meta: {
+							title: '流程设计',
+							isLink: '',
+							isHide: false,
+							isKeepAlive: false,
+							isAffix: false,
+							isIframe: false,
+							roles: ['admin', 'common'],
+							icon: 'diy-icon-fork'
+						}
+					},
+					{
+						path: '/workflow/design',
+						name: 'workflowdesign',
+						component: () => import('@/views/workflow/design.vue'),
+						meta: {
+							title: '流程设计',
+							isLink: '',
+							isHide: false,
+							isKeepAlive: false,
+							isAffix: false,
+							isIframe: false,
+							roles: ['admin', 'common'],
+							icon: 'diy-icon-repair'
+						}
+					}
+				]
 			}
-		],
-	},
+		]
+	}
 ];
 
 export const frontRoutes = {

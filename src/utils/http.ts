@@ -1,6 +1,7 @@
 import axios from 'axios';
-import { ElMessage, ElMessageBox } from 'element-plus';
+import { ElLoading, ElMessage, ElMessageBox } from 'element-plus';
 import { Session } from '@/utils/storage';
+import { saveAs } from 'file-saver'
 
 // 配置新建一个 axios 实例
 const service = axios.create({
@@ -85,3 +86,62 @@ service.interceptors.response.use(
 
 // 导出 axios 实例
 export default service;
+
+
+// 验证是否为blob格式
+export function blobValidate(data: any) {
+	return data.type !== 'application/json'
+}
+
+/**
+* 参数处理
+* @param {*} params  参数
+*/
+export function tansParams(params: any) {
+	let result = ''
+	for (const propName of Object.keys(params)) {
+		const value = params[propName];
+		var part = encodeURIComponent(propName) + "=";
+		if (value !== null && value !== "" && typeof (value) !== "undefined") {
+			if (typeof value === 'object') {
+				for (const key of Object.keys(value)) {
+					if (value[key] !== null && value[key] !== "" && typeof (value[key]) !== 'undefined') {
+						let params = propName + '[' + key + ']';
+						var subPart = encodeURIComponent(params) + "=";
+						result += subPart + encodeURIComponent(value[key]) + "&";
+					}
+				}
+			} else {
+				result += part + encodeURIComponent(value) + "&";
+			}
+		}
+	}
+	return result
+}
+
+// 通用下载方法
+export function download(url: any, params: any, filename: any, config: any) {
+	let downloadLoadingInstance = ElLoading.service({ text: "正在下载数据，请稍候", background: "rgba(0, 0, 0, 0.7)", })
+	return service.post(url, params, {
+		transformRequest: [(params) => { return tansParams(params) }],
+		headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+		responseType: 'blob',
+		...config
+	}).then(async (data: any) => {
+		const isBlob = blobValidate(data);
+		if (isBlob) {
+			const blob = new Blob([data])
+			saveAs(blob, filename)
+		} else {
+			const resText = await data.text();
+			const rspObj = JSON.parse(resText);
+			const errMsg = rspObj.msg
+			ElMessage.error(errMsg);
+		}
+		downloadLoadingInstance.close();
+	}).catch((r) => {
+		console.error(r)
+		ElMessage.error('下载文件出现错误，请联系管理员！')
+		downloadLoadingInstance.close();
+	})
+}

@@ -135,3 +135,56 @@ export function formatAxis(param: Date): string {
 	else if (hour < 22) return '晚上好';
 	else return '夜里好';
 }
+
+export function type(obj: any) {
+	const toString = Object.prototype.toString
+
+	if (obj == null) {
+		return obj + ''
+	}
+
+	return typeof obj === 'object' || typeof obj === 'function' ? toString.call(obj) || 'object' : typeof obj
+}
+
+
+/**
+	 * 判断某个元素是否为日期
+	 * @param  {Date}  value
+	 * @return {Boolean}
+	 */
+export function isDate(value: any) {
+	return type(value) === '[object Date]'
+}
+
+export function formatDateTime(val: any, format: string) {
+	if (isDate(val)) {
+		return formatDate(val, format)
+	} else if (!isNaN(val)) {
+		if (String(val).length == 10) {
+			val = val * 1000
+		}
+		let date = new Date(val);
+		return formatDate(date, format)
+	} else if (val) {
+		let date = new Date(val);
+		return formatDate(date, format)
+	}
+}
+export function getCurrentDate() {
+	return formatDate(new Date(), 'YYYY-mm-dd')
+}
+
+export function getDownCurrentDateTime() {
+	return formatDate(new Date(), 'YYYYmmddHHMMSS')
+}
+
+
+export function getCurrentDateTime() {
+	return formatDate(new Date(), 'YYYY-mm-dd HH:MM:SS')
+}
+
+export function addDays(days: any) {
+	let d = new Date();
+	d.setMilliseconds(d.getMilliseconds() + (days * 24 * 60 * 60 * 1000));
+	return formatDate(d, 'YYYY-mm-dd')
+}
